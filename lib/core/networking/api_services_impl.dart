@@ -37,9 +37,8 @@ class ApiServicesImpl implements ApiServices {
 
   ApiServicesImpl() {
     _dio.options
-      ..baseUrl =
-          AppLinkUrl
-              .baseUrl // Put here your base Url
+      ..baseUrl = AppLinkUrl
+          .baseUrl // Put here your base Url
       ..responseType = ResponseType.plain
       ..sendTimeout = const Duration(minutes: 1)
       ..receiveTimeout = const Duration(minutes: 1)
