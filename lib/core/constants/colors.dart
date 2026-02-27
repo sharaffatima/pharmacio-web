@@ -13,6 +13,8 @@ class AppColors {
   // Primary Brand Colors
   static const Color teaDark = Color(0xFF005555);
   static const Color forestGreen = Color(0xff049A2E);
+  static const Color lightMintGreen = Color(0xffD5FFDD);
+  
 
   // Dark Colors
   static const Color charcoal = Color(0xFF242424);
@@ -36,6 +38,8 @@ class AppColors {
   static const Color royalBlue = Color(0xFF123DDB);
   static const Color lavender = Color(0xFF9380FF);
   static const Color skyBlue = Color(0xFF3B82F6);
+  static const Color lightBlue = Color(0xFFE6EEFF);
+  
 
   // Orange Shades
   static const Color darkOrange = Color(0xFFFF7300);

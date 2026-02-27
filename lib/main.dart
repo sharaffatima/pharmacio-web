@@ -10,7 +10,7 @@ import 'pharmacio_web_app.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  setupGetit();
+  await setupGetit();
   await ScreenUtil.ensureScreenSize();
   await AppSharedPreferences().init();
   Bloc.observer = MyBlocObserver();
