@@ -113,7 +113,7 @@ class InventoryTableWidget extends StatelessWidget {
           ),
           verticalSpace(16),
           _buildHeaderRow(),
-          const Divider(color: AppColors.gainsboro, height: 1),
+          Divider(color: AppColors.gainsboro, height: 1),
           ...entries.asMap().entries.map((e) => _buildDataRow(e.value, e.key)),
         ],
       ),
@@ -192,7 +192,7 @@ class InventoryTableWidget extends StatelessWidget {
 
     return Container(
       padding: EdgeInsets.symmetric(vertical: 14.h),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(color: AppColors.gainsboro, width: 0.5),
         ),

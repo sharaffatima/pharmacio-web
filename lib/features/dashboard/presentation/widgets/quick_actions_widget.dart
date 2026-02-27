@@ -4,7 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/constants/colors.dart';
 import '../../../../core/constants/text_styles.dart';
+import '../../../../core/helpers/extentions.dart';
 import '../../../../core/helpers/spacing.dart';
+import '../../../../core/routing/routes.dart';
 
 class QuickActionsWidget extends StatelessWidget {
   const QuickActionsWidget({super.key});
@@ -29,22 +31,22 @@ class QuickActionsWidget extends StatelessWidget {
           _buildActionItem(
             icon: Icons.cloud_upload_outlined,
             label: AppStrings.uploadNewOffers,
-            onTap: () {},
+            onTap: () => context.pushReplacementNamed(Routes.uploadsScreen),
           ),
           _buildActionItem(
             icon: Icons.compare_arrows,
             label: AppStrings.compareOffers,
-            onTap: () {},
+            onTap: () => context.pushReplacementNamed(Routes.compareScreen),
           ),
           _buildActionItem(
             icon: Icons.assignment_outlined,
             label: AppStrings.viewProposals,
-            onTap: () {},
+            onTap: () => context.pushReplacementNamed(Routes.proposalsScreen),
           ),
           _buildActionItem(
             icon: Icons.show_chart,
             label: AppStrings.manageInventory,
-            onTap: () {},
+            onTap: () => context.pushReplacementNamed(Routes.inventoryScreen),
           ),
         ],
       ),

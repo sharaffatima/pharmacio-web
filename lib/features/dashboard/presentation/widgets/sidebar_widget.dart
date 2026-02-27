@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/constants/app_strings.dart';
@@ -6,6 +7,8 @@ import '../../../../core/constants/colors.dart';
 import '../../../../core/constants/text_styles.dart';
 import '../../../../core/helpers/extentions.dart';
 import '../../../../core/helpers/spacing.dart';
+import '../../../../core/language/language_cubit.dart';
+import '../../../../core/theme/theme_cubit.dart';
 import '../../../../core/routing/routes.dart';
 
 class SidebarWidget extends StatelessWidget {
@@ -40,6 +43,12 @@ class SidebarWidget extends StatelessWidget {
           ..._buildMenuItems(context),
 
           const Spacer(),
+
+          // ─── Language Toggle ───────────────────────
+          _buildLanguageToggle(context),
+
+          // ─── Theme Toggle ──────────────────────────
+          _buildThemeToggle(context),
 
           // ─── Logout ───────────────────────────────
           _buildMenuItem(
@@ -141,6 +150,76 @@ class SidebarWidget extends StatelessWidget {
                     ? AppColors.coolGrey
                     : AppColors.black,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLanguageToggle(BuildContext context) {
+    final cubit = context.read<LanguageCubit>();
+    final isArabic = cubit.state == 'ar';
+
+    return InkWell(
+      onTap: () {
+        cubit.toggleLanguage();
+        final route = _indexToRoute[selectedIndex];
+        if (route != null) {
+          context.pushReplacementNamed(route);
+        }
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
+        child: Row(
+          children: [
+            Icon(Icons.language, size: 20.sp, color: AppColors.coolGrey),
+            horizontalSpace(12),
+            Text(
+              isArabic ? 'English' : 'العربية',
+              style: AppTextStyles.font14BlackRegular.copyWith(
+                color: AppColors.coolGrey,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildThemeToggle(BuildContext context) {
+    final cubit = context.read<ThemeCubit>();
+    final isDark = cubit.state;
+
+    return InkWell(
+      onTap: () {
+        cubit.toggleTheme();
+        final route = _indexToRoute[selectedIndex];
+        if (route != null) {
+          context.pushReplacementNamed(route);
+        }
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
+        child: Row(
+          children: [
+            Icon(
+              isDark ? Icons.light_mode : Icons.dark_mode,
+              size: 20.sp,
+              color: AppColors.coolGrey,
+            ),
+            horizontalSpace(12),
+            Text(
+              isDark
+                  ? (AppStrings.currentLanguage == 'ar'
+                        ? 'وضع فاتح'
+                        : 'Light Mode')
+                  : (AppStrings.currentLanguage == 'ar'
+                        ? 'وضع داكن'
+                        : 'Dark Mode'),
+              style: AppTextStyles.font14BlackRegular.copyWith(
+                color: AppColors.coolGrey,
               ),
             ),
           ],

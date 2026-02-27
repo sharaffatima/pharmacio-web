@@ -39,7 +39,7 @@ class RecentUploadsTableWidget extends StatelessWidget {
 
           // ─── Table Header ─────────────────────────
           _buildHeaderRow(),
-          const Divider(color: AppColors.gainsboro, height: 1),
+          Divider(color: AppColors.gainsboro, height: 1),
 
           // ─── Table Rows ───────────────────────────
           if (entries.isEmpty)
@@ -111,7 +111,7 @@ class RecentUploadsTableWidget extends StatelessWidget {
   Widget _buildDataRow(UploadEntry entry, int index) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 12.h),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(color: AppColors.gainsboro, width: 0.5),
         ),
