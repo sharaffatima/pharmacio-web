@@ -64,7 +64,7 @@ class TextFieldWidget extends StatelessWidget {
         readOnly: readOnly ?? false,
         style: TextStyle(color: inputColor ?? AppColors.greyStone),
         keyboardType: keyboardType ?? TextInputType.text,
-        cursorColor: AppColors.forestGreen,
+        cursorColor: AppColors.alertLowBlue,
         validator: (value) => InputValidator.validate(
           value: value ?? "",
           type: validationType,
@@ -95,7 +95,7 @@ class TextFieldWidget extends StatelessWidget {
               : null,
           iconColor: AppColors.greyStone,
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: AppColors.forestGreen, width: 2.w),
+            borderSide: BorderSide(color: AppColors.alertLowBlue, width: 2.w),
             borderRadius: BorderRadius.all(Radius.circular(16)),
           ),
           enabledBorder: OutlineInputBorder(

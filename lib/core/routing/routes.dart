@@ -7,4 +7,6 @@ class Routes {
   static const String proposalsScreen = '/ProposalsScreen';
   static const String inventoryScreen = '/InventoryScreen';
   static const String alertsScreen = '/AlertsScreen';
+  static const String registerScreen = '/RegisterScreen';
+  static const String settingsScreen = '/SettingsScreen';
 }

@@ -3,8 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../features/alerts/logic/cubit/alerts_cubit.dart';
 import '../../features/alerts/presentation/screens/alerts_screen.dart';
-import '../../features/auth/logic/cubits/login_cubit.dart';
+import '../../features/auth/logic/cubits/auth_cubit.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
+import '../../features/auth/presentation/screens/register_screen.dart';
+import '../../features/auth/presentation/screens/settings_screen.dart';
 import '../../features/compare/logic/cubit/compare_cubit.dart';
 import '../../features/compare/presentation/screens/compare_screen.dart';
 import '../../features/dashboard/presentation/screens/dashboard_screen.dart';
@@ -25,7 +27,7 @@ class AppRouter {
       case Routes.loginScreen:
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
-            create: (context) => getIt<LoginCubit>(),
+            create: (context) => getIt<AuthCubit>(),
             child: LoginScreen(),
           ),
         );
@@ -36,7 +38,7 @@ class AppRouter {
       case Routes.uploadsScreen:
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
-            create: (_) => UploadsCubit()..loadData(),
+            create: (_) => getIt<UploadsCubit>(),
             child: const UploadsScreen(),
           ),
         );
@@ -78,6 +80,22 @@ class AppRouter {
           builder: (_) => BlocProvider(
             create: (_) => AlertsCubit()..loadData(),
             child: const AlertsScreen(),
+          ),
+        );
+
+      case Routes.registerScreen:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<AuthCubit>(),
+            child: const RegisterScreen(),
+          ),
+        );
+
+      case Routes.settingsScreen:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<AuthCubit>()..getMe(),
+            child: const SettingsScreen(),
           ),
         );
 

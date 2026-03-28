@@ -55,14 +55,16 @@ extension UploadsStatePatterns on UploadsState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( UploadsInitial value)?  initial,TResult Function( UploadsLoading value)?  loading,TResult Function( UploadsSuccess value)?  success,TResult Function( UploadsError value)?  error,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( UploadsInitial value)?  initial,TResult Function( UploadsLoading value)?  loading,TResult Function( UploadsError value)?  error,TResult Function( UploadSuccessState value)?  uploadSuccess,TResult Function( SuccessDeletedFile value)?  successDeletedFile,TResult Function( StatusSuccessState value)?  statusSuccess,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case UploadsInitial() when initial != null:
 return initial(_that);case UploadsLoading() when loading != null:
-return loading(_that);case UploadsSuccess() when success != null:
-return success(_that);case UploadsError() when error != null:
-return error(_that);case _:
+return loading(_that);case UploadsError() when error != null:
+return error(_that);case UploadSuccessState() when uploadSuccess != null:
+return uploadSuccess(_that);case SuccessDeletedFile() when successDeletedFile != null:
+return successDeletedFile(_that);case StatusSuccessState() when statusSuccess != null:
+return statusSuccess(_that);case _:
   return orElse();
 
 }
@@ -80,14 +82,16 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( UploadsInitial value)  initial,required TResult Function( UploadsLoading value)  loading,required TResult Function( UploadsSuccess value)  success,required TResult Function( UploadsError value)  error,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( UploadsInitial value)  initial,required TResult Function( UploadsLoading value)  loading,required TResult Function( UploadsError value)  error,required TResult Function( UploadSuccessState value)  uploadSuccess,required TResult Function( SuccessDeletedFile value)  successDeletedFile,required TResult Function( StatusSuccessState value)  statusSuccess,}){
 final _that = this;
 switch (_that) {
 case UploadsInitial():
 return initial(_that);case UploadsLoading():
-return loading(_that);case UploadsSuccess():
-return success(_that);case UploadsError():
-return error(_that);case _:
+return loading(_that);case UploadsError():
+return error(_that);case UploadSuccessState():
+return uploadSuccess(_that);case SuccessDeletedFile():
+return successDeletedFile(_that);case StatusSuccessState():
+return statusSuccess(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -104,14 +108,16 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( UploadsInitial value)?  initial,TResult? Function( UploadsLoading value)?  loading,TResult? Function( UploadsSuccess value)?  success,TResult? Function( UploadsError value)?  error,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( UploadsInitial value)?  initial,TResult? Function( UploadsLoading value)?  loading,TResult? Function( UploadsError value)?  error,TResult? Function( UploadSuccessState value)?  uploadSuccess,TResult? Function( SuccessDeletedFile value)?  successDeletedFile,TResult? Function( StatusSuccessState value)?  statusSuccess,}){
 final _that = this;
 switch (_that) {
 case UploadsInitial() when initial != null:
 return initial(_that);case UploadsLoading() when loading != null:
-return loading(_that);case UploadsSuccess() when success != null:
-return success(_that);case UploadsError() when error != null:
-return error(_that);case _:
+return loading(_that);case UploadsError() when error != null:
+return error(_that);case UploadSuccessState() when uploadSuccess != null:
+return uploadSuccess(_that);case SuccessDeletedFile() when successDeletedFile != null:
+return successDeletedFile(_that);case StatusSuccessState() when statusSuccess != null:
+return statusSuccess(_that);case _:
   return null;
 
 }
@@ -128,13 +134,15 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<UploadEntry> uploads)?  success,TResult Function( String error)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( String error)?  error,TResult Function( UploadResponse response)?  uploadSuccess,TResult Function( String successMsg)?  successDeletedFile,TResult Function( UploadResponse response)?  statusSuccess,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case UploadsInitial() when initial != null:
 return initial();case UploadsLoading() when loading != null:
-return loading();case UploadsSuccess() when success != null:
-return success(_that.uploads);case UploadsError() when error != null:
-return error(_that.error);case _:
+return loading();case UploadsError() when error != null:
+return error(_that.error);case UploadSuccessState() when uploadSuccess != null:
+return uploadSuccess(_that.response);case SuccessDeletedFile() when successDeletedFile != null:
+return successDeletedFile(_that.successMsg);case StatusSuccessState() when statusSuccess != null:
+return statusSuccess(_that.response);case _:
   return orElse();
 
 }
@@ -152,13 +160,15 @@ return error(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<UploadEntry> uploads)  success,required TResult Function( String error)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( String error)  error,required TResult Function( UploadResponse response)  uploadSuccess,required TResult Function( String successMsg)  successDeletedFile,required TResult Function( UploadResponse response)  statusSuccess,}) {final _that = this;
 switch (_that) {
 case UploadsInitial():
 return initial();case UploadsLoading():
-return loading();case UploadsSuccess():
-return success(_that.uploads);case UploadsError():
-return error(_that.error);case _:
+return loading();case UploadsError():
+return error(_that.error);case UploadSuccessState():
+return uploadSuccess(_that.response);case SuccessDeletedFile():
+return successDeletedFile(_that.successMsg);case StatusSuccessState():
+return statusSuccess(_that.response);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -175,13 +185,15 @@ return error(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<UploadEntry> uploads)?  success,TResult? Function( String error)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( String error)?  error,TResult? Function( UploadResponse response)?  uploadSuccess,TResult? Function( String successMsg)?  successDeletedFile,TResult? Function( UploadResponse response)?  statusSuccess,}) {final _that = this;
 switch (_that) {
 case UploadsInitial() when initial != null:
 return initial();case UploadsLoading() when loading != null:
-return loading();case UploadsSuccess() when success != null:
-return success(_that.uploads);case UploadsError() when error != null:
-return error(_that.error);case _:
+return loading();case UploadsError() when error != null:
+return error(_that.error);case UploadSuccessState() when uploadSuccess != null:
+return uploadSuccess(_that.response);case SuccessDeletedFile() when successDeletedFile != null:
+return successDeletedFile(_that.successMsg);case StatusSuccessState() when statusSuccess != null:
+return statusSuccess(_that.response);case _:
   return null;
 
 }
@@ -256,78 +268,6 @@ String toString() {
 /// @nodoc
 
 
-class UploadsSuccess implements UploadsState {
-  const UploadsSuccess(final  List<UploadEntry> uploads): _uploads = uploads;
-  
-
- final  List<UploadEntry> _uploads;
- List<UploadEntry> get uploads {
-  if (_uploads is EqualUnmodifiableListView) return _uploads;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_uploads);
-}
-
-
-/// Create a copy of UploadsState
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$UploadsSuccessCopyWith<UploadsSuccess> get copyWith => _$UploadsSuccessCopyWithImpl<UploadsSuccess>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UploadsSuccess&&const DeepCollectionEquality().equals(other._uploads, _uploads));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_uploads));
-
-@override
-String toString() {
-  return 'UploadsState.success(uploads: $uploads)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class $UploadsSuccessCopyWith<$Res> implements $UploadsStateCopyWith<$Res> {
-  factory $UploadsSuccessCopyWith(UploadsSuccess value, $Res Function(UploadsSuccess) _then) = _$UploadsSuccessCopyWithImpl;
-@useResult
-$Res call({
- List<UploadEntry> uploads
-});
-
-
-
-
-}
-/// @nodoc
-class _$UploadsSuccessCopyWithImpl<$Res>
-    implements $UploadsSuccessCopyWith<$Res> {
-  _$UploadsSuccessCopyWithImpl(this._self, this._then);
-
-  final UploadsSuccess _self;
-  final $Res Function(UploadsSuccess) _then;
-
-/// Create a copy of UploadsState
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? uploads = null,}) {
-  return _then(UploadsSuccess(
-null == uploads ? _self._uploads : uploads // ignore: cast_nullable_to_non_nullable
-as List<UploadEntry>,
-  ));
-}
-
-
-}
-
-/// @nodoc
-
-
 class UploadsError implements UploadsState {
   const UploadsError({required this.error});
   
@@ -385,6 +325,204 @@ class _$UploadsErrorCopyWithImpl<$Res>
   return _then(UploadsError(
 error: null == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class UploadSuccessState implements UploadsState {
+  const UploadSuccessState(this.response);
+  
+
+ final  UploadResponse response;
+
+/// Create a copy of UploadsState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$UploadSuccessStateCopyWith<UploadSuccessState> get copyWith => _$UploadSuccessStateCopyWithImpl<UploadSuccessState>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UploadSuccessState&&(identical(other.response, response) || other.response == response));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,response);
+
+@override
+String toString() {
+  return 'UploadsState.uploadSuccess(response: $response)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $UploadSuccessStateCopyWith<$Res> implements $UploadsStateCopyWith<$Res> {
+  factory $UploadSuccessStateCopyWith(UploadSuccessState value, $Res Function(UploadSuccessState) _then) = _$UploadSuccessStateCopyWithImpl;
+@useResult
+$Res call({
+ UploadResponse response
+});
+
+
+
+
+}
+/// @nodoc
+class _$UploadSuccessStateCopyWithImpl<$Res>
+    implements $UploadSuccessStateCopyWith<$Res> {
+  _$UploadSuccessStateCopyWithImpl(this._self, this._then);
+
+  final UploadSuccessState _self;
+  final $Res Function(UploadSuccessState) _then;
+
+/// Create a copy of UploadsState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? response = null,}) {
+  return _then(UploadSuccessState(
+null == response ? _self.response : response // ignore: cast_nullable_to_non_nullable
+as UploadResponse,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class SuccessDeletedFile implements UploadsState {
+  const SuccessDeletedFile(this.successMsg);
+  
+
+ final  String successMsg;
+
+/// Create a copy of UploadsState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SuccessDeletedFileCopyWith<SuccessDeletedFile> get copyWith => _$SuccessDeletedFileCopyWithImpl<SuccessDeletedFile>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SuccessDeletedFile&&(identical(other.successMsg, successMsg) || other.successMsg == successMsg));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,successMsg);
+
+@override
+String toString() {
+  return 'UploadsState.successDeletedFile(successMsg: $successMsg)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SuccessDeletedFileCopyWith<$Res> implements $UploadsStateCopyWith<$Res> {
+  factory $SuccessDeletedFileCopyWith(SuccessDeletedFile value, $Res Function(SuccessDeletedFile) _then) = _$SuccessDeletedFileCopyWithImpl;
+@useResult
+$Res call({
+ String successMsg
+});
+
+
+
+
+}
+/// @nodoc
+class _$SuccessDeletedFileCopyWithImpl<$Res>
+    implements $SuccessDeletedFileCopyWith<$Res> {
+  _$SuccessDeletedFileCopyWithImpl(this._self, this._then);
+
+  final SuccessDeletedFile _self;
+  final $Res Function(SuccessDeletedFile) _then;
+
+/// Create a copy of UploadsState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? successMsg = null,}) {
+  return _then(SuccessDeletedFile(
+null == successMsg ? _self.successMsg : successMsg // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class StatusSuccessState implements UploadsState {
+  const StatusSuccessState(this.response);
+  
+
+ final  UploadResponse response;
+
+/// Create a copy of UploadsState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$StatusSuccessStateCopyWith<StatusSuccessState> get copyWith => _$StatusSuccessStateCopyWithImpl<StatusSuccessState>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is StatusSuccessState&&(identical(other.response, response) || other.response == response));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,response);
+
+@override
+String toString() {
+  return 'UploadsState.statusSuccess(response: $response)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $StatusSuccessStateCopyWith<$Res> implements $UploadsStateCopyWith<$Res> {
+  factory $StatusSuccessStateCopyWith(StatusSuccessState value, $Res Function(StatusSuccessState) _then) = _$StatusSuccessStateCopyWithImpl;
+@useResult
+$Res call({
+ UploadResponse response
+});
+
+
+
+
+}
+/// @nodoc
+class _$StatusSuccessStateCopyWithImpl<$Res>
+    implements $StatusSuccessStateCopyWith<$Res> {
+  _$StatusSuccessStateCopyWithImpl(this._self, this._then);
+
+  final StatusSuccessState _self;
+  final $Res Function(StatusSuccessState) _then;
+
+/// Create a copy of UploadsState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? response = null,}) {
+  return _then(StatusSuccessState(
+null == response ? _self.response : response // ignore: cast_nullable_to_non_nullable
+as UploadResponse,
   ));
 }
 

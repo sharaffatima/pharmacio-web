@@ -10,8 +10,8 @@ import '../../../../core/public_widgets/button_widget.dart';
 import '../../../../core/public_widgets/text_field_widget.dart';
 import '../../logic/cubits/auth_cubit.dart';
 
-class LoginFormWidget extends StatelessWidget {
-  const LoginFormWidget({super.key});
+class RegisterFormWidget extends StatelessWidget {
+  const RegisterFormWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -49,11 +49,25 @@ class LoginFormWidget extends StatelessWidget {
             obscureText: true,
             validationType: InputValidationType.password,
           ),
+          verticalSpace(16),
+
+          Text(
+            AppStrings.confirmPassword,
+            style: AppTextStyles.font14CharcoalBlackSemiBold,
+          ),
+          verticalSpace(8),
+          TextFieldWidget(
+            controller: cubit.confirmPasswordController,
+            hintText: AppStrings.confirmPasswordHint,
+            labelText: '',
+            obscureText: true,
+            validationType: InputValidationType.password,
+          ),
           verticalSpace(24),
 
           ButtonWidget(
-            title: AppStrings.signIn,
-            onTap: () => cubit.login(),
+            title: AppStrings.registerButton,
+            onTap: () => cubit.register(),
             backgroundColor: AppColors.charcoalBlack,
             borderColor: AppColors.charcoalBlack,
             textStyle: AppTextStyles.font16WhiteMedium,

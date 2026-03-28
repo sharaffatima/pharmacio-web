@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get_it/get_it.dart';
 
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/constants/colors.dart';
@@ -8,8 +9,10 @@ import '../../../../core/constants/text_styles.dart';
 import '../../../../core/helpers/extentions.dart';
 import '../../../../core/helpers/spacing.dart';
 import '../../../../core/language/language_cubit.dart';
-import '../../../../core/theme/theme_cubit.dart';
+import '../../../../core/public_widgets/loading_widget.dart';
 import '../../../../core/routing/routes.dart';
+import '../../../../core/theme/theme_cubit.dart';
+import '../../../auth/logic/cubits/auth_cubit.dart';
 
 class SidebarWidget extends StatelessWidget {
   final int selectedIndex;
@@ -44,6 +47,9 @@ class SidebarWidget extends StatelessWidget {
 
           const Spacer(),
 
+          // ─── Register New Admin ────────────────────
+          _buildRegisterButton(context),
+
           // ─── Language Toggle ───────────────────────
           _buildLanguageToggle(context),
 
@@ -64,7 +70,6 @@ class SidebarWidget extends StatelessWidget {
     );
   }
 
-  /// Maps sidebar index to its corresponding route.
   static const Map<int, String> _indexToRoute = {
     0: Routes.dashboardScreen,
     1: Routes.uploadsScreen,
@@ -73,6 +78,7 @@ class SidebarWidget extends StatelessWidget {
     4: Routes.proposalsScreen,
     5: Routes.inventoryScreen,
     6: Routes.alertsScreen,
+    7: Routes.settingsScreen,
   };
 
   List<Widget> _buildMenuItems(BuildContext context) {
@@ -84,6 +90,7 @@ class SidebarWidget extends StatelessWidget {
       _SidebarItem(Icons.assignment_outlined, AppStrings.proposals),
       _SidebarItem(Icons.inventory_2_outlined, AppStrings.inventory),
       _SidebarItem(Icons.notifications_outlined, AppStrings.alertsAndLogs),
+      _SidebarItem(Icons.settings, AppStrings.settings),
     ];
 
     return items.asMap().entries.map((entry) {
@@ -108,16 +115,18 @@ class SidebarWidget extends StatelessWidget {
     return InkWell(
       onTap: () {
         if (isLogout) {
-          context.pushNamedAndRemoveUntil(
-            Routes.loginScreen,
-            predicate: (route) => false,
-          );
+          _showLogoutConfirmDialog(context);
+          return;
         }
         if (index == selectedIndex) return;
 
         final route = _indexToRoute[index];
         if (route != null) {
-          context.pushReplacementNamed(route);
+          if (route == Routes.settingsScreen) {
+            context.pushNamed(route);
+          } else {
+            context.pushReplacementNamed(route);
+          }
         }
       },
       child: Container(
@@ -150,6 +159,105 @@ class SidebarWidget extends StatelessWidget {
                     ? AppColors.coolGrey
                     : AppColors.black,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showLogoutConfirmDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) => BlocProvider(
+        create: (_) => GetIt.I<AuthCubit>(),
+        child: Builder(
+          builder: (dialogContext) {
+            return BlocListener<AuthCubit, AuthState>(
+              listener: (listenerContext, state) {
+                state.whenOrNull(
+                  successLogout: (_) {
+                    Navigator.of(dialogContext).pop();
+                    if (context.mounted) {
+                      context.pushNamedAndRemoveUntil(
+                        Routes.loginScreen,
+                        predicate: (route) => false,
+                      );
+                    }
+                  },
+                  error: (msg) {
+                    Navigator.of(dialogContext).pop();
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(SnackBar(content: Text(msg)));
+                    }
+                  },
+                );
+              },
+              child: AlertDialog(
+                title: Text(
+                  AppStrings.logoutConfirmTitle,
+                  style: AppTextStyles.font16BlackSemiBold,
+                ),
+                content: Text(
+                  AppStrings.logoutConfirmMessage,
+                  style: AppTextStyles.font14CoolGreyRegular,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(dialogContext).pop(),
+                    child: Text(
+                      AppStrings.cancel,
+                      style: AppTextStyles.font14CoolGreyRegular,
+                    ),
+                  ),
+                  BlocBuilder<AuthCubit, AuthState>(
+                    builder: (ctx, state) {
+                      return state.maybeWhen(
+                        loading: () => LoadingWidget(),
+                        orElse: () => TextButton(
+                          onPressed: () => ctx.read<AuthCubit>().logout(),
+                          child: Text(
+                            AppStrings.logout,
+                            style: AppTextStyles.font14CoolGreyRegular.copyWith(
+                              color: AppColors.brightRed,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRegisterButton(BuildContext context) {
+    return InkWell(
+      onTap: () => context.pushNamed(Routes.registerScreen),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
+        child: Row(
+          children: [
+            Icon(
+              Icons.person_add_outlined,
+              size: 20.sp,
+              color: AppColors.coolGrey,
+            ),
+            horizontalSpace(12),
+            Text(
+              AppStrings.registerNewAdmin,
+              style: AppTextStyles.font14BlackRegular.copyWith(
+                color: AppColors.coolGrey,
               ),
             ),
           ],

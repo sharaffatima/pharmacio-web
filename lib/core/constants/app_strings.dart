@@ -13,7 +13,7 @@ class AppStrings {
       ? 'البريد الإلكتروني / اسم المستخدم'
       : 'Email / Username';
 
-  static String get emailHint => 'admin@example.com';
+  static String get usernameHint => 'admin';
 
   static String get password =>
       currentLanguage == 'ar' ? 'كلمة المرور' : 'Password';
@@ -23,6 +23,80 @@ class AppStrings {
 
   static String get signIn =>
       currentLanguage == 'ar' ? 'تسجيل الدخول' : 'Sign In';
+
+  static String get registerAdminTitle =>
+      currentLanguage == 'ar' ? 'تسجيل مشرف جديد' : 'Register New Admin';
+
+  static String get registerAdminSubtitle =>
+      currentLanguage == 'ar'
+          ? 'إنشاء حساب مشرف جديد للنظام'
+          : 'Create a new admin account for the system';
+
+  static String get confirmPassword =>
+      currentLanguage == 'ar' ? 'تأكيد كلمة المرور' : 'Confirm Password';
+
+  static String get confirmPasswordHint =>
+      currentLanguage == 'ar' ? 'أعد إدخال كلمة المرور' : 'Re-enter your password';
+
+  static String get registerButton =>
+      currentLanguage == 'ar' ? 'تسجيل المشرف' : 'Register Admin';
+
+  static String get registerSuccess =>
+      currentLanguage == 'ar'
+          ? 'تم تسجيل المشرف بنجاح'
+          : 'Admin registered successfully';
+
+  static String get registerNewAdmin =>
+      currentLanguage == 'ar' ? 'تسجيل مشرف جديد' : 'Register New Admin';
+
+  static String get logoutConfirmTitle =>
+      currentLanguage == 'ar' ? 'تسجيل الخروج' : 'Logout';
+
+  static String get logoutConfirmMessage =>
+      currentLanguage == 'ar'
+          ? 'هل أنت متأكد أنك تريد تسجيل الخروج؟'
+          : 'Are you sure you want to logout?';
+
+  static String get cancel =>
+      currentLanguage == 'ar' ? 'إلغاء' : 'Cancel';
+
+  // ─── Settings ─────────────────────────────────────────
+  static String get settingsTitle =>
+      currentLanguage == 'ar' ? 'الإعدادات' : 'Settings';
+
+  static String get settingsSubtitle =>
+      currentLanguage == 'ar'
+          ? 'عرض معلومات حسابك وتغيير كلمة المرور'
+          : 'View your account information and change your password';
+
+  static String get changePasswordTitle =>
+      currentLanguage == 'ar' ? 'تغيير كلمة المرور' : 'Change Password';
+
+  static String get oldPassword =>
+      currentLanguage == 'ar' ? 'كلمة المرور الحالية' : 'Current Password';
+
+  static String get newPassword =>
+      currentLanguage == 'ar' ? 'كلمة المرور الجديدة' : 'New Password';
+
+  static String get confirmNewPassword =>
+      currentLanguage == 'ar' ? 'تأكيد كلمة المرور الجديدة' : 'Confirm New Password';
+
+  static String get changePasswordButton =>
+      currentLanguage == 'ar' ? 'تغيير كلمة المرور' : 'Change Password';
+
+  static String get passwordChangedSuccess =>
+      currentLanguage == 'ar'
+          ? 'تم تغيير كلمة المرور بنجاح'
+          : 'Password changed successfully';
+
+  static String get activeStatus =>
+      currentLanguage == 'ar' ? 'نشط' : 'Active';
+
+  static String get inactiveStatus =>
+      currentLanguage == 'ar' ? 'غير نشط' : 'Inactive';
+
+  static String get settings =>
+      currentLanguage == 'ar' ? 'الإعدادات' : 'Settings';
 
   // ─── Sidebar ─────────────────────────────────────────
   static String get adminPanel =>

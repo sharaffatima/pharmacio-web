@@ -26,13 +26,40 @@ class UploadsScreen extends StatelessWidget {
         children: [
           const SidebarWidget(selectedIndex: 1),
           Expanded(
-            child: BlocBuilder<UploadsCubit, UploadsState>(
+            child: BlocConsumer<UploadsCubit, UploadsState>(
+              listener: (context, state) {
+                state.whenOrNull(
+                  uploadSuccess: (response) =>
+                      showAppSnackBar(context, response.message),
+                  statusSuccess: (response) =>
+                      showAppSnackBar(context, response.message),
+                  error: (error) => showAppSnackBar(context, error),
+                );
+              },
               builder: (context, state) {
-                return state.when(
-                  initial: () => const LoadingWidget(),
+                final uploadsList = context.read<UploadsCubit>().uploadsList;
+                final isLoadingAction = state.maybeWhen(
+                  loading: () => true,
+                  orElse: () => false,
+                );
+
+                Widget content = state.maybeWhen(
                   loading: () => const LoadingWidget(),
                   error: (error) => Center(child: Text(error)),
-                  success: (uploads) => _buildContent(context, uploads),
+                  successDeletedFile: (successMsg) =>
+                      _buildContent(context, uploadsList),
+                  orElse: () => _buildContent(context, uploadsList),
+                );
+
+                return Stack(
+                  children: [
+                    content,
+                    if (isLoadingAction)
+                      Container(
+                        color: AppColors.white.withValues(alpha: 0.6),
+                        child: const Center(child: LoadingWidget()),
+                      ),
+                  ],
                 );
               },
             ),

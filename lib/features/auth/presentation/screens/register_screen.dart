@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:pharmacio_flutter_web/core/helpers/extentions.dart';
 
 import '../../../../core/constants/colors.dart';
+import '../../../../core/constants/app_strings.dart';
 import '../../../../core/helpers/spacing.dart';
 import '../../../../core/public_widgets/loading_widget.dart';
 import '../../../../core/public_widgets/snack_bar_widget.dart';
-import '../../../../core/routing/routes.dart';
 import '../../logic/cubits/auth_cubit.dart';
-import '../widgets/login_form_widget.dart';
-import '../widgets/login_header_widget.dart';
+import '../widgets/register_form_widget.dart';
+import '../widgets/register_header_widget.dart';
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+class RegisterScreen extends StatelessWidget {
+  const RegisterScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +25,15 @@ class LoginScreen extends StatelessWidget {
               error: (error) {
                 showAppSnackBar(context, error);
               },
-              successLogin: (response) {
-                context.pushReplacementNamed(Routes.dashboardScreen);
+              successRegister: (response) {
+                showAppSnackBar(
+                  context,
+                  '${AppStrings.registerSuccess}: ${response.user.username}',
+                );
+                context.read<AuthCubit>()
+                  ..usernameController.clear()
+                  ..passwordController.clear()
+                  ..confirmPasswordController.clear();
               },
             );
           },
@@ -49,13 +55,13 @@ class LoginScreen extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const LoginHeaderWidget(),
+                const RegisterHeaderWidget(),
                 verticalSpace(28),
                 BlocBuilder<AuthCubit, AuthState>(
                   builder: (context, state) {
                     return state.maybeWhen(
                       loading: () => const Center(child: LoadingWidget()),
-                      orElse: () => const LoginFormWidget(),
+                      orElse: () => const RegisterFormWidget(),
                     );
                   },
                 ),
