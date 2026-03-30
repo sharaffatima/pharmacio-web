@@ -7,6 +7,7 @@ import '../../../../core/constants/text_styles.dart';
 import '../../../../core/helpers/spacing.dart';
 
 class ProposalEntry {
+  final int id;
   final String name;
   final String createdDate;
   final String createdBy;
@@ -15,6 +16,7 @@ class ProposalEntry {
   final String status;
 
   const ProposalEntry({
+    required this.id,
     required this.name,
     required this.createdDate,
     required this.createdBy,
@@ -25,6 +27,7 @@ class ProposalEntry {
 
   static List<ProposalEntry> sampleData() => [
     const ProposalEntry(
+      id: 1,
       name: 'Q1 2026 Office Equipment',
       createdDate: '2026-02-11',
       createdBy: 'Admin User',
@@ -33,6 +36,7 @@ class ProposalEntry {
       status: 'Pending',
     ),
     const ProposalEntry(
+      id: 2,
       name: 'February IT Hardware Purchase',
       createdDate: '2026-02-10',
       createdBy: 'Admin User',
@@ -41,6 +45,7 @@ class ProposalEntry {
       status: 'Approved',
     ),
     const ProposalEntry(
+      id: 3,
       name: 'Warehouse Supplies Bulk Order',
       createdDate: '2026-02-09',
       createdBy: 'Admin User',
@@ -49,6 +54,7 @@ class ProposalEntry {
       status: 'Pending',
     ),
     const ProposalEntry(
+      id: 4,
       name: 'January Office Furniture',
       createdDate: '2026-02-05',
       createdBy: 'Admin User',
@@ -57,6 +63,7 @@ class ProposalEntry {
       status: 'Approved',
     ),
     const ProposalEntry(
+      id: 5,
       name: 'Seasonal Products Procurement',
       createdDate: '2026-02-03',
       createdBy: 'Admin User',

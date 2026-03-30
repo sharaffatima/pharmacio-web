@@ -7,12 +7,14 @@ import '../../../../core/constants/text_styles.dart';
 import '../../../../core/helpers/spacing.dart';
 
 class AlertItem {
+  final int id;
   final String title;
   final String description;
   final String severity; // Critical, Warning, Info
   final bool isResolved;
 
   const AlertItem({
+    required this.id,
     required this.title,
     required this.description,
     required this.severity,
@@ -21,6 +23,7 @@ class AlertItem {
 
   AlertItem copyWith({bool? isResolved}) {
     return AlertItem(
+      id: id,
       title: title,
       description: description,
       severity: severity,
@@ -58,31 +61,36 @@ class AlertItem {
 
   static List<AlertItem> sampleData() => [
     const AlertItem(
+      id: 1,
       title: 'Critical Stock Level',
       description:
-          'Desk Lamp LED is critically low (5 units). Immediate restock required.',
+      'Desk Lamp LED is critically low (5 units). Immediate restock required.',
       severity: 'Critical',
     ),
     const AlertItem(
+      id: 2,
       title: 'Low Stock Warning',
       description: 'Office Chair Pro stock is below minimum threshold (15/25).',
       severity: 'Warning',
     ),
     const AlertItem(
+      id: 3,
       title: 'Price Change Detected',
       description: 'Supplier A updated prices for 12 items in Q1 2026 offer.',
       severity: 'Info',
     ),
     const AlertItem(
+      id: 4,
       title: 'Critical Stock Level',
       description:
-          'Monitor 27" 4K is critically low (8 units). Immediate restock required.',
+      'Monitor 27" 4K is critically low (8 units). Immediate restock required.',
       severity: 'Critical',
     ),
     const AlertItem(
+      id: 5,
       title: 'New Upload Processed',
       description:
-          'supplier_offers_Q1_2026.pdf has been processed successfully.',
+      'supplier_offers_Q1_2026.pdf has been processed successfully.',
       severity: 'Info',
       isResolved: true,
     ),
@@ -138,7 +146,6 @@ class AlertsListWidget extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // Severity Icon
           Container(
             padding: EdgeInsets.all(8.r),
             decoration: BoxDecoration(
@@ -152,8 +159,6 @@ class AlertsListWidget extends StatelessWidget {
             ),
           ),
           horizontalSpace(16),
-
-          // Content
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -195,8 +200,6 @@ class AlertsListWidget extends StatelessWidget {
               ],
             ),
           ),
-
-          // Resolve Button
           if (!alert.isResolved)
             OutlinedButton.icon(
               onPressed: () => onResolve(index),

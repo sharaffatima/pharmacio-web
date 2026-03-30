@@ -19,6 +19,7 @@ import '../../features/proposals/presentation/screens/proposals_screen.dart';
 import '../../features/uploads/logic/cubit/uploads_cubit.dart';
 import '../../features/uploads/presentation/screens/uploads_screen.dart';
 import '../di/dependency_injection.dart';
+import '../networking/api_services_impl.dart';
 import 'routes.dart';
 
 class AppRouter {
@@ -62,7 +63,7 @@ class AppRouter {
       case Routes.proposalsScreen:
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
-            create: (_) => ProposalsCubit()..loadData(),
+            create: (_) => getIt<ProposalsCubit>()..loadData(),
             child: const ProposalsScreen(),
           ),
         );
@@ -78,7 +79,7 @@ class AppRouter {
       case Routes.alertsScreen:
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
-            create: (_) => AlertsCubit()..loadData(),
+            create: (_) => AlertsCubit(getIt<ApiServicesImpl>())..loadData(),
             child: const AlertsScreen(),
           ),
         );
