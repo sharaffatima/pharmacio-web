@@ -1,0 +1,31 @@
+BASE URL:
+/api/v1/offers/
+
+--------------------------------------
+POST /api/v1/offers/upload/
+
+Request:
+multipart/form-data
+
+Response:
+{
+  "upload_id": "uuid",
+  "original_filename": "file.pdf",
+  "status": "processing",
+  "created_at": "2026-03-01T10:00:00Z"
+}
+
+--------------------------------------
+GET /api/v1/offers/uploads/{upload_id}/status/
+
+Response:
+{
+  "upload_id": "uuid",
+  "status": "completed",
+  "message": "Processed successfully"
+}
+
+⚠️ IMPORTANT:
+
+NO endpoint: GET /api/v1/offers/
+🔥 This is the critical issue - frontend expects GET /offers/ but backend doesn't provide it.

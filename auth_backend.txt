@@ -1,0 +1,28 @@
+BASE URL:
+/api/v1/auth/
+
+--------------------------------------
+POST /login/
+
+Request:
+{
+  "username": "admin",
+  "password": "12345678"
+}
+
+Response:
+{
+  "token": {
+    "access": "...",
+    "refresh": "..."
+  }
+}
+
+--------------------------------------
+GET /me/
+
+Response:
+{
+  "id": 1,
+  "username": "admin"
+}

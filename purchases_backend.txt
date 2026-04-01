@@ -1,0 +1,107 @@
+BASE URL:
+/api/v1/purchase-proposals/
+
+--------------------------------------
+ENDPOINT: GET /api/v1/purchase-proposals/
+
+Response (PAGINATED):
+{
+  "count": 10,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 1,
+      "name": "Q1 Proposal",
+      "created_at": "2026-03-01T10:00:00Z",
+      "created_by": "admin",
+      "total_value": "1500.00",
+      "items_count": 5,
+      "status": "Pending"
+    }
+  ]
+}
+
+--------------------------------------
+ENDPOINT: GET /api/v1/purchase-proposals/{id}/
+
+Response:
+{
+  "id": 1,
+  "name": "Q1 Proposal",
+  "status": "Pending",
+  "items": [
+    {
+      "product_name": "Item A",
+      "quantity": 10,
+      "price": 100
+    }
+  ]
+}
+
+--------------------------------------
+ENDPOINT: GET /api/v1/purchase-proposals/{id}/status/
+
+Response:
+{
+  "status": "Pending"
+}
+
+--------------------------------------
+ENDPOINT: POST /api/v1/purchase-proposals/{id}/approve/
+
+Response:
+{
+  "message": "Approved successfully"
+}
+
+--------------------------------------
+ENDPOINT: POST /api/v1/purchase-proposals/{id}/reject/
+
+Response:
+{
+  "message": "Rejected successfully"
+}
+
+--------------------------------------
+ENDPOINT: POST /api/v1/purchase-proposals/compare/
+
+Request:
+{
+  "items": [
+    {
+      "product_name": "Item A",
+      "quantity": 10
+    }
+  ]
+}
+
+Response (NOT PAGINATED):
+[
+  {
+    "product_name": "Item A",
+    "supplier": "Supplier A",
+    "price": 100,
+    "best_price": true
+  }
+]
+
+--------------------------------------
+ENDPOINT: POST /api/v1/purchase-proposals/generate/
+
+Request:
+{
+  "selected_items": [
+    {
+      "product_name": "Item A",
+      "supplier": "Supplier A",
+      "price": 100
+    }
+  ]
+}
+
+Response:
+{
+  "proposal_id": 5,
+  "message": "Proposal generated successfully"
+}
