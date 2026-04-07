@@ -5,92 +5,10 @@ import '../../../../core/constants/app_strings.dart';
 import '../../../../core/constants/colors.dart';
 import '../../../../core/constants/text_styles.dart';
 import '../../../../core/helpers/spacing.dart';
-
-class AlertItem {
-  final String title;
-  final String description;
-  final String severity; // Critical, Warning, Info
-  final bool isResolved;
-
-  const AlertItem({
-    required this.title,
-    required this.description,
-    required this.severity,
-    this.isResolved = false,
-  });
-
-  AlertItem copyWith({bool? isResolved}) {
-    return AlertItem(
-      title: title,
-      description: description,
-      severity: severity,
-      isResolved: isResolved ?? this.isResolved,
-    );
-  }
-
-  Color get severityColor {
-    switch (severity) {
-      case 'Critical':
-        return AppColors.brightRed;
-      case 'Warning':
-        return AppColors.saffronAmber;
-      case 'Info':
-        return AppColors.skyBlue;
-      default:
-        return AppColors.coolGrey;
-    }
-  }
-
-  Color get severityBgColor => severityColor.withValues(alpha: 0.1);
-
-  IconData get severityIcon {
-    switch (severity) {
-      case 'Critical':
-        return Icons.error_outline;
-      case 'Warning':
-        return Icons.warning_amber;
-      case 'Info':
-        return Icons.info_outline;
-      default:
-        return Icons.circle;
-    }
-  }
-
-  static List<AlertItem> sampleData() => [
-    const AlertItem(
-      title: 'Critical Stock Level',
-      description:
-          'Desk Lamp LED is critically low (5 units). Immediate restock required.',
-      severity: 'Critical',
-    ),
-    const AlertItem(
-      title: 'Low Stock Warning',
-      description: 'Office Chair Pro stock is below minimum threshold (15/25).',
-      severity: 'Warning',
-    ),
-    const AlertItem(
-      title: 'Price Change Detected',
-      description: 'Supplier A updated prices for 12 items in Q1 2026 offer.',
-      severity: 'Info',
-    ),
-    const AlertItem(
-      title: 'Critical Stock Level',
-      description:
-          'Monitor 27" 4K is critically low (8 units). Immediate restock required.',
-      severity: 'Critical',
-    ),
-    const AlertItem(
-      title: 'New Upload Processed',
-      description:
-          'supplier_offers_Q1_2026.pdf has been processed successfully.',
-      severity: 'Info',
-      isResolved: true,
-    ),
-  ];
-}
+import '../../data/models/user_notification_model.dart';
 
 class AlertsListWidget extends StatelessWidget {
-  final List<AlertItem> alerts;
+  final List<UserNotificationModel> alerts;
   final ValueChanged<int> onResolve;
 
   const AlertsListWidget({
@@ -122,17 +40,23 @@ class AlertsListWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildAlertCard(AlertItem alert, int index) {
+  Widget _buildAlertCard(UserNotificationModel alert, int index) {
+    final severity = _severityFromType(alert.type);
+    final severityColor = _severityColor(severity);
+    final severityBgColor = severityColor.withValues(alpha: 0.1);
+    final severityIcon = _severityIcon(severity);
+    final title = _titleFromType(alert.type);
+
     return Container(
       margin: EdgeInsets.only(bottom: 12.h),
       padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
-        color: alert.isResolved ? AppColors.offWhiteGrey : AppColors.white,
+        color: alert.isRead ? AppColors.offWhiteGrey : AppColors.white,
         borderRadius: BorderRadius.circular(10.r),
         border: Border.all(
-          color: alert.isResolved
+          color: alert.isRead
               ? AppColors.gainsboro
-              : alert.severityColor.withValues(alpha: 0.3),
+              : severityColor.withValues(alpha: 0.3),
           width: 1,
         ),
       ),
@@ -142,14 +66,10 @@ class AlertsListWidget extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(8.r),
             decoration: BoxDecoration(
-              color: alert.severityBgColor,
+              color: severityBgColor,
               shape: BoxShape.circle,
             ),
-            child: Icon(
-              alert.severityIcon,
-              size: 20.sp,
-              color: alert.severityColor,
-            ),
+            child: Icon(severityIcon, size: 20.sp, color: severityColor),
           ),
           horizontalSpace(16),
 
@@ -161,10 +81,10 @@ class AlertsListWidget extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      alert.title,
+                      title,
                       style: AppTextStyles.font14BlackRegular.copyWith(
                         fontWeight: FontWeight.w600,
-                        decoration: alert.isResolved
+                        decoration: alert.isRead
                             ? TextDecoration.lineThrough
                             : null,
                       ),
@@ -176,13 +96,13 @@ class AlertsListWidget extends StatelessWidget {
                         vertical: 2.h,
                       ),
                       decoration: BoxDecoration(
-                        color: alert.severityBgColor,
+                        color: severityBgColor,
                         borderRadius: BorderRadius.circular(4.r),
                       ),
                       child: Text(
-                        alert.severity,
+                        severity,
                         style: AppTextStyles.font12GreyRegular.copyWith(
-                          color: alert.severityColor,
+                          color: severityColor,
                           fontWeight: FontWeight.w600,
                           fontSize: 10.sp,
                         ),
@@ -191,13 +111,13 @@ class AlertsListWidget extends StatelessWidget {
                   ],
                 ),
                 verticalSpace(4),
-                Text(alert.description, style: AppTextStyles.font13GreyRegular),
+                Text(alert.message, style: AppTextStyles.font13GreyRegular),
               ],
             ),
           ),
 
           // Resolve Button
-          if (!alert.isResolved)
+          if (!alert.isRead)
             OutlinedButton.icon(
               onPressed: () => onResolve(index),
               icon: Icon(
@@ -220,5 +140,43 @@ class AlertsListWidget extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _severityFromType(String type) {
+    final value = type.toLowerCase();
+    if (value.contains('low_stock')) return 'Critical';
+    if (value.contains('warning')) return 'Warning';
+    return 'Info';
+  }
+
+  String _titleFromType(String type) {
+    final value = type.toLowerCase();
+    if (value.contains('low_stock')) return 'Low Stock Alert';
+    if (value.contains('inventory')) return 'Inventory Notification';
+    if (value.contains('sale')) return 'Sales Notification';
+    if (value.contains('file')) return 'Upload Notification';
+    return 'Notification';
+  }
+
+  Color _severityColor(String severity) {
+    switch (severity) {
+      case 'Critical':
+        return AppColors.brightRed;
+      case 'Warning':
+        return AppColors.saffronAmber;
+      default:
+        return AppColors.skyBlue;
+    }
+  }
+
+  IconData _severityIcon(String severity) {
+    switch (severity) {
+      case 'Critical':
+        return Icons.error_outline;
+      case 'Warning':
+        return Icons.warning_amber;
+      default:
+        return Icons.info_outline;
+    }
   }
 }

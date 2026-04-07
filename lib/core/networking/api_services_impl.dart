@@ -25,6 +25,8 @@ dynamic _parseJsonResponse(Response<dynamic> response) {
   // return responseAsJson;
   if (response.data is String) {
     return jsonDecode(response.data);
+  } else if (response.data is List) {
+    return response.data;
   } else if (response.data is Map<String, dynamic>) {
     return response.data;
   } else {
@@ -37,9 +39,8 @@ class ApiServicesImpl implements ApiServices {
 
   ApiServicesImpl() {
     _dio.options
-      ..baseUrl =
-          AppLinkUrl
-              .baseUrl // Put here your base Url
+      ..baseUrl = AppLinkUrl
+          .baseUrl // Put here your base Url
       ..responseType = ResponseType.plain
       ..sendTimeout = const Duration(minutes: 1)
       ..receiveTimeout = const Duration(minutes: 1)

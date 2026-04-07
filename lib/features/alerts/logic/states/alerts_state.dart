@@ -4,10 +4,18 @@ part of '../cubit/alerts_cubit.dart';
 class AlertsState with _$AlertsState {
   const factory AlertsState.initial() = AlertsInitial;
   const factory AlertsState.loading() = AlertsLoading;
-  const factory AlertsState.success({
-    required List<AlertItem> alerts,
+  const factory AlertsState.successGetMyNotifications({
+    required List<UserNotificationModel> alerts,
+    required int unreadCount,
     required int tabIndex,
     required String selectedSeverity,
-  }) = AlertsSuccess;
+  }) = SuccessGetMyNotifications;
+  const factory AlertsState.successMarkNotificationRead({
+    required UserNotificationModel updatedNotification,
+    required List<UserNotificationModel> alerts,
+    required int unreadCount,
+    required int tabIndex,
+    required String selectedSeverity,
+  }) = SuccessMarkNotificationRead;
   const factory AlertsState.error({required String error}) = AlertsError;
 }

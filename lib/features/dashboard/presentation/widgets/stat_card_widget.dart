@@ -11,8 +11,8 @@ class StatCardWidget extends StatelessWidget {
   final Color iconColor;
   final Color iconBgColor;
   final String value;
-  final String trendText;
-  final bool isUp;
+  final String? trendText;
+  final bool? isUp;
 
   const StatCardWidget({
     super.key,
@@ -21,8 +21,8 @@ class StatCardWidget extends StatelessWidget {
     required this.iconColor,
     required this.iconBgColor,
     required this.value,
-    required this.trendText,
-    required this.isUp,
+    this.trendText,
+    this.isUp,
   });
 
   @override
@@ -66,22 +66,24 @@ class StatCardWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(value, style: AppTextStyles.font28BlackBold),
-              horizontalSpace(8),
-              Icon(
-                isUp ? Icons.trending_up : Icons.trending_down,
-                size: 16.sp,
-                color: isUp ? AppColors.emerald : AppColors.brightRed,
-              ),
-              horizontalSpace(4),
-              Padding(
-                padding: EdgeInsets.only(bottom: 4.h),
-                child: Text(
-                  trendText,
-                  style: isUp
-                      ? AppTextStyles.font12GreenSemiBold
-                      : AppTextStyles.font12RedSemiBold,
+              if (trendText != null && isUp != null) ...[
+                horizontalSpace(8),
+                Icon(
+                  isUp! ? Icons.trending_up : Icons.trending_down,
+                  size: 16.sp,
+                  color: isUp! ? AppColors.emerald : AppColors.brightRed,
                 ),
-              ),
+                horizontalSpace(4),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 4.h),
+                  child: Text(
+                    trendText!,
+                    style: isUp!
+                        ? AppTextStyles.font12GreenSemiBold
+                        : AppTextStyles.font12RedSemiBold,
+                  ),
+                ),
+              ],
             ],
           ),
         ],

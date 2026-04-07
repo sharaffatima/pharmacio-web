@@ -55,13 +55,15 @@ extension InventoryStatePatterns on InventoryState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( InventoryInitial value)?  initial,TResult Function( InventoryLoading value)?  loading,TResult Function( InventorySuccess value)?  success,TResult Function( InventoryError value)?  error,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( InventoryInitial value)?  initial,TResult Function( InventoryLoading value)?  loading,TResult Function( SuccessGetInventoryList value)?  successGetInventoryList,TResult Function( SuccessCreateInventoryItem value)?  successCreateInventoryItem,TResult Function( SuccessAdjustInventoryItem value)?  successAdjustInventoryItem,TResult Function( InventoryError value)?  error,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case InventoryInitial() when initial != null:
 return initial(_that);case InventoryLoading() when loading != null:
-return loading(_that);case InventorySuccess() when success != null:
-return success(_that);case InventoryError() when error != null:
+return loading(_that);case SuccessGetInventoryList() when successGetInventoryList != null:
+return successGetInventoryList(_that);case SuccessCreateInventoryItem() when successCreateInventoryItem != null:
+return successCreateInventoryItem(_that);case SuccessAdjustInventoryItem() when successAdjustInventoryItem != null:
+return successAdjustInventoryItem(_that);case InventoryError() when error != null:
 return error(_that);case _:
   return orElse();
 
@@ -80,13 +82,15 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( InventoryInitial value)  initial,required TResult Function( InventoryLoading value)  loading,required TResult Function( InventorySuccess value)  success,required TResult Function( InventoryError value)  error,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( InventoryInitial value)  initial,required TResult Function( InventoryLoading value)  loading,required TResult Function( SuccessGetInventoryList value)  successGetInventoryList,required TResult Function( SuccessCreateInventoryItem value)  successCreateInventoryItem,required TResult Function( SuccessAdjustInventoryItem value)  successAdjustInventoryItem,required TResult Function( InventoryError value)  error,}){
 final _that = this;
 switch (_that) {
 case InventoryInitial():
 return initial(_that);case InventoryLoading():
-return loading(_that);case InventorySuccess():
-return success(_that);case InventoryError():
+return loading(_that);case SuccessGetInventoryList():
+return successGetInventoryList(_that);case SuccessCreateInventoryItem():
+return successCreateInventoryItem(_that);case SuccessAdjustInventoryItem():
+return successAdjustInventoryItem(_that);case InventoryError():
 return error(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -104,13 +108,15 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( InventoryInitial value)?  initial,TResult? Function( InventoryLoading value)?  loading,TResult? Function( InventorySuccess value)?  success,TResult? Function( InventoryError value)?  error,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( InventoryInitial value)?  initial,TResult? Function( InventoryLoading value)?  loading,TResult? Function( SuccessGetInventoryList value)?  successGetInventoryList,TResult? Function( SuccessCreateInventoryItem value)?  successCreateInventoryItem,TResult? Function( SuccessAdjustInventoryItem value)?  successAdjustInventoryItem,TResult? Function( InventoryError value)?  error,}){
 final _that = this;
 switch (_that) {
 case InventoryInitial() when initial != null:
 return initial(_that);case InventoryLoading() when loading != null:
-return loading(_that);case InventorySuccess() when success != null:
-return success(_that);case InventoryError() when error != null:
+return loading(_that);case SuccessGetInventoryList() when successGetInventoryList != null:
+return successGetInventoryList(_that);case SuccessCreateInventoryItem() when successCreateInventoryItem != null:
+return successCreateInventoryItem(_that);case SuccessAdjustInventoryItem() when successAdjustInventoryItem != null:
+return successAdjustInventoryItem(_that);case InventoryError() when error != null:
 return error(_that);case _:
   return null;
 
@@ -128,12 +134,14 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<InventoryItem> items)?  success,TResult Function( String error)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<InventoryApiItem> items)?  successGetInventoryList,TResult Function( InventoryApiItem createdItem,  List<InventoryApiItem> items)?  successCreateInventoryItem,TResult Function( InventoryAdjustResponse adjustResponse,  List<InventoryApiItem> items)?  successAdjustInventoryItem,TResult Function( String error)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case InventoryInitial() when initial != null:
 return initial();case InventoryLoading() when loading != null:
-return loading();case InventorySuccess() when success != null:
-return success(_that.items);case InventoryError() when error != null:
+return loading();case SuccessGetInventoryList() when successGetInventoryList != null:
+return successGetInventoryList(_that.items);case SuccessCreateInventoryItem() when successCreateInventoryItem != null:
+return successCreateInventoryItem(_that.createdItem,_that.items);case SuccessAdjustInventoryItem() when successAdjustInventoryItem != null:
+return successAdjustInventoryItem(_that.adjustResponse,_that.items);case InventoryError() when error != null:
 return error(_that.error);case _:
   return orElse();
 
@@ -152,12 +160,14 @@ return error(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<InventoryItem> items)  success,required TResult Function( String error)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<InventoryApiItem> items)  successGetInventoryList,required TResult Function( InventoryApiItem createdItem,  List<InventoryApiItem> items)  successCreateInventoryItem,required TResult Function( InventoryAdjustResponse adjustResponse,  List<InventoryApiItem> items)  successAdjustInventoryItem,required TResult Function( String error)  error,}) {final _that = this;
 switch (_that) {
 case InventoryInitial():
 return initial();case InventoryLoading():
-return loading();case InventorySuccess():
-return success(_that.items);case InventoryError():
+return loading();case SuccessGetInventoryList():
+return successGetInventoryList(_that.items);case SuccessCreateInventoryItem():
+return successCreateInventoryItem(_that.createdItem,_that.items);case SuccessAdjustInventoryItem():
+return successAdjustInventoryItem(_that.adjustResponse,_that.items);case InventoryError():
 return error(_that.error);case _:
   throw StateError('Unexpected subclass');
 
@@ -175,12 +185,14 @@ return error(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<InventoryItem> items)?  success,TResult? Function( String error)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<InventoryApiItem> items)?  successGetInventoryList,TResult? Function( InventoryApiItem createdItem,  List<InventoryApiItem> items)?  successCreateInventoryItem,TResult? Function( InventoryAdjustResponse adjustResponse,  List<InventoryApiItem> items)?  successAdjustInventoryItem,TResult? Function( String error)?  error,}) {final _that = this;
 switch (_that) {
 case InventoryInitial() when initial != null:
 return initial();case InventoryLoading() when loading != null:
-return loading();case InventorySuccess() when success != null:
-return success(_that.items);case InventoryError() when error != null:
+return loading();case SuccessGetInventoryList() when successGetInventoryList != null:
+return successGetInventoryList(_that.items);case SuccessCreateInventoryItem() when successCreateInventoryItem != null:
+return successCreateInventoryItem(_that.createdItem,_that.items);case SuccessAdjustInventoryItem() when successAdjustInventoryItem != null:
+return successAdjustInventoryItem(_that.adjustResponse,_that.items);case InventoryError() when error != null:
 return error(_that.error);case _:
   return null;
 
@@ -256,12 +268,12 @@ String toString() {
 /// @nodoc
 
 
-class InventorySuccess implements InventoryState {
-  const InventorySuccess(final  List<InventoryItem> items): _items = items;
+class SuccessGetInventoryList implements InventoryState {
+  const SuccessGetInventoryList(final  List<InventoryApiItem> items): _items = items;
   
 
- final  List<InventoryItem> _items;
- List<InventoryItem> get items {
+ final  List<InventoryApiItem> _items;
+ List<InventoryApiItem> get items {
   if (_items is EqualUnmodifiableListView) return _items;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_items);
@@ -272,13 +284,13 @@ class InventorySuccess implements InventoryState {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$InventorySuccessCopyWith<InventorySuccess> get copyWith => _$InventorySuccessCopyWithImpl<InventorySuccess>(this, _$identity);
+$SuccessGetInventoryListCopyWith<SuccessGetInventoryList> get copyWith => _$SuccessGetInventoryListCopyWithImpl<SuccessGetInventoryList>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is InventorySuccess&&const DeepCollectionEquality().equals(other._items, _items));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SuccessGetInventoryList&&const DeepCollectionEquality().equals(other._items, _items));
 }
 
 
@@ -287,18 +299,18 @@ int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(
 
 @override
 String toString() {
-  return 'InventoryState.success(items: $items)';
+  return 'InventoryState.successGetInventoryList(items: $items)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $InventorySuccessCopyWith<$Res> implements $InventoryStateCopyWith<$Res> {
-  factory $InventorySuccessCopyWith(InventorySuccess value, $Res Function(InventorySuccess) _then) = _$InventorySuccessCopyWithImpl;
+abstract mixin class $SuccessGetInventoryListCopyWith<$Res> implements $InventoryStateCopyWith<$Res> {
+  factory $SuccessGetInventoryListCopyWith(SuccessGetInventoryList value, $Res Function(SuccessGetInventoryList) _then) = _$SuccessGetInventoryListCopyWithImpl;
 @useResult
 $Res call({
- List<InventoryItem> items
+ List<InventoryApiItem> items
 });
 
 
@@ -306,19 +318,167 @@ $Res call({
 
 }
 /// @nodoc
-class _$InventorySuccessCopyWithImpl<$Res>
-    implements $InventorySuccessCopyWith<$Res> {
-  _$InventorySuccessCopyWithImpl(this._self, this._then);
+class _$SuccessGetInventoryListCopyWithImpl<$Res>
+    implements $SuccessGetInventoryListCopyWith<$Res> {
+  _$SuccessGetInventoryListCopyWithImpl(this._self, this._then);
 
-  final InventorySuccess _self;
-  final $Res Function(InventorySuccess) _then;
+  final SuccessGetInventoryList _self;
+  final $Res Function(SuccessGetInventoryList) _then;
 
 /// Create a copy of InventoryState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? items = null,}) {
-  return _then(InventorySuccess(
+  return _then(SuccessGetInventoryList(
 null == items ? _self._items : items // ignore: cast_nullable_to_non_nullable
-as List<InventoryItem>,
+as List<InventoryApiItem>,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class SuccessCreateInventoryItem implements InventoryState {
+  const SuccessCreateInventoryItem({required this.createdItem, required final  List<InventoryApiItem> items}): _items = items;
+  
+
+ final  InventoryApiItem createdItem;
+ final  List<InventoryApiItem> _items;
+ List<InventoryApiItem> get items {
+  if (_items is EqualUnmodifiableListView) return _items;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_items);
+}
+
+
+/// Create a copy of InventoryState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SuccessCreateInventoryItemCopyWith<SuccessCreateInventoryItem> get copyWith => _$SuccessCreateInventoryItemCopyWithImpl<SuccessCreateInventoryItem>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SuccessCreateInventoryItem&&(identical(other.createdItem, createdItem) || other.createdItem == createdItem)&&const DeepCollectionEquality().equals(other._items, _items));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,createdItem,const DeepCollectionEquality().hash(_items));
+
+@override
+String toString() {
+  return 'InventoryState.successCreateInventoryItem(createdItem: $createdItem, items: $items)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SuccessCreateInventoryItemCopyWith<$Res> implements $InventoryStateCopyWith<$Res> {
+  factory $SuccessCreateInventoryItemCopyWith(SuccessCreateInventoryItem value, $Res Function(SuccessCreateInventoryItem) _then) = _$SuccessCreateInventoryItemCopyWithImpl;
+@useResult
+$Res call({
+ InventoryApiItem createdItem, List<InventoryApiItem> items
+});
+
+
+
+
+}
+/// @nodoc
+class _$SuccessCreateInventoryItemCopyWithImpl<$Res>
+    implements $SuccessCreateInventoryItemCopyWith<$Res> {
+  _$SuccessCreateInventoryItemCopyWithImpl(this._self, this._then);
+
+  final SuccessCreateInventoryItem _self;
+  final $Res Function(SuccessCreateInventoryItem) _then;
+
+/// Create a copy of InventoryState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? createdItem = null,Object? items = null,}) {
+  return _then(SuccessCreateInventoryItem(
+createdItem: null == createdItem ? _self.createdItem : createdItem // ignore: cast_nullable_to_non_nullable
+as InventoryApiItem,items: null == items ? _self._items : items // ignore: cast_nullable_to_non_nullable
+as List<InventoryApiItem>,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class SuccessAdjustInventoryItem implements InventoryState {
+  const SuccessAdjustInventoryItem({required this.adjustResponse, required final  List<InventoryApiItem> items}): _items = items;
+  
+
+ final  InventoryAdjustResponse adjustResponse;
+ final  List<InventoryApiItem> _items;
+ List<InventoryApiItem> get items {
+  if (_items is EqualUnmodifiableListView) return _items;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_items);
+}
+
+
+/// Create a copy of InventoryState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SuccessAdjustInventoryItemCopyWith<SuccessAdjustInventoryItem> get copyWith => _$SuccessAdjustInventoryItemCopyWithImpl<SuccessAdjustInventoryItem>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SuccessAdjustInventoryItem&&(identical(other.adjustResponse, adjustResponse) || other.adjustResponse == adjustResponse)&&const DeepCollectionEquality().equals(other._items, _items));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,adjustResponse,const DeepCollectionEquality().hash(_items));
+
+@override
+String toString() {
+  return 'InventoryState.successAdjustInventoryItem(adjustResponse: $adjustResponse, items: $items)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SuccessAdjustInventoryItemCopyWith<$Res> implements $InventoryStateCopyWith<$Res> {
+  factory $SuccessAdjustInventoryItemCopyWith(SuccessAdjustInventoryItem value, $Res Function(SuccessAdjustInventoryItem) _then) = _$SuccessAdjustInventoryItemCopyWithImpl;
+@useResult
+$Res call({
+ InventoryAdjustResponse adjustResponse, List<InventoryApiItem> items
+});
+
+
+
+
+}
+/// @nodoc
+class _$SuccessAdjustInventoryItemCopyWithImpl<$Res>
+    implements $SuccessAdjustInventoryItemCopyWith<$Res> {
+  _$SuccessAdjustInventoryItemCopyWithImpl(this._self, this._then);
+
+  final SuccessAdjustInventoryItem _self;
+  final $Res Function(SuccessAdjustInventoryItem) _then;
+
+/// Create a copy of InventoryState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? adjustResponse = null,Object? items = null,}) {
+  return _then(SuccessAdjustInventoryItem(
+adjustResponse: null == adjustResponse ? _self.adjustResponse : adjustResponse // ignore: cast_nullable_to_non_nullable
+as InventoryAdjustResponse,items: null == items ? _self._items : items // ignore: cast_nullable_to_non_nullable
+as List<InventoryApiItem>,
   ));
 }
 

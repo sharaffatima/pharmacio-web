@@ -7,7 +7,9 @@ import '../../../../core/constants/colors.dart';
 import '../../../../core/constants/text_styles.dart';
 import '../../../../core/helpers/spacing.dart';
 import '../../../../core/public_widgets/loading_widget.dart';
+import '../../../../core/public_widgets/snack_bar_widget.dart';
 import '../../../dashboard/presentation/widgets/sidebar_widget.dart';
+import '../../data/models/user_notification_model.dart';
 import '../../logic/cubit/alerts_cubit.dart';
 import '../widgets/alerts_header_widget.dart';
 import '../widgets/alerts_list_widget.dart';
@@ -24,19 +26,54 @@ class AlertsScreen extends StatelessWidget {
         children: [
           const SidebarWidget(selectedIndex: 6),
           Expanded(
-            child: BlocBuilder<AlertsCubit, AlertsState>(
+            child: BlocConsumer<AlertsCubit, AlertsState>(
+              listener: (context, state) {
+                state.whenOrNull(
+                  successMarkNotificationRead:
+                      (
+                        updatedNotification,
+                        alerts,
+                        unreadCount,
+                        tabIndex,
+                        selectedSeverity,
+                      ) {
+                        showAppSnackBar(
+                          context,
+                          AppStrings.currentLanguage == 'ar'
+                              ? 'تم تعليم الإشعار كمقروء'
+                              : 'Notification marked as read',
+                        );
+                      },
+                  error: (error) => showAppSnackBar(context, error),
+                );
+              },
               builder: (context, state) {
                 return state.when(
                   initial: () => const LoadingWidget(),
                   loading: () => const LoadingWidget(),
                   error: (error) => Center(child: Text(error)),
-                  success: (alerts, tabIndex, selectedSeverity) =>
-                      _buildContent(
-                        context,
+                  successGetMyNotifications:
+                      (alerts, unreadCount, tabIndex, selectedSeverity) =>
+                          _buildContent(
+                            context,
+                            alerts,
+                            tabIndex,
+                            selectedSeverity,
+                          ),
+                  successMarkNotificationRead:
+                      (
+                        updatedNotification,
                         alerts,
+                        unreadCount,
                         tabIndex,
                         selectedSeverity,
-                      ),
+                      ) =>
+                          _buildContent(
+                            context,
+                            alerts,
+                            tabIndex,
+                            selectedSeverity,
+                          ),
                 );
               },
             ),
@@ -48,7 +85,7 @@ class AlertsScreen extends StatelessWidget {
 
   Widget _buildContent(
     BuildContext context,
-    List<AlertItem> alerts,
+    List<UserNotificationModel> alerts,
     int tabIndex,
     String selectedSeverity,
   ) {

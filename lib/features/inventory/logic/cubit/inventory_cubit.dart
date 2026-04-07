@@ -1,22 +1,86 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../presentation/widgets/inventory_table_widget.dart';
+import '../../../../core/networking/error/error_handler/network_exceptions.dart';
+import '../../data/models/inventory_adjust_request_body.dart';
+import '../../data/models/inventory_adjust_response.dart';
+import '../../data/models/inventory_api_item.dart';
+import '../../data/models/inventory_create_request_body.dart';
+import '../../data/repos/inventory_repo.dart';
 
 part '../states/inventory_state.dart';
 part 'inventory_cubit.freezed.dart';
 
 class InventoryCubit extends Cubit<InventoryState> {
-  InventoryCubit() : super(const InventoryState.initial());
+  final InventoryRepo _inventoryRepo;
 
-  List<InventoryItem> _allItems = [];
+  InventoryCubit(this._inventoryRepo) : super(const InventoryState.initial());
+
+  List<InventoryApiItem> _allItems = [];
   String searchQuery = '';
   bool lowStockOnly = false;
 
-  void loadData() {
+  Future<void> loadData() async {
     emit(const InventoryState.loading());
-    _allItems = InventoryItem.sampleData();
-    _emitFiltered();
+
+    try {
+      await _refreshInventoryList();
+      _emitFiltered();
+    } catch (e) {
+      final exception = NetworkExceptions.getException(e);
+      final message = NetworkExceptions.getErrorMessage(exception);
+      emit(InventoryState.error(error: message));
+    }
+  }
+
+  Future<void> createInventoryItem(
+    InventoryCreateRequestBody requestBody,
+  ) async {
+    emit(const InventoryState.loading());
+
+    try {
+      final createdItem = await _inventoryRepo.createInventoryItem(requestBody);
+      await _refreshInventoryList();
+      _emitFiltered(createdItem: createdItem);
+    } catch (e) {
+      final exception = NetworkExceptions.getException(e);
+      final message = NetworkExceptions.getErrorMessage(exception);
+      emit(InventoryState.error(error: message));
+    }
+  }
+
+  Future<void> adjustInventoryItem({
+    required InventoryApiItem item,
+    required int adjustment,
+    required String reason,
+  }) async {
+    if (item.id == null) {
+      emit(
+        const InventoryState.error(
+          error:
+              'Cannot adjust this item because inventory id is missing in API response.',
+        ),
+      );
+      return;
+    }
+
+    emit(const InventoryState.loading());
+
+    try {
+      final adjustResponse = await _inventoryRepo.adjustInventoryItem(
+        inventoryId: item.id!,
+        requestBody: InventoryAdjustRequestBody(
+          adjustment: adjustment,
+          reason: reason,
+        ),
+      );
+      await _refreshInventoryList();
+      _emitFiltered(adjustResponse: adjustResponse);
+    } catch (e) {
+      final exception = NetworkExceptions.getException(e);
+      final message = NetworkExceptions.getErrorMessage(exception);
+      emit(InventoryState.error(error: message));
+    }
   }
 
   void updateSearch(String query) {
@@ -29,28 +93,56 @@ class InventoryCubit extends Cubit<InventoryState> {
     _emitFiltered();
   }
 
-  int get lowStockCount => _allItems.where((i) => i.isLowStock).length;
-  int get totalStockValue =>
-      _allItems.fold(0, (sum, i) => sum + i.currentStock);
+  int get lowStockCount =>
+      _allItems.where((i) => i.status.toLowerCase() == 'low').length;
+  int get totalStockValue => _allItems.fold(0, (sum, i) => sum + i.quantity);
   int get totalCount => _allItems.length;
 
-  void _emitFiltered() {
-    var filtered = List<InventoryItem>.from(_allItems);
+  Future<void> _refreshInventoryList() async {
+    final response = await _inventoryRepo.getInventoryList();
+    _allItems = response.results;
+  }
+
+  void _emitFiltered({
+    InventoryApiItem? createdItem,
+    InventoryAdjustResponse? adjustResponse,
+  }) {
+    var filtered = List<InventoryApiItem>.from(_allItems);
 
     if (searchQuery.isNotEmpty) {
       filtered = filtered
           .where(
-            (i) =>
-                i.product.toLowerCase().contains(searchQuery.toLowerCase()) ||
-                i.code.toLowerCase().contains(searchQuery.toLowerCase()),
+            (i) => i.product.toLowerCase().contains(searchQuery.toLowerCase()),
           )
           .toList();
     }
 
     if (lowStockOnly) {
-      filtered = filtered.where((i) => i.isLowStock).toList();
+      filtered = filtered
+          .where((i) => i.status.toLowerCase() == 'low')
+          .toList();
     }
 
-    emit(InventoryState.success(filtered));
+    if (createdItem != null) {
+      emit(
+        InventoryState.successCreateInventoryItem(
+          createdItem: createdItem,
+          items: filtered,
+        ),
+      );
+      return;
+    }
+
+    if (adjustResponse != null) {
+      emit(
+        InventoryState.successAdjustInventoryItem(
+          adjustResponse: adjustResponse,
+          items: filtered,
+        ),
+      );
+      return;
+    }
+
+    emit(InventoryState.successGetInventoryList(filtered));
   }
 }

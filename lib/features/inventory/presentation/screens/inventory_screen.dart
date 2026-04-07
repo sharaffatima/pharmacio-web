@@ -7,7 +7,10 @@ import '../../../../core/constants/colors.dart';
 import '../../../../core/constants/text_styles.dart';
 import '../../../../core/helpers/spacing.dart';
 import '../../../../core/public_widgets/loading_widget.dart';
+import '../../../../core/public_widgets/snack_bar_widget.dart';
 import '../../../dashboard/presentation/widgets/sidebar_widget.dart';
+import '../../data/models/inventory_api_item.dart';
+import '../../data/models/inventory_create_request_body.dart';
 import '../../logic/cubit/inventory_cubit.dart';
 import '../widgets/inventory_header_widget.dart';
 import '../widgets/inventory_stat_cards_widget.dart';
@@ -24,13 +27,39 @@ class InventoryScreen extends StatelessWidget {
         children: [
           const SidebarWidget(selectedIndex: 5),
           Expanded(
-            child: BlocBuilder<InventoryCubit, InventoryState>(
+            child: BlocConsumer<InventoryCubit, InventoryState>(
+              listener: (context, state) {
+                state.whenOrNull(
+                  successCreateInventoryItem: (createdItem, items) {
+                    showAppSnackBar(
+                      context,
+                      AppStrings.currentLanguage == 'ar'
+                          ? 'تم إنشاء عنصر المخزون بنجاح'
+                          : 'Inventory item created successfully',
+                    );
+                  },
+                  successAdjustInventoryItem: (adjustResponse, items) {
+                    showAppSnackBar(
+                      context,
+                      AppStrings.currentLanguage == 'ar'
+                          ? 'تم تعديل الكمية بنجاح'
+                          : 'Inventory quantity adjusted successfully',
+                    );
+                  },
+                  error: (error) => showAppSnackBar(context, error),
+                );
+              },
               builder: (context, state) {
                 return state.when(
                   initial: () => const LoadingWidget(),
                   loading: () => const LoadingWidget(),
                   error: (error) => Center(child: Text(error)),
-                  success: (items) => _buildContent(context, items),
+                  successGetInventoryList: (items) =>
+                      _buildContent(context, items),
+                  successCreateInventoryItem: (createdItem, items) =>
+                      _buildContent(context, items),
+                  successAdjustInventoryItem: (adjustResponse, items) =>
+                      _buildContent(context, items),
                 );
               },
             ),
@@ -40,14 +69,38 @@ class InventoryScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildContent(BuildContext context, List<InventoryItem> items) {
+  Widget _buildContent(BuildContext context, List<InventoryApiItem> items) {
     final cubit = context.read<InventoryCubit>();
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 28.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const InventoryHeaderWidget(),
+          Row(
+            children: [
+              const Expanded(child: InventoryHeaderWidget()),
+              ElevatedButton.icon(
+                onPressed: () => _showCreateDialog(context),
+                icon: Icon(Icons.add, size: 18.sp),
+                label: Text(
+                  AppStrings.currentLanguage == 'ar'
+                      ? 'إضافة عنصر'
+                      : 'Add Item',
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.charcoalBlack,
+                  foregroundColor: AppColors.white,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 18.w,
+                    vertical: 12.h,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                ),
+              ),
+            ],
+          ),
           verticalSpace(24),
 
           InventoryStatCardsWidget(
@@ -145,9 +198,359 @@ class InventoryScreen extends StatelessWidget {
           ),
           verticalSpace(24),
 
-          InventoryTableWidget(entries: items, onEdit: (i) {}),
+          InventoryTableWidget(
+            entries: items,
+            onEdit: (item) => _showAdjustDialog(context, item),
+          ),
         ],
       ),
+    );
+  }
+
+  Future<void> _showCreateDialog(BuildContext context) async {
+    final productNameController = TextEditingController();
+    final strengthController = TextEditingController();
+    final quantityController = TextEditingController();
+    final thresholdController = TextEditingController();
+
+    try {
+      await showDialog(
+        context: context,
+        barrierColor: Colors.black.withValues(alpha: 0.45),
+        builder: (dialogContext) {
+          return Dialog(
+            backgroundColor: Colors.transparent,
+            insetPadding: EdgeInsets.symmetric(horizontal: 20.w),
+            child: Container(
+              width: 520.w,
+              padding: EdgeInsets.all(24.r),
+              decoration: BoxDecoration(
+                color: AppColors.white,
+                borderRadius: BorderRadius.circular(14.r),
+                border: Border.all(color: AppColors.gainsboro, width: 1),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.08),
+                    blurRadius: 20,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(8.r),
+                        decoration: BoxDecoration(
+                          color: AppColors.skyBlue.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(8.r),
+                        ),
+                        child: Icon(
+                          Icons.inventory_2_outlined,
+                          size: 18.sp,
+                          color: AppColors.skyBlue,
+                        ),
+                      ),
+                      horizontalSpace(10),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              AppStrings.currentLanguage == 'ar'
+                                  ? 'إضافة عنصر مخزون'
+                                  : 'Create Inventory Item',
+                              style: AppTextStyles.font16BlackSemiBold,
+                            ),
+                            verticalSpace(2),
+                            Text(
+                              AppStrings.currentLanguage == 'ar'
+                                  ? 'أدخل بيانات العنصر الجديد'
+                                  : 'Enter details for the new inventory item',
+                              style: AppTextStyles.font12GreyRegular,
+                            ),
+                          ],
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () => Navigator.of(dialogContext).pop(),
+                        borderRadius: BorderRadius.circular(8.r),
+                        child: Padding(
+                          padding: EdgeInsets.all(4.r),
+                          child: Icon(
+                            Icons.close,
+                            size: 18.sp,
+                            color: AppColors.coolGrey,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  verticalSpace(18),
+                  _buildInventoryDialogField(
+                    controller: productNameController,
+                    label: AppStrings.currentLanguage == 'ar'
+                        ? 'اسم المنتج'
+                        : 'Product Name',
+                  ),
+                  verticalSpace(12),
+                  _buildInventoryDialogField(
+                    controller: strengthController,
+                    label: AppStrings.currentLanguage == 'ar'
+                        ? 'التركيز'
+                        : 'Strength',
+                  ),
+                  verticalSpace(12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildInventoryDialogField(
+                          controller: quantityController,
+                          label: AppStrings.currentLanguage == 'ar'
+                              ? 'الكمية المتوفرة'
+                              : 'Quantity On Hand',
+                          keyboardType: TextInputType.number,
+                        ),
+                      ),
+                      horizontalSpace(12),
+                      Expanded(
+                        child: _buildInventoryDialogField(
+                          controller: thresholdController,
+                          label: AppStrings.currentLanguage == 'ar'
+                              ? 'حد التنبيه الأدنى'
+                              : 'Min Threshold',
+                          keyboardType: TextInputType.number,
+                        ),
+                      ),
+                    ],
+                  ),
+                  verticalSpace(20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      OutlinedButton(
+                        onPressed: () => Navigator.of(dialogContext).pop(),
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(color: AppColors.gainsboro),
+                          foregroundColor: AppColors.coolGrey,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 18.w,
+                            vertical: 11.h,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.r),
+                          ),
+                        ),
+                        child: Text(
+                          AppStrings.currentLanguage == 'ar'
+                              ? 'إلغاء'
+                              : 'Cancel',
+                          style: AppTextStyles.font14BlackRegular.copyWith(
+                            color: AppColors.coolGrey,
+                          ),
+                        ),
+                      ),
+                      horizontalSpace(10),
+                      ElevatedButton.icon(
+                        onPressed: () async {
+                          final quantity = int.tryParse(
+                            quantityController.text.trim(),
+                          );
+                          final minThreshold = int.tryParse(
+                            thresholdController.text.trim(),
+                          );
+
+                          if (productNameController.text.trim().isEmpty ||
+                              strengthController.text.trim().isEmpty ||
+                              quantity == null ||
+                              minThreshold == null) {
+                            showAppSnackBar(
+                              context,
+                              AppStrings.currentLanguage == 'ar'
+                                  ? 'يرجى إدخال كل القيم بشكل صحيح'
+                                  : 'Please provide valid values for all fields',
+                            );
+                            return;
+                          }
+
+                          await context
+                              .read<InventoryCubit>()
+                              .createInventoryItem(
+                                InventoryCreateRequestBody(
+                                  productName: productNameController.text
+                                      .trim(),
+                                  strength: strengthController.text.trim(),
+                                  quantityOnHand: quantity,
+                                  minThreshold: minThreshold,
+                                ),
+                              );
+
+                          if (dialogContext.mounted) {
+                            Navigator.of(dialogContext).pop();
+                          }
+                        },
+                        icon: Icon(Icons.check, size: 16.sp),
+                        label: Text(
+                          AppStrings.currentLanguage == 'ar' ? 'حفظ' : 'Save',
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.charcoalBlack,
+                          foregroundColor: AppColors.white,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 18.w,
+                            vertical: 11.h,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.r),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    } finally {
+      productNameController.dispose();
+      strengthController.dispose();
+      quantityController.dispose();
+      thresholdController.dispose();
+    }
+  }
+
+  Widget _buildInventoryDialogField({
+    required TextEditingController controller,
+    required String label,
+    TextInputType? keyboardType,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: AppTextStyles.font13GreyRegular),
+        verticalSpace(6),
+        TextField(
+          controller: controller,
+          keyboardType: keyboardType,
+          style: AppTextStyles.font14BlackRegular,
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: AppColors.offWhiteGrey,
+            hintText: label,
+            hintStyle: AppTextStyles.font12GreyRegular,
+            contentPadding: EdgeInsets.symmetric(
+              horizontal: 14.w,
+              vertical: 11.h,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10.r),
+              borderSide: BorderSide(color: AppColors.gainsboro),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10.r),
+              borderSide: BorderSide(color: AppColors.gainsboro),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10.r),
+              borderSide: BorderSide(color: AppColors.skyBlue, width: 1.5),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _showAdjustDialog(
+    BuildContext context,
+    InventoryApiItem item,
+  ) async {
+    if (item.id == null) {
+      showAppSnackBar(
+        context,
+        AppStrings.currentLanguage == 'ar'
+            ? 'تعذر تعديل العنصر لعدم توفر رقم التعريف'
+            : 'Cannot adjust this item because id is missing',
+      );
+      return;
+    }
+
+    final adjustmentController = TextEditingController();
+    final reasonController = TextEditingController();
+
+    await showDialog(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: Text(
+            AppStrings.currentLanguage == 'ar'
+                ? 'تعديل الكمية: ${item.product}'
+                : 'Adjust Quantity: ${item.product}',
+          ),
+          content: SizedBox(
+            width: 420.w,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: adjustmentController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    labelText: 'Adjustment (e.g. -5, 10)',
+                  ),
+                ),
+                TextField(
+                  controller: reasonController,
+                  decoration: const InputDecoration(labelText: 'Reason'),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: Text(
+                AppStrings.currentLanguage == 'ar' ? 'إلغاء' : 'Cancel',
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                final adjustment = int.tryParse(
+                  adjustmentController.text.trim(),
+                );
+
+                if (adjustment == null ||
+                    reasonController.text.trim().isEmpty) {
+                  showAppSnackBar(
+                    context,
+                    AppStrings.currentLanguage == 'ar'
+                        ? 'يرجى إدخال قيمة تعديل وسبب صحيحين'
+                        : 'Please provide a valid adjustment and reason',
+                  );
+                  return;
+                }
+
+                await context.read<InventoryCubit>().adjustInventoryItem(
+                  item: item,
+                  adjustment: adjustment,
+                  reason: reasonController.text.trim(),
+                );
+
+                if (dialogContext.mounted) {
+                  Navigator.of(dialogContext).pop();
+                }
+              },
+              child: Text(
+                AppStrings.currentLanguage == 'ar' ? 'تنفيذ' : 'Apply',
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

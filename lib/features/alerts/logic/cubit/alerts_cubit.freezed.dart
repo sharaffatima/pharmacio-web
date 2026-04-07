@@ -55,13 +55,14 @@ extension AlertsStatePatterns on AlertsState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( AlertsInitial value)?  initial,TResult Function( AlertsLoading value)?  loading,TResult Function( AlertsSuccess value)?  success,TResult Function( AlertsError value)?  error,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( AlertsInitial value)?  initial,TResult Function( AlertsLoading value)?  loading,TResult Function( SuccessGetMyNotifications value)?  successGetMyNotifications,TResult Function( SuccessMarkNotificationRead value)?  successMarkNotificationRead,TResult Function( AlertsError value)?  error,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case AlertsInitial() when initial != null:
 return initial(_that);case AlertsLoading() when loading != null:
-return loading(_that);case AlertsSuccess() when success != null:
-return success(_that);case AlertsError() when error != null:
+return loading(_that);case SuccessGetMyNotifications() when successGetMyNotifications != null:
+return successGetMyNotifications(_that);case SuccessMarkNotificationRead() when successMarkNotificationRead != null:
+return successMarkNotificationRead(_that);case AlertsError() when error != null:
 return error(_that);case _:
   return orElse();
 
@@ -80,13 +81,14 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( AlertsInitial value)  initial,required TResult Function( AlertsLoading value)  loading,required TResult Function( AlertsSuccess value)  success,required TResult Function( AlertsError value)  error,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( AlertsInitial value)  initial,required TResult Function( AlertsLoading value)  loading,required TResult Function( SuccessGetMyNotifications value)  successGetMyNotifications,required TResult Function( SuccessMarkNotificationRead value)  successMarkNotificationRead,required TResult Function( AlertsError value)  error,}){
 final _that = this;
 switch (_that) {
 case AlertsInitial():
 return initial(_that);case AlertsLoading():
-return loading(_that);case AlertsSuccess():
-return success(_that);case AlertsError():
+return loading(_that);case SuccessGetMyNotifications():
+return successGetMyNotifications(_that);case SuccessMarkNotificationRead():
+return successMarkNotificationRead(_that);case AlertsError():
 return error(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -104,13 +106,14 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( AlertsInitial value)?  initial,TResult? Function( AlertsLoading value)?  loading,TResult? Function( AlertsSuccess value)?  success,TResult? Function( AlertsError value)?  error,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( AlertsInitial value)?  initial,TResult? Function( AlertsLoading value)?  loading,TResult? Function( SuccessGetMyNotifications value)?  successGetMyNotifications,TResult? Function( SuccessMarkNotificationRead value)?  successMarkNotificationRead,TResult? Function( AlertsError value)?  error,}){
 final _that = this;
 switch (_that) {
 case AlertsInitial() when initial != null:
 return initial(_that);case AlertsLoading() when loading != null:
-return loading(_that);case AlertsSuccess() when success != null:
-return success(_that);case AlertsError() when error != null:
+return loading(_that);case SuccessGetMyNotifications() when successGetMyNotifications != null:
+return successGetMyNotifications(_that);case SuccessMarkNotificationRead() when successMarkNotificationRead != null:
+return successMarkNotificationRead(_that);case AlertsError() when error != null:
 return error(_that);case _:
   return null;
 
@@ -128,12 +131,13 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<AlertItem> alerts,  int tabIndex,  String selectedSeverity)?  success,TResult Function( String error)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<UserNotificationModel> alerts,  int unreadCount,  int tabIndex,  String selectedSeverity)?  successGetMyNotifications,TResult Function( UserNotificationModel updatedNotification,  List<UserNotificationModel> alerts,  int unreadCount,  int tabIndex,  String selectedSeverity)?  successMarkNotificationRead,TResult Function( String error)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case AlertsInitial() when initial != null:
 return initial();case AlertsLoading() when loading != null:
-return loading();case AlertsSuccess() when success != null:
-return success(_that.alerts,_that.tabIndex,_that.selectedSeverity);case AlertsError() when error != null:
+return loading();case SuccessGetMyNotifications() when successGetMyNotifications != null:
+return successGetMyNotifications(_that.alerts,_that.unreadCount,_that.tabIndex,_that.selectedSeverity);case SuccessMarkNotificationRead() when successMarkNotificationRead != null:
+return successMarkNotificationRead(_that.updatedNotification,_that.alerts,_that.unreadCount,_that.tabIndex,_that.selectedSeverity);case AlertsError() when error != null:
 return error(_that.error);case _:
   return orElse();
 
@@ -152,12 +156,13 @@ return error(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<AlertItem> alerts,  int tabIndex,  String selectedSeverity)  success,required TResult Function( String error)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<UserNotificationModel> alerts,  int unreadCount,  int tabIndex,  String selectedSeverity)  successGetMyNotifications,required TResult Function( UserNotificationModel updatedNotification,  List<UserNotificationModel> alerts,  int unreadCount,  int tabIndex,  String selectedSeverity)  successMarkNotificationRead,required TResult Function( String error)  error,}) {final _that = this;
 switch (_that) {
 case AlertsInitial():
 return initial();case AlertsLoading():
-return loading();case AlertsSuccess():
-return success(_that.alerts,_that.tabIndex,_that.selectedSeverity);case AlertsError():
+return loading();case SuccessGetMyNotifications():
+return successGetMyNotifications(_that.alerts,_that.unreadCount,_that.tabIndex,_that.selectedSeverity);case SuccessMarkNotificationRead():
+return successMarkNotificationRead(_that.updatedNotification,_that.alerts,_that.unreadCount,_that.tabIndex,_that.selectedSeverity);case AlertsError():
 return error(_that.error);case _:
   throw StateError('Unexpected subclass');
 
@@ -175,12 +180,13 @@ return error(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<AlertItem> alerts,  int tabIndex,  String selectedSeverity)?  success,TResult? Function( String error)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<UserNotificationModel> alerts,  int unreadCount,  int tabIndex,  String selectedSeverity)?  successGetMyNotifications,TResult? Function( UserNotificationModel updatedNotification,  List<UserNotificationModel> alerts,  int unreadCount,  int tabIndex,  String selectedSeverity)?  successMarkNotificationRead,TResult? Function( String error)?  error,}) {final _that = this;
 switch (_that) {
 case AlertsInitial() when initial != null:
 return initial();case AlertsLoading() when loading != null:
-return loading();case AlertsSuccess() when success != null:
-return success(_that.alerts,_that.tabIndex,_that.selectedSeverity);case AlertsError() when error != null:
+return loading();case SuccessGetMyNotifications() when successGetMyNotifications != null:
+return successGetMyNotifications(_that.alerts,_that.unreadCount,_that.tabIndex,_that.selectedSeverity);case SuccessMarkNotificationRead() when successMarkNotificationRead != null:
+return successMarkNotificationRead(_that.updatedNotification,_that.alerts,_that.unreadCount,_that.tabIndex,_that.selectedSeverity);case AlertsError() when error != null:
 return error(_that.error);case _:
   return null;
 
@@ -256,17 +262,18 @@ String toString() {
 /// @nodoc
 
 
-class AlertsSuccess implements AlertsState {
-  const AlertsSuccess({required final  List<AlertItem> alerts, required this.tabIndex, required this.selectedSeverity}): _alerts = alerts;
+class SuccessGetMyNotifications implements AlertsState {
+  const SuccessGetMyNotifications({required final  List<UserNotificationModel> alerts, required this.unreadCount, required this.tabIndex, required this.selectedSeverity}): _alerts = alerts;
   
 
- final  List<AlertItem> _alerts;
- List<AlertItem> get alerts {
+ final  List<UserNotificationModel> _alerts;
+ List<UserNotificationModel> get alerts {
   if (_alerts is EqualUnmodifiableListView) return _alerts;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_alerts);
 }
 
+ final  int unreadCount;
  final  int tabIndex;
  final  String selectedSeverity;
 
@@ -274,33 +281,33 @@ class AlertsSuccess implements AlertsState {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$AlertsSuccessCopyWith<AlertsSuccess> get copyWith => _$AlertsSuccessCopyWithImpl<AlertsSuccess>(this, _$identity);
+$SuccessGetMyNotificationsCopyWith<SuccessGetMyNotifications> get copyWith => _$SuccessGetMyNotificationsCopyWithImpl<SuccessGetMyNotifications>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AlertsSuccess&&const DeepCollectionEquality().equals(other._alerts, _alerts)&&(identical(other.tabIndex, tabIndex) || other.tabIndex == tabIndex)&&(identical(other.selectedSeverity, selectedSeverity) || other.selectedSeverity == selectedSeverity));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SuccessGetMyNotifications&&const DeepCollectionEquality().equals(other._alerts, _alerts)&&(identical(other.unreadCount, unreadCount) || other.unreadCount == unreadCount)&&(identical(other.tabIndex, tabIndex) || other.tabIndex == tabIndex)&&(identical(other.selectedSeverity, selectedSeverity) || other.selectedSeverity == selectedSeverity));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_alerts),tabIndex,selectedSeverity);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_alerts),unreadCount,tabIndex,selectedSeverity);
 
 @override
 String toString() {
-  return 'AlertsState.success(alerts: $alerts, tabIndex: $tabIndex, selectedSeverity: $selectedSeverity)';
+  return 'AlertsState.successGetMyNotifications(alerts: $alerts, unreadCount: $unreadCount, tabIndex: $tabIndex, selectedSeverity: $selectedSeverity)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $AlertsSuccessCopyWith<$Res> implements $AlertsStateCopyWith<$Res> {
-  factory $AlertsSuccessCopyWith(AlertsSuccess value, $Res Function(AlertsSuccess) _then) = _$AlertsSuccessCopyWithImpl;
+abstract mixin class $SuccessGetMyNotificationsCopyWith<$Res> implements $AlertsStateCopyWith<$Res> {
+  factory $SuccessGetMyNotificationsCopyWith(SuccessGetMyNotifications value, $Res Function(SuccessGetMyNotifications) _then) = _$SuccessGetMyNotificationsCopyWithImpl;
 @useResult
 $Res call({
- List<AlertItem> alerts, int tabIndex, String selectedSeverity
+ List<UserNotificationModel> alerts, int unreadCount, int tabIndex, String selectedSeverity
 });
 
 
@@ -308,19 +315,100 @@ $Res call({
 
 }
 /// @nodoc
-class _$AlertsSuccessCopyWithImpl<$Res>
-    implements $AlertsSuccessCopyWith<$Res> {
-  _$AlertsSuccessCopyWithImpl(this._self, this._then);
+class _$SuccessGetMyNotificationsCopyWithImpl<$Res>
+    implements $SuccessGetMyNotificationsCopyWith<$Res> {
+  _$SuccessGetMyNotificationsCopyWithImpl(this._self, this._then);
 
-  final AlertsSuccess _self;
-  final $Res Function(AlertsSuccess) _then;
+  final SuccessGetMyNotifications _self;
+  final $Res Function(SuccessGetMyNotifications) _then;
 
 /// Create a copy of AlertsState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? alerts = null,Object? tabIndex = null,Object? selectedSeverity = null,}) {
-  return _then(AlertsSuccess(
+@pragma('vm:prefer-inline') $Res call({Object? alerts = null,Object? unreadCount = null,Object? tabIndex = null,Object? selectedSeverity = null,}) {
+  return _then(SuccessGetMyNotifications(
 alerts: null == alerts ? _self._alerts : alerts // ignore: cast_nullable_to_non_nullable
-as List<AlertItem>,tabIndex: null == tabIndex ? _self.tabIndex : tabIndex // ignore: cast_nullable_to_non_nullable
+as List<UserNotificationModel>,unreadCount: null == unreadCount ? _self.unreadCount : unreadCount // ignore: cast_nullable_to_non_nullable
+as int,tabIndex: null == tabIndex ? _self.tabIndex : tabIndex // ignore: cast_nullable_to_non_nullable
+as int,selectedSeverity: null == selectedSeverity ? _self.selectedSeverity : selectedSeverity // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class SuccessMarkNotificationRead implements AlertsState {
+  const SuccessMarkNotificationRead({required this.updatedNotification, required final  List<UserNotificationModel> alerts, required this.unreadCount, required this.tabIndex, required this.selectedSeverity}): _alerts = alerts;
+  
+
+ final  UserNotificationModel updatedNotification;
+ final  List<UserNotificationModel> _alerts;
+ List<UserNotificationModel> get alerts {
+  if (_alerts is EqualUnmodifiableListView) return _alerts;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_alerts);
+}
+
+ final  int unreadCount;
+ final  int tabIndex;
+ final  String selectedSeverity;
+
+/// Create a copy of AlertsState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SuccessMarkNotificationReadCopyWith<SuccessMarkNotificationRead> get copyWith => _$SuccessMarkNotificationReadCopyWithImpl<SuccessMarkNotificationRead>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SuccessMarkNotificationRead&&(identical(other.updatedNotification, updatedNotification) || other.updatedNotification == updatedNotification)&&const DeepCollectionEquality().equals(other._alerts, _alerts)&&(identical(other.unreadCount, unreadCount) || other.unreadCount == unreadCount)&&(identical(other.tabIndex, tabIndex) || other.tabIndex == tabIndex)&&(identical(other.selectedSeverity, selectedSeverity) || other.selectedSeverity == selectedSeverity));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,updatedNotification,const DeepCollectionEquality().hash(_alerts),unreadCount,tabIndex,selectedSeverity);
+
+@override
+String toString() {
+  return 'AlertsState.successMarkNotificationRead(updatedNotification: $updatedNotification, alerts: $alerts, unreadCount: $unreadCount, tabIndex: $tabIndex, selectedSeverity: $selectedSeverity)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SuccessMarkNotificationReadCopyWith<$Res> implements $AlertsStateCopyWith<$Res> {
+  factory $SuccessMarkNotificationReadCopyWith(SuccessMarkNotificationRead value, $Res Function(SuccessMarkNotificationRead) _then) = _$SuccessMarkNotificationReadCopyWithImpl;
+@useResult
+$Res call({
+ UserNotificationModel updatedNotification, List<UserNotificationModel> alerts, int unreadCount, int tabIndex, String selectedSeverity
+});
+
+
+
+
+}
+/// @nodoc
+class _$SuccessMarkNotificationReadCopyWithImpl<$Res>
+    implements $SuccessMarkNotificationReadCopyWith<$Res> {
+  _$SuccessMarkNotificationReadCopyWithImpl(this._self, this._then);
+
+  final SuccessMarkNotificationRead _self;
+  final $Res Function(SuccessMarkNotificationRead) _then;
+
+/// Create a copy of AlertsState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? updatedNotification = null,Object? alerts = null,Object? unreadCount = null,Object? tabIndex = null,Object? selectedSeverity = null,}) {
+  return _then(SuccessMarkNotificationRead(
+updatedNotification: null == updatedNotification ? _self.updatedNotification : updatedNotification // ignore: cast_nullable_to_non_nullable
+as UserNotificationModel,alerts: null == alerts ? _self._alerts : alerts // ignore: cast_nullable_to_non_nullable
+as List<UserNotificationModel>,unreadCount: null == unreadCount ? _self.unreadCount : unreadCount // ignore: cast_nullable_to_non_nullable
+as int,tabIndex: null == tabIndex ? _self.tabIndex : tabIndex // ignore: cast_nullable_to_non_nullable
 as int,selectedSeverity: null == selectedSeverity ? _self.selectedSeverity : selectedSeverity // ignore: cast_nullable_to_non_nullable
 as String,
   ));

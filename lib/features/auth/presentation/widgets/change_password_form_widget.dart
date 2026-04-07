@@ -86,19 +86,23 @@ class _ChangePasswordFormWidgetState extends State<ChangePasswordFormWidget> {
           verticalSpace(24),
 
           BlocConsumer<AuthCubit, AuthState>(
-            listener: (context, state) => state.whenOrNull(
-              successChangePassword: (response) {
-                cubit.oldPasswordController.clear();
-                cubit.newPasswordController.clear();
-                cubit.confirmNewPasswordController.clear();
-                showAppSnackBar(context, response.message);
-                context.pushNamedAndRemoveUntil(
-                  Routes.dashboardScreen,
-                  predicate: (route) => false,
-                );
-              },
-              error: (msg) => showAppSnackBar(context, msg),
-            ),
+            listener: (context, state) {
+              state.whenOrNull(
+                successChangePassword: (response) {
+                  cubit.oldPasswordController.clear();
+                  cubit.newPasswordController.clear();
+                  cubit.confirmNewPasswordController.clear();
+                  showAppSnackBar(context, response.message);
+                  context.pushNamedAndRemoveUntil(
+                    Routes.dashboardScreen,
+                    predicate: (route) => false,
+                  );
+                },
+                error: (msg) {
+                  showAppSnackBar(context, msg);
+                },
+              );
+            },
             builder: (context, state) {
               return state.maybeWhen(
                 loading: () => LoadingWidget(),

@@ -5,89 +5,11 @@ import '../../../../core/constants/app_strings.dart';
 import '../../../../core/constants/colors.dart';
 import '../../../../core/constants/text_styles.dart';
 import '../../../../core/helpers/spacing.dart';
-
-class InventoryItem {
-  final String product;
-  final String code;
-  final String location;
-  final int currentStock;
-  final int minStock;
-  final int maxStock;
-  final String lastUpdated;
-
-  const InventoryItem({
-    required this.product,
-    required this.code,
-    required this.location,
-    required this.currentStock,
-    required this.minStock,
-    required this.maxStock,
-    required this.lastUpdated,
-  });
-
-  bool get isLowStock => currentStock <= minStock;
-
-  static List<InventoryItem> sampleData() => [
-    const InventoryItem(
-      product: 'Laptop Dell XPS 15',
-      code: 'DELL-XPS-15',
-      location: 'Warehouse 1',
-      currentStock: 45,
-      minStock: 20,
-      maxStock: 100,
-      lastUpdated: '2026-02-11',
-    ),
-    const InventoryItem(
-      product: 'Office Chair Pro',
-      code: 'CHAIR-PRO-001',
-      location: 'Warehouse 2',
-      currentStock: 15,
-      minStock: 25,
-      maxStock: 80,
-      lastUpdated: '2026-02-10',
-    ),
-    const InventoryItem(
-      product: 'Monitor 27" 4K',
-      code: 'MON-27-4K',
-      location: 'Warehouse 1',
-      currentStock: 8,
-      minStock: 15,
-      maxStock: 60,
-      lastUpdated: '2026-02-10',
-    ),
-    const InventoryItem(
-      product: 'Wireless Keyboard',
-      code: 'KB-WIRELESS-01',
-      location: 'Warehouse 3',
-      currentStock: 120,
-      minStock: 50,
-      maxStock: 200,
-      lastUpdated: '2026-02-09',
-    ),
-    const InventoryItem(
-      product: 'USB-C Hub 7-Port',
-      code: 'HUB-USBC-7P',
-      location: 'Warehouse 2',
-      currentStock: 35,
-      minStock: 30,
-      maxStock: 100,
-      lastUpdated: '2026-02-08',
-    ),
-    const InventoryItem(
-      product: 'Desk Lamp LED',
-      code: 'LAMP-LED-001',
-      location: 'Warehouse 1',
-      currentStock: 5,
-      minStock: 20,
-      maxStock: 80,
-      lastUpdated: '2026-02-08',
-    ),
-  ];
-}
+import '../../data/models/inventory_api_item.dart';
 
 class InventoryTableWidget extends StatelessWidget {
-  final List<InventoryItem> entries;
-  final ValueChanged<int> onEdit;
+  final List<InventoryApiItem> entries;
+  final ValueChanged<InventoryApiItem> onEdit;
 
   const InventoryTableWidget({
     super.key,
@@ -135,29 +57,7 @@ class InventoryTableWidget extends StatelessWidget {
           Expanded(
             flex: 1,
             child: Text(
-              AppStrings.code,
-              style: AppTextStyles.font13GreyRegular,
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: Text(
-              AppStrings.location,
-              style: AppTextStyles.font13GreyRegular,
-            ),
-          ),
-          SizedBox(
-            width: 70.w,
-            child: Text(
               AppStrings.currentStock,
-              style: AppTextStyles.font13GreyRegular,
-              textAlign: TextAlign.center,
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: Text(
-              AppStrings.minMax,
               style: AppTextStyles.font13GreyRegular,
             ),
           ),
@@ -165,13 +65,6 @@ class InventoryTableWidget extends StatelessWidget {
             flex: 1,
             child: Text(
               AppStrings.status,
-              style: AppTextStyles.font13GreyRegular,
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: Text(
-              AppStrings.lastUpdated,
               style: AppTextStyles.font13GreyRegular,
             ),
           ),
@@ -187,8 +80,8 @@ class InventoryTableWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildDataRow(InventoryItem item, int index) {
-    final isLow = item.isLowStock;
+  Widget _buildDataRow(InventoryApiItem item, int index) {
+    final isLow = item.status.toLowerCase() == 'low';
 
     return Container(
       padding: EdgeInsets.symmetric(vertical: 14.h),
@@ -224,27 +117,11 @@ class InventoryTableWidget extends StatelessWidget {
           ),
           Expanded(
             flex: 1,
-            child: Text(item.code, style: AppTextStyles.font13GreyRegular),
-          ),
-          Expanded(
-            flex: 1,
-            child: Text(item.location, style: AppTextStyles.font13GreyRegular),
-          ),
-          SizedBox(
-            width: 70.w,
             child: Text(
-              '${item.currentStock}',
+              '${item.quantity}',
               style: AppTextStyles.font13BlackMedium.copyWith(
                 fontWeight: FontWeight.w600,
               ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: Text(
-              '${item.minStock} / ${item.maxStock}',
-              style: AppTextStyles.font13GreyRegular,
             ),
           ),
 
@@ -272,18 +149,10 @@ class InventoryTableWidget extends StatelessWidget {
             ),
           ),
 
-          Expanded(
-            flex: 1,
-            child: Text(
-              item.lastUpdated,
-              style: AppTextStyles.font13GreyRegular,
-            ),
-          ),
-
           SizedBox(
             width: 50.w,
             child: InkWell(
-              onTap: () => onEdit(index),
+              onTap: () => onEdit(item),
               borderRadius: BorderRadius.circular(4.r),
               child: Icon(
                 Icons.edit_outlined,

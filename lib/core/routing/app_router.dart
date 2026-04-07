@@ -9,6 +9,7 @@ import '../../features/auth/presentation/screens/register_screen.dart';
 import '../../features/auth/presentation/screens/settings_screen.dart';
 import '../../features/compare/logic/cubit/compare_cubit.dart';
 import '../../features/compare/presentation/screens/compare_screen.dart';
+import '../../features/dashboard/logic/cubit/dashboard_cubit.dart';
 import '../../features/dashboard/presentation/screens/dashboard_screen.dart';
 import '../../features/inventory/logic/cubit/inventory_cubit.dart';
 import '../../features/inventory/presentation/screens/inventory_screen.dart';
@@ -33,7 +34,12 @@ class AppRouter {
         );
 
       case Routes.dashboardScreen:
-        return MaterialPageRoute(builder: (_) => const DashboardScreen());
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_) => getIt<DashboardCubit>()..loadData(),
+            child: const DashboardScreen(),
+          ),
+        );
 
       case Routes.uploadsScreen:
         return MaterialPageRoute(
@@ -70,7 +76,7 @@ class AppRouter {
       case Routes.inventoryScreen:
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
-            create: (_) => InventoryCubit()..loadData(),
+            create: (_) => getIt<InventoryCubit>()..loadData(),
             child: const InventoryScreen(),
           ),
         );
@@ -78,7 +84,7 @@ class AppRouter {
       case Routes.alertsScreen:
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
-            create: (_) => AlertsCubit()..loadData(),
+            create: (_) => getIt<AlertsCubit>()..loadData(),
             child: const AlertsScreen(),
           ),
         );
