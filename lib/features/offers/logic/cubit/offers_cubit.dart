@@ -1,25 +1,37 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../presentation/widgets/offers_table_widget.dart';
+import '../../../../core/networking/error/error_handler/network_exceptions.dart';
+import '../../data/models/available_offer_item.dart';
+import '../../data/repos/offers_repo.dart';
 
 part '../states/offers_state.dart';
 part 'offers_cubit.freezed.dart';
 
 class OffersCubit extends Cubit<OffersState> {
-  OffersCubit() : super(const OffersState.initial());
+  final OffersRepo _offersRepo;
 
-  List<OfferEntry> _allOffers = [];
+  OffersCubit(this._offersRepo) : super(const OffersState.initial());
+
+  List<AvailableOfferItem> _allOffers = [];
   String searchQuery = '';
-  String selectedSupplier = 'All Suppliers';
+  String selectedSupplier = 'All Suppliers'; // mapped to status value
   String selectedWarehouse = 'All Warehouses';
   int? sortColumnIndex;
   bool sortAscending = true;
 
-  void loadData() {
+  Future<void> loadData() async {
     emit(const OffersState.loading());
-    _allOffers = OfferEntry.sampleData();
-    _emitFiltered();
+
+    try {
+      final response = await _offersRepo.getAvailableOffers();
+      _allOffers = response.results ?? [];
+      _emitFiltered();
+    } catch (e) {
+      final exception = NetworkExceptions.getException(e);
+      final message = NetworkExceptions.getErrorMessage(exception);
+      emit(OffersState.error(error: message));
+    }
   }
 
   void updateSearch(String query) {
@@ -57,23 +69,31 @@ class OffersCubit extends Cubit<OffersState> {
   }
 
   void _emitFiltered() {
-    var filtered = List<OfferEntry>.from(_allOffers);
+    var filtered = List<AvailableOfferItem>.from(_allOffers);
 
     if (searchQuery.isNotEmpty) {
       filtered = filtered
           .where(
-            (o) => o.name.toLowerCase().contains(searchQuery.toLowerCase()),
+            (o) =>
+                (o.originalFilename ?? '').toLowerCase().contains(
+                  searchQuery.toLowerCase(),
+                ) ||
+                (o.fileId ?? '').toLowerCase().contains(
+                  searchQuery.toLowerCase(),
+                ),
           )
           .toList();
     }
 
     if (selectedSupplier != 'All Suppliers') {
-      filtered = filtered.where((o) => o.supplier == selectedSupplier).toList();
+      filtered = filtered
+          .where((o) => _statusLabel(o.status ?? '') == selectedSupplier)
+          .toList();
     }
 
     if (selectedWarehouse != 'All Warehouses') {
       filtered = filtered
-          .where((o) => o.warehouse == selectedWarehouse)
+          .where((o) => _warehouseLabel(o.wareHouseName) == selectedWarehouse)
           .toList();
     }
 
@@ -82,16 +102,28 @@ class OffersCubit extends Cubit<OffersState> {
         int result;
         switch (sortColumnIndex) {
           case 0:
-            result = a.name.compareTo(b.name);
+            result = (a.originalFilename ?? '').compareTo(
+              b.originalFilename ?? '',
+            );
             break;
           case 1:
-            result = a.supplier.compareTo(b.supplier);
+            result = _statusLabel(
+              a.status ?? '',
+            ).compareTo(_statusLabel(b.status ?? ''));
             break;
           case 2:
-            result = a.warehouse.compareTo(b.warehouse);
+            result = _warehouseLabel(
+              a.wareHouseName,
+            ).compareTo(_warehouseLabel(b.wareHouseName));
             break;
           case 3:
-            result = a.uploadDate.compareTo(b.uploadDate);
+            result = (a.createdAt ?? DateTime.fromMillisecondsSinceEpoch(0))
+                .compareTo(
+                  b.createdAt ?? DateTime.fromMillisecondsSinceEpoch(0),
+                );
+            break;
+          case 4:
+            result = (a.itemsCount ?? 0).compareTo(b.itemsCount ?? 0);
             break;
           default:
             result = 0;
@@ -100,6 +132,21 @@ class OffersCubit extends Cubit<OffersState> {
       });
     }
 
-    emit(OffersState.success(filtered));
+    emit(OffersState.successGetAvailableOffers(filtered));
+  }
+
+  String _statusLabel(String status) {
+    if (status.toLowerCase() == 'completed') {
+      return 'Completed';
+    }
+    return status;
+  }
+
+  String _warehouseLabel(String? warehouseName) {
+    final value = warehouseName?.trim();
+    if (value == null || value.isEmpty) {
+      return 'Unassigned';
+    }
+    return value;
   }
 }

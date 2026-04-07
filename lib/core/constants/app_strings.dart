@@ -27,24 +27,23 @@ class AppStrings {
   static String get registerAdminTitle =>
       currentLanguage == 'ar' ? 'تسجيل مشرف جديد' : 'Register New Admin';
 
-  static String get registerAdminSubtitle =>
-      currentLanguage == 'ar'
-          ? 'إنشاء حساب مشرف جديد للنظام'
-          : 'Create a new admin account for the system';
+  static String get registerAdminSubtitle => currentLanguage == 'ar'
+      ? 'إنشاء حساب مشرف جديد للنظام'
+      : 'Create a new admin account for the system';
 
   static String get confirmPassword =>
       currentLanguage == 'ar' ? 'تأكيد كلمة المرور' : 'Confirm Password';
 
-  static String get confirmPasswordHint =>
-      currentLanguage == 'ar' ? 'أعد إدخال كلمة المرور' : 'Re-enter your password';
+  static String get confirmPasswordHint => currentLanguage == 'ar'
+      ? 'أعد إدخال كلمة المرور'
+      : 'Re-enter your password';
 
   static String get registerButton =>
       currentLanguage == 'ar' ? 'تسجيل المشرف' : 'Register Admin';
 
-  static String get registerSuccess =>
-      currentLanguage == 'ar'
-          ? 'تم تسجيل المشرف بنجاح'
-          : 'Admin registered successfully';
+  static String get registerSuccess => currentLanguage == 'ar'
+      ? 'تم تسجيل المشرف بنجاح'
+      : 'Admin registered successfully';
 
   static String get registerNewAdmin =>
       currentLanguage == 'ar' ? 'تسجيل مشرف جديد' : 'Register New Admin';
@@ -52,22 +51,19 @@ class AppStrings {
   static String get logoutConfirmTitle =>
       currentLanguage == 'ar' ? 'تسجيل الخروج' : 'Logout';
 
-  static String get logoutConfirmMessage =>
-      currentLanguage == 'ar'
-          ? 'هل أنت متأكد أنك تريد تسجيل الخروج؟'
-          : 'Are you sure you want to logout?';
+  static String get logoutConfirmMessage => currentLanguage == 'ar'
+      ? 'هل أنت متأكد أنك تريد تسجيل الخروج؟'
+      : 'Are you sure you want to logout?';
 
-  static String get cancel =>
-      currentLanguage == 'ar' ? 'إلغاء' : 'Cancel';
+  static String get cancel => currentLanguage == 'ar' ? 'إلغاء' : 'Cancel';
 
   // ─── Settings ─────────────────────────────────────────
   static String get settingsTitle =>
       currentLanguage == 'ar' ? 'الإعدادات' : 'Settings';
 
-  static String get settingsSubtitle =>
-      currentLanguage == 'ar'
-          ? 'عرض معلومات حسابك وتغيير كلمة المرور'
-          : 'View your account information and change your password';
+  static String get settingsSubtitle => currentLanguage == 'ar'
+      ? 'عرض معلومات حسابك وتغيير كلمة المرور'
+      : 'View your account information and change your password';
 
   static String get changePasswordTitle =>
       currentLanguage == 'ar' ? 'تغيير كلمة المرور' : 'Change Password';
@@ -78,19 +74,18 @@ class AppStrings {
   static String get newPassword =>
       currentLanguage == 'ar' ? 'كلمة المرور الجديدة' : 'New Password';
 
-  static String get confirmNewPassword =>
-      currentLanguage == 'ar' ? 'تأكيد كلمة المرور الجديدة' : 'Confirm New Password';
+  static String get confirmNewPassword => currentLanguage == 'ar'
+      ? 'تأكيد كلمة المرور الجديدة'
+      : 'Confirm New Password';
 
   static String get changePasswordButton =>
       currentLanguage == 'ar' ? 'تغيير كلمة المرور' : 'Change Password';
 
-  static String get passwordChangedSuccess =>
-      currentLanguage == 'ar'
-          ? 'تم تغيير كلمة المرور بنجاح'
-          : 'Password changed successfully';
+  static String get passwordChangedSuccess => currentLanguage == 'ar'
+      ? 'تم تغيير كلمة المرور بنجاح'
+      : 'Password changed successfully';
 
-  static String get activeStatus =>
-      currentLanguage == 'ar' ? 'نشط' : 'Active';
+  static String get activeStatus => currentLanguage == 'ar' ? 'نشط' : 'Active';
 
   static String get inactiveStatus =>
       currentLanguage == 'ar' ? 'غير نشط' : 'Inactive';
@@ -183,8 +178,8 @@ class AppStrings {
       : 'Drag and drop files here';
 
   static String get supportedFiles => currentLanguage == 'ar'
-      ? 'يدعم ملفات PDF و Excel والصور'
-      : 'Supports PDF, Excel, and Image files';
+      ? 'يدعم ملفات PDF فقط'
+      : 'Supports PDF files only';
 
   static String get browseFiles =>
       currentLanguage == 'ar' ? 'تصفح الملفات' : 'Browse Files';

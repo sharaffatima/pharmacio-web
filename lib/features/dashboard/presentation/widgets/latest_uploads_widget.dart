@@ -42,13 +42,13 @@ class LatestUploadsWidget extends StatelessWidget {
             ...topActivities.asMap().entries.expand((entry) {
               final index = entry.key;
               final item = entry.value;
-              final colors = _themeColors(item.theme);
+              final colors = _themeColors(item.theme ?? '');
 
               final row = _buildUploadItem(
-                icon: _iconFromApi(item.icon),
-                fileName: item.message,
+                icon: _iconFromApi(item.icon ?? ''),
+                fileName: item.message ?? '-',
                 date: _formatDate(item.createdAt),
-                status: item.actor,
+                status: item.actor ?? '-',
                 statusColor: colors.$1,
                 statusBgColor: colors.$2,
               );
@@ -151,7 +151,8 @@ class LatestUploadsWidget extends StatelessWidget {
     }
   }
 
-  String _formatDate(DateTime value) {
+  String _formatDate(DateTime? value) {
+    if (value == null) return '-';
     final local = value.toLocal();
     final date =
         '${local.year.toString().padLeft(4, '0')}-${local.month.toString().padLeft(2, '0')}-${local.day.toString().padLeft(2, '0')}';

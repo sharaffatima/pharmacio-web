@@ -81,7 +81,7 @@ class InventoryTableWidget extends StatelessWidget {
   }
 
   Widget _buildDataRow(InventoryApiItem item, int index) {
-    final isLow = item.status.toLowerCase() == 'low';
+    final isLow = (item.status ?? '').toLowerCase() == 'low';
 
     return Container(
       padding: EdgeInsets.symmetric(vertical: 14.h),
@@ -107,7 +107,7 @@ class InventoryTableWidget extends StatelessWidget {
                 ],
                 Flexible(
                   child: Text(
-                    item.product,
+                    item.product ?? '-',
                     style: AppTextStyles.font13BlackMedium,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -118,7 +118,7 @@ class InventoryTableWidget extends StatelessWidget {
           Expanded(
             flex: 1,
             child: Text(
-              '${item.quantity}',
+              '${item.quantity ?? 0}',
               style: AppTextStyles.font13BlackMedium.copyWith(
                 fontWeight: FontWeight.w600,
               ),

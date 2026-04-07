@@ -28,16 +28,7 @@ class UploadsCubit extends Cubit<UploadsState> {
   Future<void> pickFiles() async {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: [
-        'pdf',
-        'xls',
-        'xlsx',
-        'doc',
-        'docx',
-        'png',
-        'jpg',
-        'jpeg',
-      ],
+      allowedExtensions: ['pdf'],
       allowMultiple: true,
       withData: true,
     );
@@ -52,10 +43,10 @@ class UploadsCubit extends Cubit<UploadsState> {
       uploadsList.insert(
         0,
         UploadEntry(
-          filename: response.originalFilename,
+          filename: response.originalFilename ?? '',
           type: UploadEntry.typeFromExtension(ext),
-          date: response.createdAt,
-          status: response.status,
+          date: response.createdAt ?? '',
+          status: response.status ?? '',
           statusColor: AppColors.emerald,
           statusBgColor: AppColors.emerald.withValues(alpha: 0.1),
           bytes: result.files.first.bytes,

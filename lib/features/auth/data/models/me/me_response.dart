@@ -4,37 +4,37 @@ part 'me_response.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class MeResponse {
-  final int id;
-  final String username;
-  final String email;
+  final int? id;
+  final String? username;
+  final String? email;
 
   @JsonKey(name: 'first_name')
-  final String firstName;
+  final String? firstName;
 
   @JsonKey(name: 'last_name')
-  final String lastName;
+  final String? lastName;
 
-  final List<String> roles;
+  final List<String>? roles;
 
   @JsonKey(name: 'phone_number')
   final String? phoneNumber;
 
   @JsonKey(name: 'is_active')
-  final bool isActive;
+  final bool? isActive;
 
   @JsonKey(name: 'date_joined')
-  final DateTime dateJoined;
+  final DateTime? dateJoined;
 
   MeResponse({
-    required this.id,
-    required this.username,
-    required this.email,
-    required this.firstName,
-    required this.lastName,
-    required this.roles,
+    this.id,
+    this.username,
+    this.email,
+    this.firstName,
+    this.lastName,
+    this.roles,
     this.phoneNumber,
-    required this.isActive,
-    required this.dateJoined,
+    this.isActive,
+    this.dateJoined,
   });
 
   factory MeResponse.fromJson(Map<String, dynamic> json) =>

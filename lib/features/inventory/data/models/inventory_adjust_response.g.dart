@@ -9,11 +9,11 @@ part of 'inventory_adjust_response.dart';
 InventoryAdjustResponse _$InventoryAdjustResponseFromJson(
   Map<String, dynamic> json,
 ) => InventoryAdjustResponse(
-  id: (json['id'] as num).toInt(),
-  product: json['product'] as String,
-  previousQuantity: (json['previous_quantity'] as num).toInt(),
-  adjustment: (json['adjustment'] as num).toInt(),
-  quantity: (json['quantity'] as num).toInt(),
+  id: (json['id'] as num?)?.toInt(),
+  product: json['product'] as String?,
+  previousQuantity: (json['previous_quantity'] as num?)?.toInt(),
+  adjustment: (json['adjustment'] as num?)?.toInt(),
+  quantity: (json['quantity'] as num?)?.toInt(),
 );
 
 Map<String, dynamic> _$InventoryAdjustResponseToJson(

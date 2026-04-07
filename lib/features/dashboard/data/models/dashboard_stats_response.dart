@@ -5,19 +5,19 @@ part 'dashboard_stats_response.g.dart';
 @JsonSerializable()
 class DashboardStatsResponse {
   @JsonKey(name: 'activity_alerts')
-  final int activityAlerts;
+  final int? activityAlerts;
 
   @JsonKey(name: 'low_stock')
-  final int lowStock;
+  final int? lowStock;
 
-  final int proposals;
-  final int inventory;
+  final int? proposals;
+  final int? inventory;
 
   DashboardStatsResponse({
-    required this.activityAlerts,
-    required this.lowStock,
-    required this.proposals,
-    required this.inventory,
+    this.activityAlerts,
+    this.lowStock,
+    this.proposals,
+    this.inventory,
   });
 
   factory DashboardStatsResponse.fromJson(Map<String, dynamic> json) =>

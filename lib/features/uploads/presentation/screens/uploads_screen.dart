@@ -30,9 +30,9 @@ class UploadsScreen extends StatelessWidget {
               listener: (context, state) {
                 state.whenOrNull(
                   uploadSuccess: (response) =>
-                      showAppSnackBar(context, response.message),
+                      showAppSnackBar(context, response.message ?? 'File uploaded successfully'),
                   statusSuccess: (response) =>
-                      showAppSnackBar(context, response.message),
+                      showAppSnackBar(context, response.message ?? "Status updated"),
                   error: (error) => showAppSnackBar(context, error),
                 );
               },

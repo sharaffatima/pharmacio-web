@@ -5,79 +5,10 @@ import '../../../../core/constants/app_strings.dart';
 import '../../../../core/constants/colors.dart';
 import '../../../../core/constants/text_styles.dart';
 import '../../../../core/helpers/spacing.dart';
-
-/// Model for an offer entry.
-class OfferEntry {
-  final String name;
-  final String supplier;
-  final String warehouse;
-  final String uploadDate;
-  final int items;
-  final String status;
-
-  const OfferEntry({
-    required this.name,
-    required this.supplier,
-    required this.warehouse,
-    required this.uploadDate,
-    required this.items,
-    required this.status,
-  });
-
-  static List<OfferEntry> sampleData() => [
-    const OfferEntry(
-      name: 'Q1 2026 Supplier A Offers',
-      supplier: 'Supplier A',
-      warehouse: 'Warehouse 1',
-      uploadDate: '2026-02-11',
-      items: 245,
-      status: 'Active',
-    ),
-    const OfferEntry(
-      name: 'February Price List',
-      supplier: 'Supplier B',
-      warehouse: 'Warehouse 2',
-      uploadDate: '2026-02-10',
-      items: 189,
-      status: 'Active',
-    ),
-    const OfferEntry(
-      name: 'Vendor C Special Offers',
-      supplier: 'Supplier C',
-      warehouse: 'Warehouse 1',
-      uploadDate: '2026-02-09',
-      items: 156,
-      status: 'Active',
-    ),
-    const OfferEntry(
-      name: 'Bulk Purchase Deals',
-      supplier: 'Supplier B',
-      warehouse: 'Warehouse 3',
-      uploadDate: '2026-02-08',
-      items: 321,
-      status: 'Active',
-    ),
-    const OfferEntry(
-      name: 'Seasonal Products',
-      supplier: 'Supplier D',
-      warehouse: 'Warehouse 2',
-      uploadDate: '2026-02-07',
-      items: 203,
-      status: 'Active',
-    ),
-    const OfferEntry(
-      name: 'New Arrivals Q1',
-      supplier: 'Supplier A',
-      warehouse: 'Warehouse 1',
-      uploadDate: '2026-02-06',
-      items: 178,
-      status: 'Active',
-    ),
-  ];
-}
+import '../../data/models/available_offer_item.dart';
 
 class OffersTableWidget extends StatelessWidget {
-  final List<OfferEntry> entries;
+  final List<AvailableOfferItem> entries;
   final int? sortColumnIndex;
   final bool sortAscending;
   final ValueChanged<int> onSort;
@@ -190,7 +121,7 @@ class OffersTableWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildDataRow(OfferEntry entry, int index) {
+  Widget _buildDataRow(AvailableOfferItem entry, int index) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 14.h),
       decoration: BoxDecoration(
@@ -203,33 +134,36 @@ class OffersTableWidget extends StatelessWidget {
           Expanded(
             flex: 3,
             child: Text(
-              entry.name,
+              entry.originalFilename ?? '-',
               style: AppTextStyles.font13BlackMedium,
               overflow: TextOverflow.ellipsis,
             ),
           ),
           Expanded(
             flex: 1,
-            child: Text(entry.supplier, style: AppTextStyles.font13GreyRegular),
+            child: Text(
+              _statusLabel(entry.status ?? ''),
+              style: AppTextStyles.font13GreyRegular,
+            ),
           ),
           Expanded(
             flex: 2,
             child: Text(
-              entry.warehouse,
+              _warehouseLabel(entry.wareHouseName),
               style: AppTextStyles.font13GreyRegular,
             ),
           ),
           Expanded(
             flex: 1,
             child: Text(
-              entry.uploadDate,
+              _formatDate(entry.createdAt),
               style: AppTextStyles.font13GreyRegular,
             ),
           ),
           Expanded(
             flex: 1,
             child: Text(
-              entry.items.toString(),
+              (entry.itemsCount ?? 0).toString(),
               style: AppTextStyles.font13GreyRegular,
             ),
           ),
@@ -240,13 +174,15 @@ class OffersTableWidget extends StatelessWidget {
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                 decoration: BoxDecoration(
-                  color: AppColors.emerald.withValues(alpha: 0.1),
+                  color: _statusColor(
+                    entry.status ?? '',
+                  ).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(20.r),
                 ),
                 child: Text(
-                  AppStrings.active,
+                  _statusLabel(entry.status ?? ''),
                   style: AppTextStyles.font12GreyRegular.copyWith(
-                    color: AppColors.emerald,
+                    color: _statusColor(entry.status ?? ''),
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -268,5 +204,40 @@ class OffersTableWidget extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _formatDate(DateTime? date) {
+    if (date == null) return '-';
+    final local = date.toLocal();
+    return '${local.year.toString().padLeft(4, '0')}-${local.month.toString().padLeft(2, '0')}-${local.day.toString().padLeft(2, '0')}';
+  }
+
+  String _statusLabel(String status) {
+    if (status.trim().isEmpty) return 'Unknown';
+    if (status.toLowerCase() == 'completed') {
+      return 'Completed';
+    }
+    return status;
+  }
+
+  String _warehouseLabel(String? warehouseName) {
+    final value = warehouseName?.trim();
+    if (value == null || value.isEmpty) {
+      return 'Unassigned';
+    }
+    return value;
+  }
+
+  Color _statusColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'completed':
+        return AppColors.emerald;
+      case 'failed':
+        return AppColors.brightRed;
+      case 'processing':
+        return AppColors.saffronAmber;
+      default:
+        return AppColors.coolGrey;
+    }
   }
 }

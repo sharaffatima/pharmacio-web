@@ -41,20 +41,21 @@ class AlertsListWidget extends StatelessWidget {
   }
 
   Widget _buildAlertCard(UserNotificationModel alert, int index) {
-    final severity = _severityFromType(alert.type);
+    final isRead = alert.isRead ?? false;
+    final severity = _severityFromType(alert.type ?? '');
     final severityColor = _severityColor(severity);
     final severityBgColor = severityColor.withValues(alpha: 0.1);
     final severityIcon = _severityIcon(severity);
-    final title = _titleFromType(alert.type);
+    final title = _titleFromType(alert.type ?? '');
 
     return Container(
       margin: EdgeInsets.only(bottom: 12.h),
       padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
-        color: alert.isRead ? AppColors.offWhiteGrey : AppColors.white,
+        color: isRead ? AppColors.offWhiteGrey : AppColors.white,
         borderRadius: BorderRadius.circular(10.r),
         border: Border.all(
-          color: alert.isRead
+          color: isRead
               ? AppColors.gainsboro
               : severityColor.withValues(alpha: 0.3),
           width: 1,
@@ -84,9 +85,7 @@ class AlertsListWidget extends StatelessWidget {
                       title,
                       style: AppTextStyles.font14BlackRegular.copyWith(
                         fontWeight: FontWeight.w600,
-                        decoration: alert.isRead
-                            ? TextDecoration.lineThrough
-                            : null,
+                        decoration: isRead ? TextDecoration.lineThrough : null,
                       ),
                     ),
                     horizontalSpace(8),
@@ -111,13 +110,16 @@ class AlertsListWidget extends StatelessWidget {
                   ],
                 ),
                 verticalSpace(4),
-                Text(alert.message, style: AppTextStyles.font13GreyRegular),
+                Text(
+                  alert.message ?? '-',
+                  style: AppTextStyles.font13GreyRegular,
+                ),
               ],
             ),
           ),
 
           // Resolve Button
-          if (!alert.isRead)
+          if (!isRead)
             OutlinedButton.icon(
               onPressed: () => onResolve(index),
               icon: Icon(

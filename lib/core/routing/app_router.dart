@@ -52,7 +52,7 @@ class AppRouter {
       case Routes.offersScreen:
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
-            create: (_) => OffersCubit()..loadData(),
+            create: (_) => getIt<OffersCubit>()..loadData(),
             child: const OffersScreen(),
           ),
         );
@@ -68,7 +68,7 @@ class AppRouter {
       case Routes.proposalsScreen:
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
-            create: (_) => ProposalsCubit()..loadData(),
+            create: (_) => getIt<ProposalsCubit>()..loadData(),
             child: const ProposalsScreen(),
           ),
         );

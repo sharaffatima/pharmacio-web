@@ -5,15 +5,12 @@ part 'change_password_response.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class ChangePasswordResponse {
-  final String message;
+  final String? message;
 
   @JsonKey(name: 'tokens')
-  final Token tokens;
+  final Token? tokens;
 
-  ChangePasswordResponse({
-    required this.message,
-    required this.tokens,
-  });
+  ChangePasswordResponse({this.message, this.tokens});
 
   factory ChangePasswordResponse.fromJson(Map<String, dynamic> json) =>
       _$ChangePasswordResponseFromJson(json);

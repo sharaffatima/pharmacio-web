@@ -9,9 +9,9 @@ part of 'inventory_api_item.dart';
 InventoryApiItem _$InventoryApiItemFromJson(Map<String, dynamic> json) =>
     InventoryApiItem(
       id: (json['id'] as num?)?.toInt(),
-      product: json['product'] as String,
-      quantity: (json['quantity'] as num).toInt(),
-      status: json['status'] as String,
+      product: json['product'] as String?,
+      quantity: (json['quantity'] as num?)?.toInt(),
+      status: json['status'] as String?,
     );
 
 Map<String, dynamic> _$InventoryApiItemToJson(InventoryApiItem instance) =>

@@ -4,13 +4,12 @@ part 'logout_response.g.dart';
 
 @JsonSerializable()
 class LogoutResponse {
-  final String message;
+  final String? message;
 
-  LogoutResponse({required this.message});
+  LogoutResponse({this.message});
 
   factory LogoutResponse.fromJson(Map<String, dynamic> json) =>
       _$LogoutResponseFromJson(json);
 
   Map<String, dynamic> toJson() => _$LogoutResponseToJson(this);
 }
-

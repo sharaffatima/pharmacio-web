@@ -92,7 +92,13 @@ class _ChangePasswordFormWidgetState extends State<ChangePasswordFormWidget> {
                   cubit.oldPasswordController.clear();
                   cubit.newPasswordController.clear();
                   cubit.confirmNewPasswordController.clear();
-                  showAppSnackBar(context, response.message);
+                  showAppSnackBar(
+                    context,
+                    response.message ??
+                        (AppStrings.currentLanguage == 'ar'
+                            ? 'تم تغيير كلمة المرور بنجاح'
+                            : 'Password changed successfully'),
+                  );
                   context.pushNamedAndRemoveUntil(
                     Routes.dashboardScreen,
                     predicate: (route) => false,

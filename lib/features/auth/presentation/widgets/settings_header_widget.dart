@@ -17,10 +17,7 @@ class SettingsHeaderWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          AppStrings.settingsTitle,
-          style: AppTextStyles.font24BlackBold,
-        ),
+        Text(AppStrings.settingsTitle, style: AppTextStyles.font24BlackBold),
         verticalSpace(4),
         Text(
           AppStrings.settingsSubtitle,
@@ -33,6 +30,11 @@ class SettingsHeaderWidget extends StatelessWidget {
   }
 
   Widget _buildProfileCard(MeResponse me) {
+    final username = me.username ?? '';
+    final email = me.email ?? '';
+    final isActive = me.isActive ?? false;
+    final roles = me.roles ?? const <String>[];
+
     return Container(
       padding: EdgeInsets.all(20.r),
       decoration: BoxDecoration(
@@ -53,7 +55,7 @@ class SettingsHeaderWidget extends StatelessWidget {
             radius: 28.r,
             backgroundColor: AppColors.skyBlue.withValues(alpha: 0.15),
             child: Text(
-              me.username.isNotEmpty ? me.username[0].toUpperCase() : 'A',
+              username.isNotEmpty ? username[0].toUpperCase() : 'A',
               style: AppTextStyles.font24BlackBold.copyWith(
                 color: AppColors.skyBlue,
               ),
@@ -64,13 +66,10 @@ class SettingsHeaderWidget extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  me.username,
-                  style: AppTextStyles.font16BlackSemiBold,
-                ),
+                Text(username, style: AppTextStyles.font16BlackSemiBold),
                 verticalSpace(4),
-                if (me.email.isNotEmpty)
-                  Text(me.email, style: AppTextStyles.font14CoolGreyRegular),
+                if (email.isNotEmpty)
+                  Text(email, style: AppTextStyles.font14CoolGreyRegular),
                 verticalSpace(4),
                 Row(
                   children: [
@@ -80,24 +79,24 @@ class SettingsHeaderWidget extends StatelessWidget {
                         vertical: 2.h,
                       ),
                       decoration: BoxDecoration(
-                        color: me.isActive
+                        color: isActive
                             ? Colors.green.withValues(alpha: 0.1)
                             : Colors.red.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(20.r),
                       ),
                       child: Text(
-                        me.isActive
+                        isActive
                             ? AppStrings.activeStatus
                             : AppStrings.inactiveStatus,
                         style: AppTextStyles.font12GreyRegular.copyWith(
-                          color: me.isActive ? Colors.green : Colors.red,
+                          color: isActive ? Colors.green : Colors.red,
                         ),
                       ),
                     ),
                     horizontalSpace(8),
-                    if (me.roles.isNotEmpty)
+                    if (roles.isNotEmpty)
                       Text(
-                        me.roles.join(', '),
+                        roles.join(', '),
                         style: AppTextStyles.font12GreyRegular,
                       ),
                   ],

@@ -8,12 +8,12 @@ part of 'upload_response.dart';
 
 UploadResponse _$UploadResponseFromJson(Map<String, dynamic> json) =>
     UploadResponse(
-      uploadId: json['upload_id'] as String,
-      originalFilename: json['original_filename'] as String,
-      fileUrl: json['file_url'] as String,
-      status: json['status'] as String,
-      message: json['message'] as String,
-      createdAt: json['created_at'] as String,
+      uploadId: json['upload_id'] as String?,
+      originalFilename: json['original_filename'] as String?,
+      fileUrl: json['file_url'] as String?,
+      status: json['status'] as String?,
+      message: json['message'] as String?,
+      createdAt: json['created_at'] as String?,
     );
 
 Map<String, dynamic> _$UploadResponseToJson(UploadResponse instance) =>

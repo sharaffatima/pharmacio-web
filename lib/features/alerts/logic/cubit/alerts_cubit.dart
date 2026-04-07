@@ -30,8 +30,8 @@ class AlertsCubit extends Cubit<AlertsState> {
         unreadOnly: false,
         limit: 20,
       );
-      _alerts = response.results;
-      _unreadCount = response.unreadCount;
+      _alerts = response.results ?? [];
+      _unreadCount = response.unreadCount ?? 0;
       _emitSuccess();
     } catch (e) {
       final exception = NetworkExceptions.getException(e);
@@ -57,19 +57,22 @@ class AlertsCubit extends Cubit<AlertsState> {
 
     final alert = filtered[filteredIndex];
 
-    if (alert.isRead) return;
+    if (alert.isRead ?? false) return;
+    if (alert.id == null) return;
 
     emit(const AlertsState.loading());
 
     try {
-      final updatedNotification = await _alertsRepo.markNotificationRead(alert.id);
+      final updatedNotification = await _alertsRepo.markNotificationRead(
+        alert.id!,
+      );
       final realIndex = _alerts.indexWhere((item) => item.id == alert.id);
 
       if (realIndex != -1) {
         _alerts[realIndex] = updatedNotification;
       }
 
-      _unreadCount = _alerts.where((a) => !a.isRead).length;
+      _unreadCount = _alerts.where((a) => !(a.isRead ?? false)).length;
       _emitSuccess(updatedNotification: updatedNotification);
     } catch (e) {
       final exception = NetworkExceptions.getException(e);
@@ -78,18 +81,21 @@ class AlertsCubit extends Cubit<AlertsState> {
     }
   }
 
-  int get activeCount => _alerts.where((a) => !a.isRead).length;
-  int get criticalCount =>
-      _alerts
-          .where((a) => _severityFromType(a.type) == 'Critical' && !a.isRead)
-          .length;
+  int get activeCount => _alerts.where((a) => !(a.isRead ?? false)).length;
+  int get criticalCount => _alerts
+      .where(
+        (a) =>
+            _severityFromType(a.type ?? '') == 'Critical' &&
+            !(a.isRead ?? false),
+      )
+      .length;
   int get resolvedTodayCount =>
-      _alerts.where((a) => a.isRead && _isToday(a.readAt)).length;
+      _alerts.where((a) => (a.isRead ?? false) && _isToday(a.readAt)).length;
 
   List<UserNotificationModel> _getFiltered() {
     if (_selectedSeverity == 'All Severities') return List.from(_alerts);
     return _alerts
-        .where((a) => _severityFromType(a.type) == _selectedSeverity)
+        .where((a) => _severityFromType(a.type ?? '') == _selectedSeverity)
         .toList();
   }
 

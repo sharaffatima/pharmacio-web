@@ -5,15 +5,11 @@ part 'register_response.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class RegisterResponse {
-  final User user;
-  final Token token;
-  final String message;
+  final User? user;
+  final Token? token;
+  final String? message;
 
-  RegisterResponse({
-    required this.user,
-    required this.token,
-    required this.message,
-  });
+  RegisterResponse({this.user, this.token, this.message});
 
   factory RegisterResponse.fromJson(Map<String, dynamic> json) =>
       _$RegisterResponseFromJson(json);

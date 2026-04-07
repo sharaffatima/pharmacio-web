@@ -12,6 +12,7 @@ class OffersFiltersWidget extends StatelessWidget {
   final String selectedWarehouse;
   final List<String> suppliers;
   final List<String> warehouses;
+  final ValueChanged<String> onSearchChanged;
   final ValueChanged<String> onSupplierChanged;
   final ValueChanged<String> onWarehouseChanged;
   final VoidCallback onClearFilters;
@@ -23,6 +24,7 @@ class OffersFiltersWidget extends StatelessWidget {
     required this.selectedWarehouse,
     required this.suppliers,
     required this.warehouses,
+    required this.onSearchChanged,
     required this.onSupplierChanged,
     required this.onWarehouseChanged,
     required this.onClearFilters,
@@ -64,6 +66,7 @@ class OffersFiltersWidget extends StatelessWidget {
                   ),
                   child: TextField(
                     controller: searchController,
+                    onChanged: onSearchChanged,
                     style: AppTextStyles.font14BlackRegular,
                     decoration: InputDecoration(
                       hintText: AppStrings.searchOffers,

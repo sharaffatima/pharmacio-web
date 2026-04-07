@@ -10,6 +10,7 @@ class ProposalsFiltersWidget extends StatelessWidget {
   final TextEditingController searchController;
   final String selectedStatus;
   final List<String> statuses;
+  final ValueChanged<String> onSearchChanged;
   final ValueChanged<String> onStatusChanged;
   final VoidCallback onClearFilters;
 
@@ -18,6 +19,7 @@ class ProposalsFiltersWidget extends StatelessWidget {
     required this.searchController,
     required this.selectedStatus,
     required this.statuses,
+    required this.onSearchChanged,
     required this.onStatusChanged,
     required this.onClearFilters,
   });
@@ -52,6 +54,7 @@ class ProposalsFiltersWidget extends StatelessWidget {
                   ),
                   child: TextField(
                     controller: searchController,
+                    onChanged: onSearchChanged,
                     style: AppTextStyles.font14BlackRegular,
                     decoration: InputDecoration(
                       hintText: AppStrings.searchProposals,

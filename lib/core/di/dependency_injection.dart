@@ -16,6 +16,12 @@ import '../../features/dashboard/logic/cubit/dashboard_cubit.dart';
 import '../../features/inventory/data/datasources/inventory_remote_data_source.dart';
 import '../../features/inventory/data/repos/inventory_repo.dart';
 import '../../features/inventory/logic/cubit/inventory_cubit.dart';
+import '../../features/offers/data/datasources/offers_remote_data_source.dart';
+import '../../features/offers/data/repos/offers_repo.dart';
+import '../../features/offers/logic/cubit/offers_cubit.dart';
+import '../../features/proposals/data/datasources/proposals_remote_data_source.dart';
+import '../../features/proposals/data/repos/proposals_repo.dart';
+import '../../features/proposals/logic/cubit/proposals_cubit.dart';
 import '../../features/uploads/data/datasources/uploads_remote_data_source.dart';
 import '../../features/uploads/data/repos/uploads_repo.dart';
 import '../../features/uploads/logic/cubit/uploads_cubit.dart';
@@ -74,6 +80,25 @@ Future<void> setupGetit() async {
   );
   getIt.registerLazySingleton<AlertsRemoteDataSource>(
     () => AlertsRemoteDataSourceImp(apiServicesImpl: getIt()),
+  );
+
+  // //! feature - offers
+  getIt.registerFactory<OffersCubit>(() => OffersCubit(getIt()));
+  getIt.registerLazySingleton<OffersRepo>(
+    () => OffersRepo(offersRemoteDataSource: getIt(), networkInfo: getIt()),
+  );
+  getIt.registerLazySingleton<OffersRemoteDataSource>(
+    () => OffersRemoteDataSourceImp(apiServicesImpl: getIt()),
+  );
+
+  // //! feature - proposals
+  getIt.registerFactory<ProposalsCubit>(() => ProposalsCubit(getIt()));
+  getIt.registerLazySingleton<ProposalsRepo>(
+    () =>
+        ProposalsRepo(proposalsRemoteDataSource: getIt(), networkInfo: getIt()),
+  );
+  getIt.registerLazySingleton<ProposalsRemoteDataSource>(
+    () => ProposalsRemoteDataSourceImp(apiServicesImpl: getIt()),
   );
 
   //! Core

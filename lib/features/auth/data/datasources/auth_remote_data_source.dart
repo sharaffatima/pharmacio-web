@@ -45,14 +45,17 @@ class AuthRemoteDataSourceImp implements AuthRemoteDataSource {
       );
       final response = LoginResponse.fromJson(request);
       final sharedPref = AppSharedPreferences();
-      await sharedPref.setString(
-        AppSharedPrefKeys.accessToken,
-        response.token.access,
-      );
-      await sharedPref.setString(
-        AppSharedPrefKeys.refreshToken,
-        response.token.refresh,
-      );
+      final accessToken = response.token?.access;
+      final refreshToken = response.token?.refresh;
+      if (accessToken != null && accessToken.isNotEmpty) {
+        await sharedPref.setString(AppSharedPrefKeys.accessToken, accessToken);
+      }
+      if (refreshToken != null && refreshToken.isNotEmpty) {
+        await sharedPref.setString(
+          AppSharedPrefKeys.refreshToken,
+          refreshToken,
+        );
+      }
       return response;
     } on DioException catch (e) {
       throw NetworkExceptions.getException(e);
@@ -133,14 +136,17 @@ class AuthRemoteDataSourceImp implements AuthRemoteDataSource {
       );
       final response = ChangePasswordResponse.fromJson(request);
       final sharedPref = AppSharedPreferences();
-      await sharedPref.setString(
-        AppSharedPrefKeys.accessToken,
-        response.tokens.access,
-      );
-      await sharedPref.setString(
-        AppSharedPrefKeys.refreshToken,
-        response.tokens.refresh,
-      );
+      final accessToken = response.tokens?.access;
+      final refreshToken = response.tokens?.refresh;
+      if (accessToken != null && accessToken.isNotEmpty) {
+        await sharedPref.setString(AppSharedPrefKeys.accessToken, accessToken);
+      }
+      if (refreshToken != null && refreshToken.isNotEmpty) {
+        await sharedPref.setString(
+          AppSharedPrefKeys.refreshToken,
+          refreshToken,
+        );
+      }
       return response;
     } on DioException catch (e) {
       throw NetworkExceptions.getException(e);

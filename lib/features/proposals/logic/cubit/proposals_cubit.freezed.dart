@@ -55,13 +55,17 @@ extension ProposalsStatePatterns on ProposalsState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( ProposalsInitial value)?  initial,TResult Function( ProposalsLoading value)?  loading,TResult Function( ProposalsSuccess value)?  success,TResult Function( ProposalsError value)?  error,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( ProposalsInitial value)?  initial,TResult Function( ProposalsLoading value)?  loading,TResult Function( SuccessGetProposalsList value)?  successGetProposalsList,TResult Function( SuccessGetProposalDetail value)?  successGetProposalDetail,TResult Function( SuccessGetProposalStatus value)?  successGetProposalStatus,TResult Function( SuccessApproveProposal value)?  successApproveProposal,TResult Function( SuccessRejectProposal value)?  successRejectProposal,TResult Function( ProposalsError value)?  error,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case ProposalsInitial() when initial != null:
 return initial(_that);case ProposalsLoading() when loading != null:
-return loading(_that);case ProposalsSuccess() when success != null:
-return success(_that);case ProposalsError() when error != null:
+return loading(_that);case SuccessGetProposalsList() when successGetProposalsList != null:
+return successGetProposalsList(_that);case SuccessGetProposalDetail() when successGetProposalDetail != null:
+return successGetProposalDetail(_that);case SuccessGetProposalStatus() when successGetProposalStatus != null:
+return successGetProposalStatus(_that);case SuccessApproveProposal() when successApproveProposal != null:
+return successApproveProposal(_that);case SuccessRejectProposal() when successRejectProposal != null:
+return successRejectProposal(_that);case ProposalsError() when error != null:
 return error(_that);case _:
   return orElse();
 
@@ -80,13 +84,17 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( ProposalsInitial value)  initial,required TResult Function( ProposalsLoading value)  loading,required TResult Function( ProposalsSuccess value)  success,required TResult Function( ProposalsError value)  error,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( ProposalsInitial value)  initial,required TResult Function( ProposalsLoading value)  loading,required TResult Function( SuccessGetProposalsList value)  successGetProposalsList,required TResult Function( SuccessGetProposalDetail value)  successGetProposalDetail,required TResult Function( SuccessGetProposalStatus value)  successGetProposalStatus,required TResult Function( SuccessApproveProposal value)  successApproveProposal,required TResult Function( SuccessRejectProposal value)  successRejectProposal,required TResult Function( ProposalsError value)  error,}){
 final _that = this;
 switch (_that) {
 case ProposalsInitial():
 return initial(_that);case ProposalsLoading():
-return loading(_that);case ProposalsSuccess():
-return success(_that);case ProposalsError():
+return loading(_that);case SuccessGetProposalsList():
+return successGetProposalsList(_that);case SuccessGetProposalDetail():
+return successGetProposalDetail(_that);case SuccessGetProposalStatus():
+return successGetProposalStatus(_that);case SuccessApproveProposal():
+return successApproveProposal(_that);case SuccessRejectProposal():
+return successRejectProposal(_that);case ProposalsError():
 return error(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -104,13 +112,17 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( ProposalsInitial value)?  initial,TResult? Function( ProposalsLoading value)?  loading,TResult? Function( ProposalsSuccess value)?  success,TResult? Function( ProposalsError value)?  error,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( ProposalsInitial value)?  initial,TResult? Function( ProposalsLoading value)?  loading,TResult? Function( SuccessGetProposalsList value)?  successGetProposalsList,TResult? Function( SuccessGetProposalDetail value)?  successGetProposalDetail,TResult? Function( SuccessGetProposalStatus value)?  successGetProposalStatus,TResult? Function( SuccessApproveProposal value)?  successApproveProposal,TResult? Function( SuccessRejectProposal value)?  successRejectProposal,TResult? Function( ProposalsError value)?  error,}){
 final _that = this;
 switch (_that) {
 case ProposalsInitial() when initial != null:
 return initial(_that);case ProposalsLoading() when loading != null:
-return loading(_that);case ProposalsSuccess() when success != null:
-return success(_that);case ProposalsError() when error != null:
+return loading(_that);case SuccessGetProposalsList() when successGetProposalsList != null:
+return successGetProposalsList(_that);case SuccessGetProposalDetail() when successGetProposalDetail != null:
+return successGetProposalDetail(_that);case SuccessGetProposalStatus() when successGetProposalStatus != null:
+return successGetProposalStatus(_that);case SuccessApproveProposal() when successApproveProposal != null:
+return successApproveProposal(_that);case SuccessRejectProposal() when successRejectProposal != null:
+return successRejectProposal(_that);case ProposalsError() when error != null:
 return error(_that);case _:
   return null;
 
@@ -128,12 +140,16 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<ProposalEntry> proposals)?  success,TResult Function( String error)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<PurchaseProposalModel> proposals)?  successGetProposalsList,TResult Function( PurchaseProposalModel proposal,  List<PurchaseProposalModel> proposals)?  successGetProposalDetail,TResult Function( ProposalStatusResponse status,  List<PurchaseProposalModel> proposals)?  successGetProposalStatus,TResult Function( PurchaseProposalModel proposal,  List<PurchaseProposalModel> proposals)?  successApproveProposal,TResult Function( PurchaseProposalModel proposal,  List<PurchaseProposalModel> proposals)?  successRejectProposal,TResult Function( String error)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case ProposalsInitial() when initial != null:
 return initial();case ProposalsLoading() when loading != null:
-return loading();case ProposalsSuccess() when success != null:
-return success(_that.proposals);case ProposalsError() when error != null:
+return loading();case SuccessGetProposalsList() when successGetProposalsList != null:
+return successGetProposalsList(_that.proposals);case SuccessGetProposalDetail() when successGetProposalDetail != null:
+return successGetProposalDetail(_that.proposal,_that.proposals);case SuccessGetProposalStatus() when successGetProposalStatus != null:
+return successGetProposalStatus(_that.status,_that.proposals);case SuccessApproveProposal() when successApproveProposal != null:
+return successApproveProposal(_that.proposal,_that.proposals);case SuccessRejectProposal() when successRejectProposal != null:
+return successRejectProposal(_that.proposal,_that.proposals);case ProposalsError() when error != null:
 return error(_that.error);case _:
   return orElse();
 
@@ -152,12 +168,16 @@ return error(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<ProposalEntry> proposals)  success,required TResult Function( String error)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<PurchaseProposalModel> proposals)  successGetProposalsList,required TResult Function( PurchaseProposalModel proposal,  List<PurchaseProposalModel> proposals)  successGetProposalDetail,required TResult Function( ProposalStatusResponse status,  List<PurchaseProposalModel> proposals)  successGetProposalStatus,required TResult Function( PurchaseProposalModel proposal,  List<PurchaseProposalModel> proposals)  successApproveProposal,required TResult Function( PurchaseProposalModel proposal,  List<PurchaseProposalModel> proposals)  successRejectProposal,required TResult Function( String error)  error,}) {final _that = this;
 switch (_that) {
 case ProposalsInitial():
 return initial();case ProposalsLoading():
-return loading();case ProposalsSuccess():
-return success(_that.proposals);case ProposalsError():
+return loading();case SuccessGetProposalsList():
+return successGetProposalsList(_that.proposals);case SuccessGetProposalDetail():
+return successGetProposalDetail(_that.proposal,_that.proposals);case SuccessGetProposalStatus():
+return successGetProposalStatus(_that.status,_that.proposals);case SuccessApproveProposal():
+return successApproveProposal(_that.proposal,_that.proposals);case SuccessRejectProposal():
+return successRejectProposal(_that.proposal,_that.proposals);case ProposalsError():
 return error(_that.error);case _:
   throw StateError('Unexpected subclass');
 
@@ -175,12 +195,16 @@ return error(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<ProposalEntry> proposals)?  success,TResult? Function( String error)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<PurchaseProposalModel> proposals)?  successGetProposalsList,TResult? Function( PurchaseProposalModel proposal,  List<PurchaseProposalModel> proposals)?  successGetProposalDetail,TResult? Function( ProposalStatusResponse status,  List<PurchaseProposalModel> proposals)?  successGetProposalStatus,TResult? Function( PurchaseProposalModel proposal,  List<PurchaseProposalModel> proposals)?  successApproveProposal,TResult? Function( PurchaseProposalModel proposal,  List<PurchaseProposalModel> proposals)?  successRejectProposal,TResult? Function( String error)?  error,}) {final _that = this;
 switch (_that) {
 case ProposalsInitial() when initial != null:
 return initial();case ProposalsLoading() when loading != null:
-return loading();case ProposalsSuccess() when success != null:
-return success(_that.proposals);case ProposalsError() when error != null:
+return loading();case SuccessGetProposalsList() when successGetProposalsList != null:
+return successGetProposalsList(_that.proposals);case SuccessGetProposalDetail() when successGetProposalDetail != null:
+return successGetProposalDetail(_that.proposal,_that.proposals);case SuccessGetProposalStatus() when successGetProposalStatus != null:
+return successGetProposalStatus(_that.status,_that.proposals);case SuccessApproveProposal() when successApproveProposal != null:
+return successApproveProposal(_that.proposal,_that.proposals);case SuccessRejectProposal() when successRejectProposal != null:
+return successRejectProposal(_that.proposal,_that.proposals);case ProposalsError() when error != null:
 return error(_that.error);case _:
   return null;
 
@@ -256,12 +280,12 @@ String toString() {
 /// @nodoc
 
 
-class ProposalsSuccess implements ProposalsState {
-  const ProposalsSuccess(final  List<ProposalEntry> proposals): _proposals = proposals;
+class SuccessGetProposalsList implements ProposalsState {
+  const SuccessGetProposalsList(final  List<PurchaseProposalModel> proposals): _proposals = proposals;
   
 
- final  List<ProposalEntry> _proposals;
- List<ProposalEntry> get proposals {
+ final  List<PurchaseProposalModel> _proposals;
+ List<PurchaseProposalModel> get proposals {
   if (_proposals is EqualUnmodifiableListView) return _proposals;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_proposals);
@@ -272,13 +296,13 @@ class ProposalsSuccess implements ProposalsState {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$ProposalsSuccessCopyWith<ProposalsSuccess> get copyWith => _$ProposalsSuccessCopyWithImpl<ProposalsSuccess>(this, _$identity);
+$SuccessGetProposalsListCopyWith<SuccessGetProposalsList> get copyWith => _$SuccessGetProposalsListCopyWithImpl<SuccessGetProposalsList>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProposalsSuccess&&const DeepCollectionEquality().equals(other._proposals, _proposals));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SuccessGetProposalsList&&const DeepCollectionEquality().equals(other._proposals, _proposals));
 }
 
 
@@ -287,18 +311,18 @@ int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(
 
 @override
 String toString() {
-  return 'ProposalsState.success(proposals: $proposals)';
+  return 'ProposalsState.successGetProposalsList(proposals: $proposals)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $ProposalsSuccessCopyWith<$Res> implements $ProposalsStateCopyWith<$Res> {
-  factory $ProposalsSuccessCopyWith(ProposalsSuccess value, $Res Function(ProposalsSuccess) _then) = _$ProposalsSuccessCopyWithImpl;
+abstract mixin class $SuccessGetProposalsListCopyWith<$Res> implements $ProposalsStateCopyWith<$Res> {
+  factory $SuccessGetProposalsListCopyWith(SuccessGetProposalsList value, $Res Function(SuccessGetProposalsList) _then) = _$SuccessGetProposalsListCopyWithImpl;
 @useResult
 $Res call({
- List<ProposalEntry> proposals
+ List<PurchaseProposalModel> proposals
 });
 
 
@@ -306,19 +330,315 @@ $Res call({
 
 }
 /// @nodoc
-class _$ProposalsSuccessCopyWithImpl<$Res>
-    implements $ProposalsSuccessCopyWith<$Res> {
-  _$ProposalsSuccessCopyWithImpl(this._self, this._then);
+class _$SuccessGetProposalsListCopyWithImpl<$Res>
+    implements $SuccessGetProposalsListCopyWith<$Res> {
+  _$SuccessGetProposalsListCopyWithImpl(this._self, this._then);
 
-  final ProposalsSuccess _self;
-  final $Res Function(ProposalsSuccess) _then;
+  final SuccessGetProposalsList _self;
+  final $Res Function(SuccessGetProposalsList) _then;
 
 /// Create a copy of ProposalsState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? proposals = null,}) {
-  return _then(ProposalsSuccess(
+  return _then(SuccessGetProposalsList(
 null == proposals ? _self._proposals : proposals // ignore: cast_nullable_to_non_nullable
-as List<ProposalEntry>,
+as List<PurchaseProposalModel>,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class SuccessGetProposalDetail implements ProposalsState {
+  const SuccessGetProposalDetail({required this.proposal, required final  List<PurchaseProposalModel> proposals}): _proposals = proposals;
+  
+
+ final  PurchaseProposalModel proposal;
+ final  List<PurchaseProposalModel> _proposals;
+ List<PurchaseProposalModel> get proposals {
+  if (_proposals is EqualUnmodifiableListView) return _proposals;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_proposals);
+}
+
+
+/// Create a copy of ProposalsState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SuccessGetProposalDetailCopyWith<SuccessGetProposalDetail> get copyWith => _$SuccessGetProposalDetailCopyWithImpl<SuccessGetProposalDetail>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SuccessGetProposalDetail&&(identical(other.proposal, proposal) || other.proposal == proposal)&&const DeepCollectionEquality().equals(other._proposals, _proposals));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,proposal,const DeepCollectionEquality().hash(_proposals));
+
+@override
+String toString() {
+  return 'ProposalsState.successGetProposalDetail(proposal: $proposal, proposals: $proposals)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SuccessGetProposalDetailCopyWith<$Res> implements $ProposalsStateCopyWith<$Res> {
+  factory $SuccessGetProposalDetailCopyWith(SuccessGetProposalDetail value, $Res Function(SuccessGetProposalDetail) _then) = _$SuccessGetProposalDetailCopyWithImpl;
+@useResult
+$Res call({
+ PurchaseProposalModel proposal, List<PurchaseProposalModel> proposals
+});
+
+
+
+
+}
+/// @nodoc
+class _$SuccessGetProposalDetailCopyWithImpl<$Res>
+    implements $SuccessGetProposalDetailCopyWith<$Res> {
+  _$SuccessGetProposalDetailCopyWithImpl(this._self, this._then);
+
+  final SuccessGetProposalDetail _self;
+  final $Res Function(SuccessGetProposalDetail) _then;
+
+/// Create a copy of ProposalsState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? proposal = null,Object? proposals = null,}) {
+  return _then(SuccessGetProposalDetail(
+proposal: null == proposal ? _self.proposal : proposal // ignore: cast_nullable_to_non_nullable
+as PurchaseProposalModel,proposals: null == proposals ? _self._proposals : proposals // ignore: cast_nullable_to_non_nullable
+as List<PurchaseProposalModel>,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class SuccessGetProposalStatus implements ProposalsState {
+  const SuccessGetProposalStatus({required this.status, required final  List<PurchaseProposalModel> proposals}): _proposals = proposals;
+  
+
+ final  ProposalStatusResponse status;
+ final  List<PurchaseProposalModel> _proposals;
+ List<PurchaseProposalModel> get proposals {
+  if (_proposals is EqualUnmodifiableListView) return _proposals;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_proposals);
+}
+
+
+/// Create a copy of ProposalsState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SuccessGetProposalStatusCopyWith<SuccessGetProposalStatus> get copyWith => _$SuccessGetProposalStatusCopyWithImpl<SuccessGetProposalStatus>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SuccessGetProposalStatus&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other._proposals, _proposals));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,status,const DeepCollectionEquality().hash(_proposals));
+
+@override
+String toString() {
+  return 'ProposalsState.successGetProposalStatus(status: $status, proposals: $proposals)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SuccessGetProposalStatusCopyWith<$Res> implements $ProposalsStateCopyWith<$Res> {
+  factory $SuccessGetProposalStatusCopyWith(SuccessGetProposalStatus value, $Res Function(SuccessGetProposalStatus) _then) = _$SuccessGetProposalStatusCopyWithImpl;
+@useResult
+$Res call({
+ ProposalStatusResponse status, List<PurchaseProposalModel> proposals
+});
+
+
+
+
+}
+/// @nodoc
+class _$SuccessGetProposalStatusCopyWithImpl<$Res>
+    implements $SuccessGetProposalStatusCopyWith<$Res> {
+  _$SuccessGetProposalStatusCopyWithImpl(this._self, this._then);
+
+  final SuccessGetProposalStatus _self;
+  final $Res Function(SuccessGetProposalStatus) _then;
+
+/// Create a copy of ProposalsState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? status = null,Object? proposals = null,}) {
+  return _then(SuccessGetProposalStatus(
+status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as ProposalStatusResponse,proposals: null == proposals ? _self._proposals : proposals // ignore: cast_nullable_to_non_nullable
+as List<PurchaseProposalModel>,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class SuccessApproveProposal implements ProposalsState {
+  const SuccessApproveProposal({required this.proposal, required final  List<PurchaseProposalModel> proposals}): _proposals = proposals;
+  
+
+ final  PurchaseProposalModel proposal;
+ final  List<PurchaseProposalModel> _proposals;
+ List<PurchaseProposalModel> get proposals {
+  if (_proposals is EqualUnmodifiableListView) return _proposals;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_proposals);
+}
+
+
+/// Create a copy of ProposalsState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SuccessApproveProposalCopyWith<SuccessApproveProposal> get copyWith => _$SuccessApproveProposalCopyWithImpl<SuccessApproveProposal>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SuccessApproveProposal&&(identical(other.proposal, proposal) || other.proposal == proposal)&&const DeepCollectionEquality().equals(other._proposals, _proposals));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,proposal,const DeepCollectionEquality().hash(_proposals));
+
+@override
+String toString() {
+  return 'ProposalsState.successApproveProposal(proposal: $proposal, proposals: $proposals)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SuccessApproveProposalCopyWith<$Res> implements $ProposalsStateCopyWith<$Res> {
+  factory $SuccessApproveProposalCopyWith(SuccessApproveProposal value, $Res Function(SuccessApproveProposal) _then) = _$SuccessApproveProposalCopyWithImpl;
+@useResult
+$Res call({
+ PurchaseProposalModel proposal, List<PurchaseProposalModel> proposals
+});
+
+
+
+
+}
+/// @nodoc
+class _$SuccessApproveProposalCopyWithImpl<$Res>
+    implements $SuccessApproveProposalCopyWith<$Res> {
+  _$SuccessApproveProposalCopyWithImpl(this._self, this._then);
+
+  final SuccessApproveProposal _self;
+  final $Res Function(SuccessApproveProposal) _then;
+
+/// Create a copy of ProposalsState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? proposal = null,Object? proposals = null,}) {
+  return _then(SuccessApproveProposal(
+proposal: null == proposal ? _self.proposal : proposal // ignore: cast_nullable_to_non_nullable
+as PurchaseProposalModel,proposals: null == proposals ? _self._proposals : proposals // ignore: cast_nullable_to_non_nullable
+as List<PurchaseProposalModel>,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class SuccessRejectProposal implements ProposalsState {
+  const SuccessRejectProposal({required this.proposal, required final  List<PurchaseProposalModel> proposals}): _proposals = proposals;
+  
+
+ final  PurchaseProposalModel proposal;
+ final  List<PurchaseProposalModel> _proposals;
+ List<PurchaseProposalModel> get proposals {
+  if (_proposals is EqualUnmodifiableListView) return _proposals;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_proposals);
+}
+
+
+/// Create a copy of ProposalsState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SuccessRejectProposalCopyWith<SuccessRejectProposal> get copyWith => _$SuccessRejectProposalCopyWithImpl<SuccessRejectProposal>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SuccessRejectProposal&&(identical(other.proposal, proposal) || other.proposal == proposal)&&const DeepCollectionEquality().equals(other._proposals, _proposals));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,proposal,const DeepCollectionEquality().hash(_proposals));
+
+@override
+String toString() {
+  return 'ProposalsState.successRejectProposal(proposal: $proposal, proposals: $proposals)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SuccessRejectProposalCopyWith<$Res> implements $ProposalsStateCopyWith<$Res> {
+  factory $SuccessRejectProposalCopyWith(SuccessRejectProposal value, $Res Function(SuccessRejectProposal) _then) = _$SuccessRejectProposalCopyWithImpl;
+@useResult
+$Res call({
+ PurchaseProposalModel proposal, List<PurchaseProposalModel> proposals
+});
+
+
+
+
+}
+/// @nodoc
+class _$SuccessRejectProposalCopyWithImpl<$Res>
+    implements $SuccessRejectProposalCopyWith<$Res> {
+  _$SuccessRejectProposalCopyWithImpl(this._self, this._then);
+
+  final SuccessRejectProposal _self;
+  final $Res Function(SuccessRejectProposal) _then;
+
+/// Create a copy of ProposalsState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? proposal = null,Object? proposals = null,}) {
+  return _then(SuccessRejectProposal(
+proposal: null == proposal ? _self.proposal : proposal // ignore: cast_nullable_to_non_nullable
+as PurchaseProposalModel,proposals: null == proposals ? _self._proposals : proposals // ignore: cast_nullable_to_non_nullable
+as List<PurchaseProposalModel>,
   ));
 }
 

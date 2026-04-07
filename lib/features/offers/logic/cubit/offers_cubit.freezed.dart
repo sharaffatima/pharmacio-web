@@ -55,13 +55,13 @@ extension OffersStatePatterns on OffersState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( OffersInitial value)?  initial,TResult Function( OffersLoading value)?  loading,TResult Function( OffersSuccess value)?  success,TResult Function( OffersError value)?  error,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( OffersInitial value)?  initial,TResult Function( OffersLoading value)?  loading,TResult Function( SuccessGetAvailableOffers value)?  successGetAvailableOffers,TResult Function( OffersError value)?  error,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case OffersInitial() when initial != null:
 return initial(_that);case OffersLoading() when loading != null:
-return loading(_that);case OffersSuccess() when success != null:
-return success(_that);case OffersError() when error != null:
+return loading(_that);case SuccessGetAvailableOffers() when successGetAvailableOffers != null:
+return successGetAvailableOffers(_that);case OffersError() when error != null:
 return error(_that);case _:
   return orElse();
 
@@ -80,13 +80,13 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( OffersInitial value)  initial,required TResult Function( OffersLoading value)  loading,required TResult Function( OffersSuccess value)  success,required TResult Function( OffersError value)  error,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( OffersInitial value)  initial,required TResult Function( OffersLoading value)  loading,required TResult Function( SuccessGetAvailableOffers value)  successGetAvailableOffers,required TResult Function( OffersError value)  error,}){
 final _that = this;
 switch (_that) {
 case OffersInitial():
 return initial(_that);case OffersLoading():
-return loading(_that);case OffersSuccess():
-return success(_that);case OffersError():
+return loading(_that);case SuccessGetAvailableOffers():
+return successGetAvailableOffers(_that);case OffersError():
 return error(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -104,13 +104,13 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( OffersInitial value)?  initial,TResult? Function( OffersLoading value)?  loading,TResult? Function( OffersSuccess value)?  success,TResult? Function( OffersError value)?  error,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( OffersInitial value)?  initial,TResult? Function( OffersLoading value)?  loading,TResult? Function( SuccessGetAvailableOffers value)?  successGetAvailableOffers,TResult? Function( OffersError value)?  error,}){
 final _that = this;
 switch (_that) {
 case OffersInitial() when initial != null:
 return initial(_that);case OffersLoading() when loading != null:
-return loading(_that);case OffersSuccess() when success != null:
-return success(_that);case OffersError() when error != null:
+return loading(_that);case SuccessGetAvailableOffers() when successGetAvailableOffers != null:
+return successGetAvailableOffers(_that);case OffersError() when error != null:
 return error(_that);case _:
   return null;
 
@@ -128,12 +128,12 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<OfferEntry> offers)?  success,TResult Function( String error)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<AvailableOfferItem> offers)?  successGetAvailableOffers,TResult Function( String error)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case OffersInitial() when initial != null:
 return initial();case OffersLoading() when loading != null:
-return loading();case OffersSuccess() when success != null:
-return success(_that.offers);case OffersError() when error != null:
+return loading();case SuccessGetAvailableOffers() when successGetAvailableOffers != null:
+return successGetAvailableOffers(_that.offers);case OffersError() when error != null:
 return error(_that.error);case _:
   return orElse();
 
@@ -152,12 +152,12 @@ return error(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<OfferEntry> offers)  success,required TResult Function( String error)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<AvailableOfferItem> offers)  successGetAvailableOffers,required TResult Function( String error)  error,}) {final _that = this;
 switch (_that) {
 case OffersInitial():
 return initial();case OffersLoading():
-return loading();case OffersSuccess():
-return success(_that.offers);case OffersError():
+return loading();case SuccessGetAvailableOffers():
+return successGetAvailableOffers(_that.offers);case OffersError():
 return error(_that.error);case _:
   throw StateError('Unexpected subclass');
 
@@ -175,12 +175,12 @@ return error(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<OfferEntry> offers)?  success,TResult? Function( String error)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<AvailableOfferItem> offers)?  successGetAvailableOffers,TResult? Function( String error)?  error,}) {final _that = this;
 switch (_that) {
 case OffersInitial() when initial != null:
 return initial();case OffersLoading() when loading != null:
-return loading();case OffersSuccess() when success != null:
-return success(_that.offers);case OffersError() when error != null:
+return loading();case SuccessGetAvailableOffers() when successGetAvailableOffers != null:
+return successGetAvailableOffers(_that.offers);case OffersError() when error != null:
 return error(_that.error);case _:
   return null;
 
@@ -256,12 +256,12 @@ String toString() {
 /// @nodoc
 
 
-class OffersSuccess implements OffersState {
-  const OffersSuccess(final  List<OfferEntry> offers): _offers = offers;
+class SuccessGetAvailableOffers implements OffersState {
+  const SuccessGetAvailableOffers(final  List<AvailableOfferItem> offers): _offers = offers;
   
 
- final  List<OfferEntry> _offers;
- List<OfferEntry> get offers {
+ final  List<AvailableOfferItem> _offers;
+ List<AvailableOfferItem> get offers {
   if (_offers is EqualUnmodifiableListView) return _offers;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_offers);
@@ -272,13 +272,13 @@ class OffersSuccess implements OffersState {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$OffersSuccessCopyWith<OffersSuccess> get copyWith => _$OffersSuccessCopyWithImpl<OffersSuccess>(this, _$identity);
+$SuccessGetAvailableOffersCopyWith<SuccessGetAvailableOffers> get copyWith => _$SuccessGetAvailableOffersCopyWithImpl<SuccessGetAvailableOffers>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OffersSuccess&&const DeepCollectionEquality().equals(other._offers, _offers));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SuccessGetAvailableOffers&&const DeepCollectionEquality().equals(other._offers, _offers));
 }
 
 
@@ -287,18 +287,18 @@ int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(
 
 @override
 String toString() {
-  return 'OffersState.success(offers: $offers)';
+  return 'OffersState.successGetAvailableOffers(offers: $offers)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $OffersSuccessCopyWith<$Res> implements $OffersStateCopyWith<$Res> {
-  factory $OffersSuccessCopyWith(OffersSuccess value, $Res Function(OffersSuccess) _then) = _$OffersSuccessCopyWithImpl;
+abstract mixin class $SuccessGetAvailableOffersCopyWith<$Res> implements $OffersStateCopyWith<$Res> {
+  factory $SuccessGetAvailableOffersCopyWith(SuccessGetAvailableOffers value, $Res Function(SuccessGetAvailableOffers) _then) = _$SuccessGetAvailableOffersCopyWithImpl;
 @useResult
 $Res call({
- List<OfferEntry> offers
+ List<AvailableOfferItem> offers
 });
 
 
@@ -306,19 +306,19 @@ $Res call({
 
 }
 /// @nodoc
-class _$OffersSuccessCopyWithImpl<$Res>
-    implements $OffersSuccessCopyWith<$Res> {
-  _$OffersSuccessCopyWithImpl(this._self, this._then);
+class _$SuccessGetAvailableOffersCopyWithImpl<$Res>
+    implements $SuccessGetAvailableOffersCopyWith<$Res> {
+  _$SuccessGetAvailableOffersCopyWithImpl(this._self, this._then);
 
-  final OffersSuccess _self;
-  final $Res Function(OffersSuccess) _then;
+  final SuccessGetAvailableOffers _self;
+  final $Res Function(SuccessGetAvailableOffers) _then;
 
 /// Create a copy of OffersState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? offers = null,}) {
-  return _then(OffersSuccess(
+  return _then(SuccessGetAvailableOffers(
 null == offers ? _self._offers : offers // ignore: cast_nullable_to_non_nullable
-as List<OfferEntry>,
+as List<AvailableOfferItem>,
   ));
 }
 

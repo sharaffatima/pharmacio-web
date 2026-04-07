@@ -6,17 +6,12 @@ part 'inventory_list_response.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class InventoryListResponse {
-  final int count;
+  final int? count;
   final String? next;
   final String? previous;
-  final List<InventoryApiItem> results;
+  final List<InventoryApiItem>? results;
 
-  InventoryListResponse({
-    required this.count,
-    required this.next,
-    required this.previous,
-    required this.results,
-  });
+  InventoryListResponse({this.count, this.next, this.previous, this.results});
 
   factory InventoryListResponse.fromJson(Map<String, dynamic> json) =>
       _$InventoryListResponseFromJson(json);

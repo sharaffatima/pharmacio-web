@@ -9,13 +9,15 @@ part of 'dashboard_recent_activity_item.dart';
 DashboardRecentActivityItem _$DashboardRecentActivityItemFromJson(
   Map<String, dynamic> json,
 ) => DashboardRecentActivityItem(
-  id: (json['id'] as num).toInt(),
-  action: json['action'] as String,
-  message: json['message'] as String,
-  theme: json['theme'] as String,
-  icon: json['icon'] as String,
-  createdAt: DateTime.parse(json['created_at'] as String),
-  actor: json['actor'] as String,
+  id: (json['id'] as num?)?.toInt(),
+  action: json['action'] as String?,
+  message: json['message'] as String?,
+  theme: json['theme'] as String?,
+  icon: json['icon'] as String?,
+  createdAt: json['created_at'] == null
+      ? null
+      : DateTime.parse(json['created_at'] as String),
+  actor: json['actor'] as String?,
 );
 
 Map<String, dynamic> _$DashboardRecentActivityItemToJson(
@@ -26,6 +28,6 @@ Map<String, dynamic> _$DashboardRecentActivityItemToJson(
   'message': instance.message,
   'theme': instance.theme,
   'icon': instance.icon,
-  'created_at': instance.createdAt.toIso8601String(),
+  'created_at': instance.createdAt?.toIso8601String(),
   'actor': instance.actor,
 };

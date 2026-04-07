@@ -26,9 +26,10 @@ class RegisterScreen extends StatelessWidget {
                 showAppSnackBar(context, error);
               },
               successRegister: (response) {
+                final username = response.user?.username ?? '-';
                 showAppSnackBar(
                   context,
-                  '${AppStrings.registerSuccess}: ${response.user.username}',
+                  '${AppStrings.registerSuccess}: $username',
                 );
                 context.read<AuthCubit>()
                   ..usernameController.clear()

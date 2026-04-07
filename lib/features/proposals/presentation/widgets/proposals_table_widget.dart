@@ -5,85 +5,10 @@ import '../../../../core/constants/app_strings.dart';
 import '../../../../core/constants/colors.dart';
 import '../../../../core/constants/text_styles.dart';
 import '../../../../core/helpers/spacing.dart';
-
-class ProposalEntry {
-  final String name;
-  final String createdDate;
-  final String createdBy;
-  final String totalValue;
-  final int items;
-  final String status;
-
-  const ProposalEntry({
-    required this.name,
-    required this.createdDate,
-    required this.createdBy,
-    required this.totalValue,
-    required this.items,
-    required this.status,
-  });
-
-  static List<ProposalEntry> sampleData() => [
-    const ProposalEntry(
-      name: 'Q1 2026 Office Equipment',
-      createdDate: '2026-02-11',
-      createdBy: 'Admin User',
-      totalValue: '\$15,240.50',
-      items: 24,
-      status: 'Pending',
-    ),
-    const ProposalEntry(
-      name: 'February IT Hardware Purchase',
-      createdDate: '2026-02-10',
-      createdBy: 'Admin User',
-      totalValue: '\$32,450.75',
-      items: 18,
-      status: 'Approved',
-    ),
-    const ProposalEntry(
-      name: 'Warehouse Supplies Bulk Order',
-      createdDate: '2026-02-09',
-      createdBy: 'Admin User',
-      totalValue: '\$8,920.30',
-      items: 45,
-      status: 'Pending',
-    ),
-    const ProposalEntry(
-      name: 'January Office Furniture',
-      createdDate: '2026-02-05',
-      createdBy: 'Admin User',
-      totalValue: '\$12,340.00',
-      items: 12,
-      status: 'Approved',
-    ),
-    const ProposalEntry(
-      name: 'Seasonal Products Procurement',
-      createdDate: '2026-02-03',
-      createdBy: 'Admin User',
-      totalValue: '\$6,780.25',
-      items: 32,
-      status: 'Rejected',
-    ),
-  ];
-
-  Color get statusColor {
-    switch (status) {
-      case 'Pending':
-        return AppColors.saffronAmber;
-      case 'Approved':
-        return AppColors.emerald;
-      case 'Rejected':
-        return AppColors.brightRed;
-      default:
-        return AppColors.coolGrey;
-    }
-  }
-
-  Color get statusBgColor => statusColor.withValues(alpha: 0.1);
-}
+import '../../data/models/purchase_proposal_model.dart';
 
 class ProposalsTableWidget extends StatelessWidget {
-  final List<ProposalEntry> entries;
+  final List<PurchaseProposalModel> entries;
   final ValueChanged<int> onView;
 
   const ProposalsTableWidget({
@@ -176,7 +101,7 @@ class ProposalsTableWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildDataRow(ProposalEntry entry, int index) {
+  Widget _buildDataRow(PurchaseProposalModel entry, int index) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 14.h),
       decoration: BoxDecoration(
@@ -189,7 +114,7 @@ class ProposalsTableWidget extends StatelessWidget {
           Expanded(
             flex: 3,
             child: Text(
-              entry.name,
+              'Proposal #${entry.id ?? '-'}',
               style: AppTextStyles.font13BlackMedium,
               overflow: TextOverflow.ellipsis,
             ),
@@ -197,28 +122,29 @@ class ProposalsTableWidget extends StatelessWidget {
           Expanded(
             flex: 1,
             child: Text(
-              entry.createdDate,
+              _formatDate(entry.createdAt),
               style: AppTextStyles.font13GreyRegular,
             ),
           ),
           Expanded(
             flex: 1,
             child: Text(
-              entry.createdBy,
+              entry.createdBy ?? '-',
               style: AppTextStyles.font13GreyRegular,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
           Expanded(
             flex: 1,
             child: Text(
-              entry.totalValue,
+              entry.totalCost ?? '-',
               style: AppTextStyles.font13GreyRegular,
             ),
           ),
           SizedBox(
             width: 50.w,
             child: Text(
-              '${entry.items}',
+              '${entry.items?.length ?? 0}',
               style: AppTextStyles.font13GreyRegular,
             ),
           ),
@@ -229,13 +155,15 @@ class ProposalsTableWidget extends StatelessWidget {
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                 decoration: BoxDecoration(
-                  color: entry.statusBgColor,
+                  color: _statusColor(
+                    entry.status ?? '',
+                  ).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(20.r),
                 ),
                 child: Text(
-                  entry.status,
+                  _statusLabel(entry.status ?? ''),
                   style: AppTextStyles.font12GreyRegular.copyWith(
-                    color: entry.statusColor,
+                    color: _statusColor(entry.status ?? ''),
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -257,5 +185,35 @@ class ProposalsTableWidget extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _formatDate(DateTime? date) {
+    if (date == null) return '-';
+    final local = date.toLocal();
+    return '${local.year.toString().padLeft(4, '0')}-${local.month.toString().padLeft(2, '0')}-${local.day.toString().padLeft(2, '0')}';
+  }
+
+  String _statusLabel(String status) {
+    switch (status.toLowerCase()) {
+      case 'approved':
+        return 'Approved';
+      case 'rejected':
+        return 'Rejected';
+      case 'pending':
+      default:
+        return 'Pending';
+    }
+  }
+
+  Color _statusColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'approved':
+        return AppColors.emerald;
+      case 'rejected':
+        return AppColors.brightRed;
+      case 'pending':
+      default:
+        return AppColors.saffronAmber;
+    }
   }
 }

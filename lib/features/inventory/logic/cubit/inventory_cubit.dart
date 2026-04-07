@@ -94,13 +94,14 @@ class InventoryCubit extends Cubit<InventoryState> {
   }
 
   int get lowStockCount =>
-      _allItems.where((i) => i.status.toLowerCase() == 'low').length;
-  int get totalStockValue => _allItems.fold(0, (sum, i) => sum + i.quantity);
+      _allItems.where((i) => (i.status ?? '').toLowerCase() == 'low').length;
+  int get totalStockValue =>
+      _allItems.fold(0, (sum, i) => sum + (i.quantity ?? 0));
   int get totalCount => _allItems.length;
 
   Future<void> _refreshInventoryList() async {
     final response = await _inventoryRepo.getInventoryList();
-    _allItems = response.results;
+    _allItems = response.results ?? [];
   }
 
   void _emitFiltered({
@@ -112,14 +113,16 @@ class InventoryCubit extends Cubit<InventoryState> {
     if (searchQuery.isNotEmpty) {
       filtered = filtered
           .where(
-            (i) => i.product.toLowerCase().contains(searchQuery.toLowerCase()),
+            (i) => (i.product ?? '').toLowerCase().contains(
+              searchQuery.toLowerCase(),
+            ),
           )
           .toList();
     }
 
     if (lowStockOnly) {
       filtered = filtered
-          .where((i) => i.status.toLowerCase() == 'low')
+          .where((i) => (i.status ?? '').toLowerCase() == 'low')
           .toList();
     }
 

@@ -9,10 +9,10 @@ part of 'dashboard_stats_response.dart';
 DashboardStatsResponse _$DashboardStatsResponseFromJson(
   Map<String, dynamic> json,
 ) => DashboardStatsResponse(
-  activityAlerts: (json['activity_alerts'] as num).toInt(),
-  lowStock: (json['low_stock'] as num).toInt(),
-  proposals: (json['proposals'] as num).toInt(),
-  inventory: (json['inventory'] as num).toInt(),
+  activityAlerts: (json['activity_alerts'] as num?)?.toInt(),
+  lowStock: (json['low_stock'] as num?)?.toInt(),
+  proposals: (json['proposals'] as num?)?.toInt(),
+  inventory: (json['inventory'] as num?)?.toInt(),
 );
 
 Map<String, dynamic> _$DashboardStatsResponseToJson(

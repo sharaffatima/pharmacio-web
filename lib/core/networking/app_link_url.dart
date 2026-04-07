@@ -9,6 +9,7 @@ class AppLinkUrl {
   // Uploads
   static const String upload = "/offers/upload/";
   static const String uploadStatus = "/offers/uploads/";
+  static const String availableOffers = "/available-offers/";
 
   // Inventory
   static const String inventory = "/inventory/";
@@ -20,4 +21,8 @@ class AppLinkUrl {
 
   // Alerts
   static const String myNotifications = "/notifications/me/";
+
+  // Proposals
+  static const String purchaseProposals = "/purchase-proposals/";
+
 }

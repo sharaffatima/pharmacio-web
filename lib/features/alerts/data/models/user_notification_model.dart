@@ -4,31 +4,31 @@ part 'user_notification_model.g.dart';
 
 @JsonSerializable()
 class UserNotificationModel {
-  final int id;
+  final int? id;
 
   @JsonKey(name: 'notification_id')
-  final int notificationId;
+  final int? notificationId;
 
-  final String type;
-  final String message;
+  final String? type;
+  final String? message;
 
   @JsonKey(name: 'is_read')
-  final bool isRead;
+  final bool? isRead;
 
   @JsonKey(name: 'read_at')
   final DateTime? readAt;
 
   @JsonKey(name: 'created_at')
-  final DateTime createdAt;
+  final DateTime? createdAt;
 
   UserNotificationModel({
-    required this.id,
-    required this.notificationId,
-    required this.type,
-    required this.message,
-    required this.isRead,
-    required this.readAt,
-    required this.createdAt,
+    this.id,
+    this.notificationId,
+    this.type,
+    this.message,
+    this.isRead,
+    this.readAt,
+    this.createdAt,
   });
 
   factory UserNotificationModel.fromJson(Map<String, dynamic> json) =>
