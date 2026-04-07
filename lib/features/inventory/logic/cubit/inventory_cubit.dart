@@ -1,11 +1,14 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../../../../core/constants/app_strings.dart';
 import '../../../../core/networking/error/error_handler/network_exceptions.dart';
 import '../../data/models/inventory_adjust_request_body.dart';
 import '../../data/models/inventory_adjust_response.dart';
 import '../../data/models/inventory_api_item.dart';
 import '../../data/models/inventory_create_request_body.dart';
+import '../../data/models/inventory_sale_request_body.dart';
+import '../../data/models/inventory_sale_response.dart';
 import '../../data/repos/inventory_repo.dart';
 
 part '../states/inventory_state.dart';
@@ -55,12 +58,7 @@ class InventoryCubit extends Cubit<InventoryState> {
     required String reason,
   }) async {
     if (item.id == null) {
-      emit(
-        const InventoryState.error(
-          error:
-              'Cannot adjust this item because inventory id is missing in API response.',
-        ),
-      );
+      emit(InventoryState.error(error: AppStrings.cannotAdjustItemMissingId));
       return;
     }
 
@@ -80,6 +78,35 @@ class InventoryCubit extends Cubit<InventoryState> {
       final exception = NetworkExceptions.getException(e);
       final message = NetworkExceptions.getErrorMessage(exception);
       emit(InventoryState.error(error: message));
+    }
+  }
+
+  Future<InventorySaleResponse?> recordSale({
+    required int inventoryId,
+    required int quantitySold,
+    required String unitPrice,
+    required DateTime soldAt,
+  }) async {
+    emit(const InventoryState.loading());
+
+    try {
+      final saleResponse = await _inventoryRepo.recordSale(
+        InventorySaleRequestBody(
+          inventoryId: inventoryId,
+          quantitySold: quantitySold,
+          unitPrice: unitPrice,
+          soldAt: soldAt.toUtc(),
+        ),
+      );
+
+      await _refreshInventoryList();
+      _emitFiltered();
+      return saleResponse;
+    } catch (e) {
+      final exception = NetworkExceptions.getException(e);
+      final message = NetworkExceptions.getErrorMessage(exception);
+      emit(InventoryState.error(error: message));
+      return null;
     }
   }
 

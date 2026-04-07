@@ -2,6 +2,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../../../../core/constants/app_strings.dart';
 import '../../../../core/constants/colors.dart';
 import '../../../../core/networking/error/error_handler/network_exceptions.dart';
 import '../../data/models/upload_entry.dart';
@@ -19,10 +20,7 @@ class UploadsCubit extends Cubit<UploadsState> {
   List<UploadEntry> uploadsList = [];
 
   void loadRecentlyUploadedFiles() {
-    //! TODO: implement this method
-    emit(const UploadsState.loading());
-    // uploadsList = UploadEntry.sampleData();
-    // emit(UploadsState.success(List.from(uploadsList)));
+    emit(const UploadsState.initial());
   }
 
   Future<void> pickFiles() async {
@@ -75,6 +73,6 @@ class UploadsCubit extends Cubit<UploadsState> {
 
   void deleteFile(int index) {
     uploadsList.removeAt(index);
-    emit(UploadsState.successDeletedFile("Deleted File Successfully"));
+    emit(UploadsState.successDeletedFile(AppStrings.fileDeleted));
   }
 }

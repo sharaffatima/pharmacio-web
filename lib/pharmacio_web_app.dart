@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'core/constants/app_strings.dart';
 import 'core/constants/colors.dart';
 import 'core/language/language_cubit.dart';
 import 'core/routing/app_router.dart';
@@ -22,7 +23,7 @@ class PharmacioWebApp extends StatelessWidget {
       builder: (context, child) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          title: 'Pharmacio Admin Panel',
+          title: AppStrings.appTitle,
           onGenerateRoute: appRouter.generateRoute,
           initialRoute: Routes.loginScreen,
           theme: ThemeData(

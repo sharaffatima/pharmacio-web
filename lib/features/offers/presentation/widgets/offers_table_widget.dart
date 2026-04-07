@@ -213,9 +213,9 @@ class OffersTableWidget extends StatelessWidget {
   }
 
   String _statusLabel(String status) {
-    if (status.trim().isEmpty) return 'Unknown';
+    if (status.trim().isEmpty) return AppStrings.unknown;
     if (status.toLowerCase() == 'completed') {
-      return 'Completed';
+      return AppStrings.completed;
     }
     return status;
   }
@@ -223,7 +223,7 @@ class OffersTableWidget extends StatelessWidget {
   String _warehouseLabel(String? warehouseName) {
     final value = warehouseName?.trim();
     if (value == null || value.isEmpty) {
-      return 'Unassigned';
+      return AppStrings.unassigned;
     }
     return value;
   }

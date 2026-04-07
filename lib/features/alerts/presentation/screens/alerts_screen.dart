@@ -7,6 +7,7 @@ import '../../../../core/constants/colors.dart';
 import '../../../../core/constants/text_styles.dart';
 import '../../../../core/helpers/spacing.dart';
 import '../../../../core/public_widgets/loading_widget.dart';
+import '../../../../core/public_widgets/retry_button_widget.dart';
 import '../../../../core/public_widgets/snack_bar_widget.dart';
 import '../../../dashboard/presentation/widgets/sidebar_widget.dart';
 import '../../data/models/user_notification_model.dart';
@@ -39,9 +40,7 @@ class AlertsScreen extends StatelessWidget {
                       ) {
                         showAppSnackBar(
                           context,
-                          AppStrings.currentLanguage == 'ar'
-                              ? 'تم تعليم الإشعار كمقروء'
-                              : 'Notification marked as read',
+                          AppStrings.notificationMarkedAsRead,
                         );
                       },
                   error: (error) => showAppSnackBar(context, error),
@@ -51,7 +50,10 @@ class AlertsScreen extends StatelessWidget {
                 return state.when(
                   initial: () => const LoadingWidget(),
                   loading: () => const LoadingWidget(),
-                  error: (error) => Center(child: Text(error)),
+                  error: (error) => RetryButtonWidget(
+                    message: error,
+                    onRetry: () => context.read<AlertsCubit>().loadData(),
+                  ),
                   successGetMyNotifications:
                       (alerts, unreadCount, tabIndex, selectedSeverity) =>
                           _buildContent(
@@ -67,13 +69,12 @@ class AlertsScreen extends StatelessWidget {
                         unreadCount,
                         tabIndex,
                         selectedSeverity,
-                      ) =>
-                          _buildContent(
-                            context,
-                            alerts,
-                            tabIndex,
-                            selectedSeverity,
-                          ),
+                      ) => _buildContent(
+                        context,
+                        alerts,
+                        tabIndex,
+                        selectedSeverity,
+                      ),
                 );
               },
             ),
@@ -153,17 +154,45 @@ class AlertsScreen extends StatelessWidget {
                       child: DropdownButton<String>(
                         value: selectedSeverity,
                         isExpanded: true,
+                        dropdownColor: AppColors.white,
                         icon: Icon(
                           Icons.keyboard_arrow_down,
                           size: 20.sp,
                           color: AppColors.coolGrey,
                         ),
-                        style: AppTextStyles.font14BlackRegular,
-                        items: ['All Severities', 'Critical', 'Warning', 'Info']
-                            .map(
-                              (s) => DropdownMenuItem(value: s, child: Text(s)),
-                            )
-                            .toList(),
+                        style: AppTextStyles.font14BlackRegular.copyWith(
+                          color: AppColors.black,
+                        ),
+                        items: [
+                          DropdownMenuItem(
+                            value: AlertsCubit.severityAll,
+                            child: Text(
+                              AppStrings.severityAll,
+                              style: AppTextStyles.font14BlackRegular,
+                            ),
+                          ),
+                          DropdownMenuItem(
+                            value: AlertsCubit.severityCritical,
+                            child: Text(
+                              AppStrings.severityCritical,
+                              style: AppTextStyles.font14BlackRegular,
+                            ),
+                          ),
+                          DropdownMenuItem(
+                            value: AlertsCubit.severityWarning,
+                            child: Text(
+                              AppStrings.severityWarning,
+                              style: AppTextStyles.font14BlackRegular,
+                            ),
+                          ),
+                          DropdownMenuItem(
+                            value: AlertsCubit.severityInfo,
+                            child: Text(
+                              AppStrings.severityInfo,
+                              style: AppTextStyles.font14BlackRegular,
+                            ),
+                          ),
+                        ],
                         onChanged: (v) {
                           if (v != null) cubit.updateSeverity(v);
                         },

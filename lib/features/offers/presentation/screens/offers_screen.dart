@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../core/constants/app_strings.dart';
 import '../../../../core/constants/colors.dart';
 import '../../../../core/helpers/spacing.dart';
 import '../../../../core/public_widgets/loading_widget.dart';
+import '../../../../core/public_widgets/retry_button_widget.dart';
 import '../../../dashboard/presentation/widgets/sidebar_widget.dart';
 import '../../data/models/available_offer_item.dart';
 import '../../logic/cubit/offers_cubit.dart';
@@ -28,7 +30,10 @@ class OffersScreen extends StatelessWidget {
                 return state.when(
                   initial: () => const LoadingWidget(),
                   loading: () => const LoadingWidget(),
-                  error: (error) => Center(child: Text(error)),
+                  error: (error) => RetryButtonWidget(
+                    message: error,
+                    onRetry: () => context.read<OffersCubit>().loadData(),
+                  ),
                   successGetAvailableOffers: (offers) =>
                       _buildContent(context, offers),
                 );
@@ -84,14 +89,14 @@ class OffersScreen extends StatelessWidget {
         offers
             .map(
               (offer) => (offer.status ?? '').toLowerCase() == 'completed'
-                  ? 'Completed'
-                  : (offer.status ?? 'Unknown'),
+                  ? AppStrings.completed
+                  : (offer.status ?? AppStrings.unknown),
             )
             .toSet()
             .toList()
           ..sort();
 
-    return ['All Suppliers', ...statuses];
+    return [AppStrings.allSuppliers, ...statuses];
   }
 
   List<String> _buildWarehouseFilters(List<AvailableOfferItem> offers) {
@@ -102,13 +107,13 @@ class OffersScreen extends StatelessWidget {
             .toList()
           ..sort();
 
-    return ['All Warehouses', ...warehouses];
+    return [AppStrings.allWarehouses, ...warehouses];
   }
 
   String _warehouseLabel(String? warehouseName) {
     final value = warehouseName?.trim();
     if (value == null || value.isEmpty) {
-      return 'Unassigned';
+      return AppStrings.unassigned;
     }
     return value;
   }

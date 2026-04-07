@@ -114,7 +114,7 @@ class ProposalsTableWidget extends StatelessWidget {
           Expanded(
             flex: 3,
             child: Text(
-              'Proposal #${entry.id ?? '-'}',
+              AppStrings.proposalNumber((entry.id ?? '-').toString()),
               style: AppTextStyles.font13BlackMedium,
               overflow: TextOverflow.ellipsis,
             ),
@@ -196,12 +196,12 @@ class ProposalsTableWidget extends StatelessWidget {
   String _statusLabel(String status) {
     switch (status.toLowerCase()) {
       case 'approved':
-        return 'Approved';
+        return AppStrings.approved;
       case 'rejected':
-        return 'Rejected';
+        return AppStrings.rejected;
       case 'pending':
       default:
-        return 'Pending';
+        return AppStrings.pending;
     }
   }
 

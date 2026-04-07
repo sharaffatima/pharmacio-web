@@ -11,12 +11,17 @@ part 'alerts_cubit.freezed.dart';
 class AlertsCubit extends Cubit<AlertsState> {
   final AlertsRepo _alertsRepo;
 
+  static const String severityAll = 'all';
+  static const String severityCritical = 'critical';
+  static const String severityWarning = 'warning';
+  static const String severityInfo = 'info';
+
   AlertsCubit(this._alertsRepo) : super(const AlertsState.initial());
 
   List<UserNotificationModel> _alerts = [];
   int _unreadCount = 0;
   int _tabIndex = 0;
-  String _selectedSeverity = 'All Severities';
+  String _selectedSeverity = severityAll;
 
   int get tabIndex => _tabIndex;
   String get selectedSeverity => _selectedSeverity;
@@ -85,7 +90,7 @@ class AlertsCubit extends Cubit<AlertsState> {
   int get criticalCount => _alerts
       .where(
         (a) =>
-            _severityFromType(a.type ?? '') == 'Critical' &&
+            _severityFromType(a.type ?? '') == severityCritical &&
             !(a.isRead ?? false),
       )
       .length;
@@ -93,7 +98,7 @@ class AlertsCubit extends Cubit<AlertsState> {
       _alerts.where((a) => (a.isRead ?? false) && _isToday(a.readAt)).length;
 
   List<UserNotificationModel> _getFiltered() {
-    if (_selectedSeverity == 'All Severities') return List.from(_alerts);
+    if (_selectedSeverity == severityAll) return List.from(_alerts);
     return _alerts
         .where((a) => _severityFromType(a.type ?? '') == _selectedSeverity)
         .toList();
@@ -127,9 +132,9 @@ class AlertsCubit extends Cubit<AlertsState> {
 
   String _severityFromType(String type) {
     final value = type.toLowerCase();
-    if (value.contains('low_stock')) return 'Critical';
-    if (value.contains('warning')) return 'Warning';
-    return 'Info';
+    if (value.contains('low_stock')) return severityCritical;
+    if (value.contains('warning')) return severityWarning;
+    return severityInfo;
   }
 
   bool _isToday(DateTime? dateTime) {

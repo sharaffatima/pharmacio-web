@@ -147,14 +147,22 @@ class OffersFiltersWidget extends StatelessWidget {
         child: DropdownButton<String>(
           value: value,
           isExpanded: true,
+          dropdownColor: AppColors.white,
           icon: Icon(
             Icons.keyboard_arrow_down,
             size: 20.sp,
             color: AppColors.coolGrey,
           ),
-          style: AppTextStyles.font14BlackRegular,
+          style: AppTextStyles.font14BlackRegular.copyWith(
+            color: AppColors.black,
+          ),
           items: items
-              .map((item) => DropdownMenuItem(value: item, child: Text(item)))
+              .map(
+                (item) => DropdownMenuItem(
+                  value: item,
+                  child: Text(item, style: AppTextStyles.font14BlackRegular),
+                ),
+              )
               .toList(),
           onChanged: (v) {
             if (v != null) onChanged(v);

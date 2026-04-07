@@ -136,7 +136,7 @@ class SidebarWidget extends StatelessWidget {
               : AppColors.white,
           border: Border(
             left: BorderSide(
-              color: isSelected ? AppColors.skyBlue : Colors.transparent,
+              color: isSelected ? AppColors.skyBlue : AppColors.transparent,
               width: 3.w,
             ),
           ),
@@ -268,7 +268,6 @@ class SidebarWidget extends StatelessWidget {
 
   Widget _buildLanguageToggle(BuildContext context) {
     final cubit = context.read<LanguageCubit>();
-    final isArabic = cubit.state == 'ar';
 
     return InkWell(
       onTap: () {
@@ -285,7 +284,7 @@ class SidebarWidget extends StatelessWidget {
             Icon(Icons.language, size: 20.sp, color: AppColors.coolGrey),
             horizontalSpace(12),
             Text(
-              isArabic ? 'English' : 'العربية',
+              AppStrings.switchLanguageLabel,
               style: AppTextStyles.font14BlackRegular.copyWith(
                 color: AppColors.coolGrey,
               ),
@@ -319,13 +318,7 @@ class SidebarWidget extends StatelessWidget {
             ),
             horizontalSpace(12),
             Text(
-              isDark
-                  ? (AppStrings.currentLanguage == 'ar'
-                        ? 'وضع فاتح'
-                        : 'Light Mode')
-                  : (AppStrings.currentLanguage == 'ar'
-                        ? 'وضع داكن'
-                        : 'Dark Mode'),
+              isDark ? AppStrings.lightMode : AppStrings.darkMode,
               style: AppTextStyles.font14BlackRegular.copyWith(
                 color: AppColors.coolGrey,
               ),

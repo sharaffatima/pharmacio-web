@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:pharmacio_flutter_web/features/auth/data/repos/auth_repo.dart';
 
+import '../../../../core/constants/app_strings.dart';
 import '../../../../core/networking/error/error_handler/network_exceptions.dart';
 import '../../data/models/change_password/change_password_request_body.dart';
 import '../../data/models/change_password/change_password_response.dart';
@@ -30,7 +31,7 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> login() async {
     if (passwordController.text.length < 8) {
-      emit(AuthState.error(error: "Password Should Be at Least 8 Characters"));
+      emit(AuthState.error(error: AppStrings.passwordMinLengthError));
       return;
     }
 
@@ -54,12 +55,12 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> register() async {
     if (passwordController.text.length < 8) {
-      emit(AuthState.error(error: "Password Should Be at Least 8 Characters"));
+      emit(AuthState.error(error: AppStrings.passwordMinLengthError));
       return;
     }
 
     if (passwordController.text != confirmPasswordController.text) {
-      emit(AuthState.error(error: "Passwords do not match"));
+      emit(AuthState.error(error: AppStrings.passwordsDoNotMatch));
       return;
     }
 
@@ -108,11 +109,11 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> changePassword() async {
     if (newPasswordController.text.length < 8) {
-      emit(AuthState.error(error: 'Password must be at least 8 characters'));
+      emit(AuthState.error(error: AppStrings.passwordMinLengthError));
       return;
     }
     if (newPasswordController.text != confirmNewPasswordController.text) {
-      emit(AuthState.error(error: 'Passwords do not match'));
+      emit(AuthState.error(error: AppStrings.passwordsDoNotMatch));
       return;
     }
     emit(AuthState.loading());
@@ -139,4 +140,3 @@ class AuthCubit extends Cubit<AuthState> {
     return super.close();
   }
 }
-

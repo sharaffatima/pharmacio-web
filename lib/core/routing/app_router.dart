@@ -60,7 +60,7 @@ class AppRouter {
       case Routes.compareScreen:
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
-            create: (_) => CompareCubit()..loadData(),
+            create: (_) => getIt<CompareCubit>()..loadData(),
             child: const CompareScreen(),
           ),
         );

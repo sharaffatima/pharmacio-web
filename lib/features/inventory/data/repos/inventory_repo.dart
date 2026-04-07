@@ -6,6 +6,8 @@ import '../models/inventory_adjust_response.dart';
 import '../models/inventory_api_item.dart';
 import '../models/inventory_create_request_body.dart';
 import '../models/inventory_list_response.dart';
+import '../models/inventory_sale_request_body.dart';
+import '../models/inventory_sale_response.dart';
 
 class InventoryRepo {
   final InventoryRemoteDataSource inventoryRemoteDataSource;
@@ -52,6 +54,20 @@ class InventoryRepo {
           inventoryId: inventoryId,
           requestBody: requestBody,
         );
+      } catch (e) {
+        throw NetworkExceptions.getException(e);
+      }
+    } else {
+      throw const NetworkExceptions.noInternetConnection();
+    }
+  }
+
+  Future<InventorySaleResponse> recordSale(
+    InventorySaleRequestBody requestBody,
+  ) async {
+    if (await networkInfo.isConnected) {
+      try {
+        return await inventoryRemoteDataSource.recordSale(requestBody);
       } catch (e) {
         throw NetworkExceptions.getException(e);
       }

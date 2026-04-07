@@ -33,9 +33,7 @@ class LatestUploadsWidget extends StatelessWidget {
           verticalSpace(16),
           if (activities.isEmpty)
             Text(
-              AppStrings.currentLanguage == 'ar'
-                  ? 'لا يوجد نشاط حديث'
-                  : 'No recent activity',
+              AppStrings.noRecentActivity,
               style: AppTextStyles.font13GreyRegular,
             )
           else

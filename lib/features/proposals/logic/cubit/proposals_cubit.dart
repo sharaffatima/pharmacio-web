@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../../../../core/constants/app_strings.dart';
 import '../../../../core/networking/error/error_handler/network_exceptions.dart';
 import '../../data/models/proposal_status_response.dart';
 import '../../data/models/purchase_proposal_model.dart';
@@ -16,7 +17,7 @@ class ProposalsCubit extends Cubit<ProposalsState> {
 
   List<PurchaseProposalModel> _allProposals = [];
   String searchQuery = '';
-  String selectedStatus = 'All Statuses';
+  String selectedStatus = AppStrings.allStatuses;
 
   Future<void> loadData() async {
     emit(const ProposalsState.loading());
@@ -44,7 +45,7 @@ class ProposalsCubit extends Cubit<ProposalsState> {
 
   void clearFilters() {
     searchQuery = '';
-    selectedStatus = 'All Statuses';
+    selectedStatus = AppStrings.allStatuses;
     _emitFiltered();
   }
 
@@ -141,7 +142,7 @@ class ProposalsCubit extends Cubit<ProposalsState> {
           .toList();
     }
 
-    if (selectedStatus != 'All Statuses') {
+    if (selectedStatus != AppStrings.allStatuses) {
       filtered = filtered
           .where(
             (p) =>
@@ -196,16 +197,16 @@ class ProposalsCubit extends Cubit<ProposalsState> {
 
   String _statusLabel(String status) {
     if (status.trim().isEmpty) {
-      return 'Pending';
+      return AppStrings.pending;
     }
     switch (status.toLowerCase()) {
       case 'approved':
-        return 'Approved';
+        return AppStrings.approved;
       case 'rejected':
-        return 'Rejected';
+        return AppStrings.rejected;
       case 'pending':
       default:
-        return 'Pending';
+        return AppStrings.pending;
     }
   }
 }

@@ -55,13 +55,15 @@ extension CompareStatePatterns on CompareState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( CompareInitial value)?  initial,TResult Function( CompareLoading value)?  loading,TResult Function( CompareSuccess value)?  success,TResult Function( CompareError value)?  error,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( CompareInitial value)?  initial,TResult Function( CompareLoading value)?  loading,TResult Function( SuccessGetAvailableOffers value)?  successGetAvailableOffers,TResult Function( SuccessCompareOffers value)?  successCompareOffers,TResult Function( SuccessGenerateProposal value)?  successGenerateProposal,TResult Function( CompareError value)?  error,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case CompareInitial() when initial != null:
 return initial(_that);case CompareLoading() when loading != null:
-return loading(_that);case CompareSuccess() when success != null:
-return success(_that);case CompareError() when error != null:
+return loading(_that);case SuccessGetAvailableOffers() when successGetAvailableOffers != null:
+return successGetAvailableOffers(_that);case SuccessCompareOffers() when successCompareOffers != null:
+return successCompareOffers(_that);case SuccessGenerateProposal() when successGenerateProposal != null:
+return successGenerateProposal(_that);case CompareError() when error != null:
 return error(_that);case _:
   return orElse();
 
@@ -80,13 +82,15 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( CompareInitial value)  initial,required TResult Function( CompareLoading value)  loading,required TResult Function( CompareSuccess value)  success,required TResult Function( CompareError value)  error,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( CompareInitial value)  initial,required TResult Function( CompareLoading value)  loading,required TResult Function( SuccessGetAvailableOffers value)  successGetAvailableOffers,required TResult Function( SuccessCompareOffers value)  successCompareOffers,required TResult Function( SuccessGenerateProposal value)  successGenerateProposal,required TResult Function( CompareError value)  error,}){
 final _that = this;
 switch (_that) {
 case CompareInitial():
 return initial(_that);case CompareLoading():
-return loading(_that);case CompareSuccess():
-return success(_that);case CompareError():
+return loading(_that);case SuccessGetAvailableOffers():
+return successGetAvailableOffers(_that);case SuccessCompareOffers():
+return successCompareOffers(_that);case SuccessGenerateProposal():
+return successGenerateProposal(_that);case CompareError():
 return error(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -104,13 +108,15 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( CompareInitial value)?  initial,TResult? Function( CompareLoading value)?  loading,TResult? Function( CompareSuccess value)?  success,TResult? Function( CompareError value)?  error,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( CompareInitial value)?  initial,TResult? Function( CompareLoading value)?  loading,TResult? Function( SuccessGetAvailableOffers value)?  successGetAvailableOffers,TResult? Function( SuccessCompareOffers value)?  successCompareOffers,TResult? Function( SuccessGenerateProposal value)?  successGenerateProposal,TResult? Function( CompareError value)?  error,}){
 final _that = this;
 switch (_that) {
 case CompareInitial() when initial != null:
 return initial(_that);case CompareLoading() when loading != null:
-return loading(_that);case CompareSuccess() when success != null:
-return success(_that);case CompareError() when error != null:
+return loading(_that);case SuccessGetAvailableOffers() when successGetAvailableOffers != null:
+return successGetAvailableOffers(_that);case SuccessCompareOffers() when successCompareOffers != null:
+return successCompareOffers(_that);case SuccessGenerateProposal() when successGenerateProposal != null:
+return successGenerateProposal(_that);case CompareError() when error != null:
 return error(_that);case _:
   return null;
 
@@ -128,12 +134,14 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<CompareOfferItem> offers)?  success,TResult Function( String error)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<CompareAvailableOfferItem> offers,  List<int> selectedOfferIds,  List<CompareOfferResultModel> comparedResults,  CompareGeneratedProposalResponse? generatedProposal)?  successGetAvailableOffers,TResult Function( List<CompareAvailableOfferItem> offers,  List<int> selectedOfferIds,  List<CompareOfferResultModel> comparedResults,  CompareGeneratedProposalResponse? generatedProposal)?  successCompareOffers,TResult Function( List<CompareAvailableOfferItem> offers,  List<int> selectedOfferIds,  List<CompareOfferResultModel> comparedResults,  CompareGeneratedProposalResponse proposal)?  successGenerateProposal,TResult Function( String error)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case CompareInitial() when initial != null:
 return initial();case CompareLoading() when loading != null:
-return loading();case CompareSuccess() when success != null:
-return success(_that.offers);case CompareError() when error != null:
+return loading();case SuccessGetAvailableOffers() when successGetAvailableOffers != null:
+return successGetAvailableOffers(_that.offers,_that.selectedOfferIds,_that.comparedResults,_that.generatedProposal);case SuccessCompareOffers() when successCompareOffers != null:
+return successCompareOffers(_that.offers,_that.selectedOfferIds,_that.comparedResults,_that.generatedProposal);case SuccessGenerateProposal() when successGenerateProposal != null:
+return successGenerateProposal(_that.offers,_that.selectedOfferIds,_that.comparedResults,_that.proposal);case CompareError() when error != null:
 return error(_that.error);case _:
   return orElse();
 
@@ -152,12 +160,14 @@ return error(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<CompareOfferItem> offers)  success,required TResult Function( String error)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<CompareAvailableOfferItem> offers,  List<int> selectedOfferIds,  List<CompareOfferResultModel> comparedResults,  CompareGeneratedProposalResponse? generatedProposal)  successGetAvailableOffers,required TResult Function( List<CompareAvailableOfferItem> offers,  List<int> selectedOfferIds,  List<CompareOfferResultModel> comparedResults,  CompareGeneratedProposalResponse? generatedProposal)  successCompareOffers,required TResult Function( List<CompareAvailableOfferItem> offers,  List<int> selectedOfferIds,  List<CompareOfferResultModel> comparedResults,  CompareGeneratedProposalResponse proposal)  successGenerateProposal,required TResult Function( String error)  error,}) {final _that = this;
 switch (_that) {
 case CompareInitial():
 return initial();case CompareLoading():
-return loading();case CompareSuccess():
-return success(_that.offers);case CompareError():
+return loading();case SuccessGetAvailableOffers():
+return successGetAvailableOffers(_that.offers,_that.selectedOfferIds,_that.comparedResults,_that.generatedProposal);case SuccessCompareOffers():
+return successCompareOffers(_that.offers,_that.selectedOfferIds,_that.comparedResults,_that.generatedProposal);case SuccessGenerateProposal():
+return successGenerateProposal(_that.offers,_that.selectedOfferIds,_that.comparedResults,_that.proposal);case CompareError():
 return error(_that.error);case _:
   throw StateError('Unexpected subclass');
 
@@ -175,12 +185,14 @@ return error(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<CompareOfferItem> offers)?  success,TResult? Function( String error)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<CompareAvailableOfferItem> offers,  List<int> selectedOfferIds,  List<CompareOfferResultModel> comparedResults,  CompareGeneratedProposalResponse? generatedProposal)?  successGetAvailableOffers,TResult? Function( List<CompareAvailableOfferItem> offers,  List<int> selectedOfferIds,  List<CompareOfferResultModel> comparedResults,  CompareGeneratedProposalResponse? generatedProposal)?  successCompareOffers,TResult? Function( List<CompareAvailableOfferItem> offers,  List<int> selectedOfferIds,  List<CompareOfferResultModel> comparedResults,  CompareGeneratedProposalResponse proposal)?  successGenerateProposal,TResult? Function( String error)?  error,}) {final _that = this;
 switch (_that) {
 case CompareInitial() when initial != null:
 return initial();case CompareLoading() when loading != null:
-return loading();case CompareSuccess() when success != null:
-return success(_that.offers);case CompareError() when error != null:
+return loading();case SuccessGetAvailableOffers() when successGetAvailableOffers != null:
+return successGetAvailableOffers(_that.offers,_that.selectedOfferIds,_that.comparedResults,_that.generatedProposal);case SuccessCompareOffers() when successCompareOffers != null:
+return successCompareOffers(_that.offers,_that.selectedOfferIds,_that.comparedResults,_that.generatedProposal);case SuccessGenerateProposal() when successGenerateProposal != null:
+return successGenerateProposal(_that.offers,_that.selectedOfferIds,_that.comparedResults,_that.proposal);case CompareError() when error != null:
 return error(_that.error);case _:
   return null;
 
@@ -256,49 +268,64 @@ String toString() {
 /// @nodoc
 
 
-class CompareSuccess implements CompareState {
-  const CompareSuccess(final  List<CompareOfferItem> offers): _offers = offers;
+class SuccessGetAvailableOffers implements CompareState {
+  const SuccessGetAvailableOffers({required final  List<CompareAvailableOfferItem> offers, required final  List<int> selectedOfferIds, required final  List<CompareOfferResultModel> comparedResults, this.generatedProposal}): _offers = offers,_selectedOfferIds = selectedOfferIds,_comparedResults = comparedResults;
   
 
- final  List<CompareOfferItem> _offers;
- List<CompareOfferItem> get offers {
+ final  List<CompareAvailableOfferItem> _offers;
+ List<CompareAvailableOfferItem> get offers {
   if (_offers is EqualUnmodifiableListView) return _offers;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_offers);
 }
 
+ final  List<int> _selectedOfferIds;
+ List<int> get selectedOfferIds {
+  if (_selectedOfferIds is EqualUnmodifiableListView) return _selectedOfferIds;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_selectedOfferIds);
+}
+
+ final  List<CompareOfferResultModel> _comparedResults;
+ List<CompareOfferResultModel> get comparedResults {
+  if (_comparedResults is EqualUnmodifiableListView) return _comparedResults;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_comparedResults);
+}
+
+ final  CompareGeneratedProposalResponse? generatedProposal;
 
 /// Create a copy of CompareState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$CompareSuccessCopyWith<CompareSuccess> get copyWith => _$CompareSuccessCopyWithImpl<CompareSuccess>(this, _$identity);
+$SuccessGetAvailableOffersCopyWith<SuccessGetAvailableOffers> get copyWith => _$SuccessGetAvailableOffersCopyWithImpl<SuccessGetAvailableOffers>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompareSuccess&&const DeepCollectionEquality().equals(other._offers, _offers));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SuccessGetAvailableOffers&&const DeepCollectionEquality().equals(other._offers, _offers)&&const DeepCollectionEquality().equals(other._selectedOfferIds, _selectedOfferIds)&&const DeepCollectionEquality().equals(other._comparedResults, _comparedResults)&&(identical(other.generatedProposal, generatedProposal) || other.generatedProposal == generatedProposal));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_offers));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_offers),const DeepCollectionEquality().hash(_selectedOfferIds),const DeepCollectionEquality().hash(_comparedResults),generatedProposal);
 
 @override
 String toString() {
-  return 'CompareState.success(offers: $offers)';
+  return 'CompareState.successGetAvailableOffers(offers: $offers, selectedOfferIds: $selectedOfferIds, comparedResults: $comparedResults, generatedProposal: $generatedProposal)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $CompareSuccessCopyWith<$Res> implements $CompareStateCopyWith<$Res> {
-  factory $CompareSuccessCopyWith(CompareSuccess value, $Res Function(CompareSuccess) _then) = _$CompareSuccessCopyWithImpl;
+abstract mixin class $SuccessGetAvailableOffersCopyWith<$Res> implements $CompareStateCopyWith<$Res> {
+  factory $SuccessGetAvailableOffersCopyWith(SuccessGetAvailableOffers value, $Res Function(SuccessGetAvailableOffers) _then) = _$SuccessGetAvailableOffersCopyWithImpl;
 @useResult
 $Res call({
- List<CompareOfferItem> offers
+ List<CompareAvailableOfferItem> offers, List<int> selectedOfferIds, List<CompareOfferResultModel> comparedResults, CompareGeneratedProposalResponse? generatedProposal
 });
 
 
@@ -306,19 +333,202 @@ $Res call({
 
 }
 /// @nodoc
-class _$CompareSuccessCopyWithImpl<$Res>
-    implements $CompareSuccessCopyWith<$Res> {
-  _$CompareSuccessCopyWithImpl(this._self, this._then);
+class _$SuccessGetAvailableOffersCopyWithImpl<$Res>
+    implements $SuccessGetAvailableOffersCopyWith<$Res> {
+  _$SuccessGetAvailableOffersCopyWithImpl(this._self, this._then);
 
-  final CompareSuccess _self;
-  final $Res Function(CompareSuccess) _then;
+  final SuccessGetAvailableOffers _self;
+  final $Res Function(SuccessGetAvailableOffers) _then;
 
 /// Create a copy of CompareState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? offers = null,}) {
-  return _then(CompareSuccess(
-null == offers ? _self._offers : offers // ignore: cast_nullable_to_non_nullable
-as List<CompareOfferItem>,
+@pragma('vm:prefer-inline') $Res call({Object? offers = null,Object? selectedOfferIds = null,Object? comparedResults = null,Object? generatedProposal = freezed,}) {
+  return _then(SuccessGetAvailableOffers(
+offers: null == offers ? _self._offers : offers // ignore: cast_nullable_to_non_nullable
+as List<CompareAvailableOfferItem>,selectedOfferIds: null == selectedOfferIds ? _self._selectedOfferIds : selectedOfferIds // ignore: cast_nullable_to_non_nullable
+as List<int>,comparedResults: null == comparedResults ? _self._comparedResults : comparedResults // ignore: cast_nullable_to_non_nullable
+as List<CompareOfferResultModel>,generatedProposal: freezed == generatedProposal ? _self.generatedProposal : generatedProposal // ignore: cast_nullable_to_non_nullable
+as CompareGeneratedProposalResponse?,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class SuccessCompareOffers implements CompareState {
+  const SuccessCompareOffers({required final  List<CompareAvailableOfferItem> offers, required final  List<int> selectedOfferIds, required final  List<CompareOfferResultModel> comparedResults, this.generatedProposal}): _offers = offers,_selectedOfferIds = selectedOfferIds,_comparedResults = comparedResults;
+  
+
+ final  List<CompareAvailableOfferItem> _offers;
+ List<CompareAvailableOfferItem> get offers {
+  if (_offers is EqualUnmodifiableListView) return _offers;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_offers);
+}
+
+ final  List<int> _selectedOfferIds;
+ List<int> get selectedOfferIds {
+  if (_selectedOfferIds is EqualUnmodifiableListView) return _selectedOfferIds;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_selectedOfferIds);
+}
+
+ final  List<CompareOfferResultModel> _comparedResults;
+ List<CompareOfferResultModel> get comparedResults {
+  if (_comparedResults is EqualUnmodifiableListView) return _comparedResults;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_comparedResults);
+}
+
+ final  CompareGeneratedProposalResponse? generatedProposal;
+
+/// Create a copy of CompareState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SuccessCompareOffersCopyWith<SuccessCompareOffers> get copyWith => _$SuccessCompareOffersCopyWithImpl<SuccessCompareOffers>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SuccessCompareOffers&&const DeepCollectionEquality().equals(other._offers, _offers)&&const DeepCollectionEquality().equals(other._selectedOfferIds, _selectedOfferIds)&&const DeepCollectionEquality().equals(other._comparedResults, _comparedResults)&&(identical(other.generatedProposal, generatedProposal) || other.generatedProposal == generatedProposal));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_offers),const DeepCollectionEquality().hash(_selectedOfferIds),const DeepCollectionEquality().hash(_comparedResults),generatedProposal);
+
+@override
+String toString() {
+  return 'CompareState.successCompareOffers(offers: $offers, selectedOfferIds: $selectedOfferIds, comparedResults: $comparedResults, generatedProposal: $generatedProposal)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SuccessCompareOffersCopyWith<$Res> implements $CompareStateCopyWith<$Res> {
+  factory $SuccessCompareOffersCopyWith(SuccessCompareOffers value, $Res Function(SuccessCompareOffers) _then) = _$SuccessCompareOffersCopyWithImpl;
+@useResult
+$Res call({
+ List<CompareAvailableOfferItem> offers, List<int> selectedOfferIds, List<CompareOfferResultModel> comparedResults, CompareGeneratedProposalResponse? generatedProposal
+});
+
+
+
+
+}
+/// @nodoc
+class _$SuccessCompareOffersCopyWithImpl<$Res>
+    implements $SuccessCompareOffersCopyWith<$Res> {
+  _$SuccessCompareOffersCopyWithImpl(this._self, this._then);
+
+  final SuccessCompareOffers _self;
+  final $Res Function(SuccessCompareOffers) _then;
+
+/// Create a copy of CompareState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? offers = null,Object? selectedOfferIds = null,Object? comparedResults = null,Object? generatedProposal = freezed,}) {
+  return _then(SuccessCompareOffers(
+offers: null == offers ? _self._offers : offers // ignore: cast_nullable_to_non_nullable
+as List<CompareAvailableOfferItem>,selectedOfferIds: null == selectedOfferIds ? _self._selectedOfferIds : selectedOfferIds // ignore: cast_nullable_to_non_nullable
+as List<int>,comparedResults: null == comparedResults ? _self._comparedResults : comparedResults // ignore: cast_nullable_to_non_nullable
+as List<CompareOfferResultModel>,generatedProposal: freezed == generatedProposal ? _self.generatedProposal : generatedProposal // ignore: cast_nullable_to_non_nullable
+as CompareGeneratedProposalResponse?,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class SuccessGenerateProposal implements CompareState {
+  const SuccessGenerateProposal({required final  List<CompareAvailableOfferItem> offers, required final  List<int> selectedOfferIds, required final  List<CompareOfferResultModel> comparedResults, required this.proposal}): _offers = offers,_selectedOfferIds = selectedOfferIds,_comparedResults = comparedResults;
+  
+
+ final  List<CompareAvailableOfferItem> _offers;
+ List<CompareAvailableOfferItem> get offers {
+  if (_offers is EqualUnmodifiableListView) return _offers;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_offers);
+}
+
+ final  List<int> _selectedOfferIds;
+ List<int> get selectedOfferIds {
+  if (_selectedOfferIds is EqualUnmodifiableListView) return _selectedOfferIds;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_selectedOfferIds);
+}
+
+ final  List<CompareOfferResultModel> _comparedResults;
+ List<CompareOfferResultModel> get comparedResults {
+  if (_comparedResults is EqualUnmodifiableListView) return _comparedResults;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_comparedResults);
+}
+
+ final  CompareGeneratedProposalResponse proposal;
+
+/// Create a copy of CompareState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SuccessGenerateProposalCopyWith<SuccessGenerateProposal> get copyWith => _$SuccessGenerateProposalCopyWithImpl<SuccessGenerateProposal>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SuccessGenerateProposal&&const DeepCollectionEquality().equals(other._offers, _offers)&&const DeepCollectionEquality().equals(other._selectedOfferIds, _selectedOfferIds)&&const DeepCollectionEquality().equals(other._comparedResults, _comparedResults)&&(identical(other.proposal, proposal) || other.proposal == proposal));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_offers),const DeepCollectionEquality().hash(_selectedOfferIds),const DeepCollectionEquality().hash(_comparedResults),proposal);
+
+@override
+String toString() {
+  return 'CompareState.successGenerateProposal(offers: $offers, selectedOfferIds: $selectedOfferIds, comparedResults: $comparedResults, proposal: $proposal)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SuccessGenerateProposalCopyWith<$Res> implements $CompareStateCopyWith<$Res> {
+  factory $SuccessGenerateProposalCopyWith(SuccessGenerateProposal value, $Res Function(SuccessGenerateProposal) _then) = _$SuccessGenerateProposalCopyWithImpl;
+@useResult
+$Res call({
+ List<CompareAvailableOfferItem> offers, List<int> selectedOfferIds, List<CompareOfferResultModel> comparedResults, CompareGeneratedProposalResponse proposal
+});
+
+
+
+
+}
+/// @nodoc
+class _$SuccessGenerateProposalCopyWithImpl<$Res>
+    implements $SuccessGenerateProposalCopyWith<$Res> {
+  _$SuccessGenerateProposalCopyWithImpl(this._self, this._then);
+
+  final SuccessGenerateProposal _self;
+  final $Res Function(SuccessGenerateProposal) _then;
+
+/// Create a copy of CompareState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? offers = null,Object? selectedOfferIds = null,Object? comparedResults = null,Object? proposal = null,}) {
+  return _then(SuccessGenerateProposal(
+offers: null == offers ? _self._offers : offers // ignore: cast_nullable_to_non_nullable
+as List<CompareAvailableOfferItem>,selectedOfferIds: null == selectedOfferIds ? _self._selectedOfferIds : selectedOfferIds // ignore: cast_nullable_to_non_nullable
+as List<int>,comparedResults: null == comparedResults ? _self._comparedResults : comparedResults // ignore: cast_nullable_to_non_nullable
+as List<CompareOfferResultModel>,proposal: null == proposal ? _self.proposal : proposal // ignore: cast_nullable_to_non_nullable
+as CompareGeneratedProposalResponse,
   ));
 }
 

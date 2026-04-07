@@ -13,6 +13,7 @@ class AppLinkUrl {
 
   // Inventory
   static const String inventory = "/inventory/";
+  static const String sales = "/sales/";
 
   // Dashboard
   static const String dashboardStats = "/notifications/dashboard/stats/";
@@ -24,5 +25,7 @@ class AppLinkUrl {
 
   // Proposals
   static const String purchaseProposals = "/purchase-proposals/";
-
+  static const String compareOffers = "/purchase-proposals/compare/";
+  static const String generatePurchaseProposal =
+      "/purchase-proposals/generate/";
 }

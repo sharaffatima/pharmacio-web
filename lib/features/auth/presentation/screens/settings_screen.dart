@@ -23,7 +23,7 @@ class SettingsScreen extends StatelessWidget {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(AppStrings.passwordChangedSuccess),
-                backgroundColor: Colors.green,
+                backgroundColor: AppColors.emerald,
               ),
             );
             cubit.oldPasswordController.clear();
@@ -32,7 +32,10 @@ class SettingsScreen extends StatelessWidget {
           },
           error: (msg) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(msg), backgroundColor: Colors.red),
+              SnackBar(
+                content: Text(msg),
+                backgroundColor: AppColors.brightRed,
+              ),
             );
           },
         );

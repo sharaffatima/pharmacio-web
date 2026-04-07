@@ -86,15 +86,24 @@ class ProposalsFiltersWidget extends StatelessWidget {
                     child: DropdownButton<String>(
                       value: selectedStatus,
                       isExpanded: true,
+                      dropdownColor: AppColors.white,
                       icon: Icon(
                         Icons.keyboard_arrow_down,
                         size: 20.sp,
                         color: AppColors.coolGrey,
                       ),
-                      style: AppTextStyles.font14BlackRegular,
+                      style: AppTextStyles.font14BlackRegular.copyWith(
+                        color: AppColors.black,
+                      ),
                       items: statuses
                           .map(
-                            (s) => DropdownMenuItem(value: s, child: Text(s)),
+                            (s) => DropdownMenuItem(
+                              value: s,
+                              child: Text(
+                                s,
+                                style: AppTextStyles.font14BlackRegular,
+                              ),
+                            ),
                           )
                           .toList(),
                       onChanged: (v) {

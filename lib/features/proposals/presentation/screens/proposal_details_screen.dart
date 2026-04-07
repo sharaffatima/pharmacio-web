@@ -67,14 +67,12 @@ class ProposalDetailsScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Proposal #${proposal.id ?? '-'}',
+                AppStrings.proposalNumber((proposal.id ?? '-').toString()),
                 style: AppTextStyles.font24BlackBold,
               ),
               verticalSpace(2),
               Text(
-                AppStrings.currentLanguage == 'ar'
-                    ? 'تفاصيل كاملة للمقترح والعناصر المرتبطة به'
-                    : 'Full details for the proposal and its line items',
+                AppStrings.proposalDetailsSubtitle,
                 style: AppTextStyles.font14GreyMedium,
               ),
             ],
@@ -97,9 +95,7 @@ class ProposalDetailsScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            AppStrings.currentLanguage == 'ar'
-                ? 'ملخص المقترح'
-                : 'Proposal Summary',
+            AppStrings.proposalSummary,
             style: AppTextStyles.font16BlackSemiBold,
           ),
           verticalSpace(16),
@@ -108,42 +104,32 @@ class ProposalDetailsScreen extends StatelessWidget {
             runSpacing: 12.h,
             children: [
               _buildInfoTile(
-                label: AppStrings.currentLanguage == 'ar' ? 'الحالة' : 'Status',
+                label: AppStrings.status,
                 value: _statusLabel(proposal.status ?? ""),
                 statusColor: _statusColor(proposal.status ?? ""),
               ),
               _buildInfoTile(
-                label: AppStrings.currentLanguage == 'ar'
-                    ? 'الإجمالي'
-                    : 'Total Cost',
+                label: AppStrings.totalCostLabel,
                 value: proposal.totalCost ?? '-',
               ),
               _buildInfoTile(
-                label: AppStrings.currentLanguage == 'ar' ? 'العناصر' : 'Items',
+                label: AppStrings.items,
                 value: (proposal.items ?? []).length.toString(),
               ),
               _buildInfoTile(
-                label: AppStrings.currentLanguage == 'ar'
-                    ? 'تم الإنشاء بواسطة'
-                    : 'Created By',
+                label: AppStrings.createdBy,
                 value: proposal.createdBy ?? '-',
               ),
               _buildInfoTile(
-                label: AppStrings.currentLanguage == 'ar'
-                    ? 'تمت الموافقة بواسطة'
-                    : 'Approved By',
+                label: AppStrings.approvedByLabel,
                 value: proposal.approvedBy ?? '-',
               ),
               _buildInfoTile(
-                label: AppStrings.currentLanguage == 'ar'
-                    ? 'تاريخ الإنشاء'
-                    : 'Created At',
+                label: AppStrings.createdAtLabel,
                 value: _formatDateTime(proposal.createdAt),
               ),
               _buildInfoTile(
-                label: AppStrings.currentLanguage == 'ar'
-                    ? 'آخر تحديث'
-                    : 'Updated At',
+                label: AppStrings.updatedAtLabel,
                 value: _formatDateTime(proposal.updatedAt),
               ),
             ],
@@ -213,9 +199,7 @@ class ProposalDetailsScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            AppStrings.currentLanguage == 'ar'
-                ? 'عناصر المقترح'
-                : 'Proposal Items',
+            AppStrings.proposalItems,
             style: AppTextStyles.font16BlackSemiBold,
           ),
           verticalSpace(14),
@@ -225,9 +209,7 @@ class ProposalDetailsScreen extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(vertical: 16.h),
               child: Text(
-                AppStrings.currentLanguage == 'ar'
-                    ? 'لا توجد عناصر'
-                    : 'No items found',
+                AppStrings.noItemsFound,
                 style: AppTextStyles.font13GreyRegular,
               ),
             ),
@@ -260,32 +242,29 @@ class ProposalDetailsScreen extends StatelessWidget {
           Expanded(
             flex: 3,
             child: Text(
-              AppStrings.currentLanguage == 'ar' ? 'المنتج' : 'Product',
+              AppStrings.product,
               style: AppTextStyles.font13BlackMedium,
             ),
           ),
           Expanded(
             flex: 2,
             child: Text(
-              AppStrings.currentLanguage == 'ar' ? 'الشركة' : 'Company',
+              AppStrings.company,
+              style: AppTextStyles.font13BlackMedium,
+            ),
+          ),
+          Expanded(
+            child: Text(AppStrings.qty, style: AppTextStyles.font13BlackMedium),
+          ),
+          Expanded(
+            child: Text(
+              AppStrings.unit,
               style: AppTextStyles.font13BlackMedium,
             ),
           ),
           Expanded(
             child: Text(
-              AppStrings.currentLanguage == 'ar' ? 'الكمية' : 'Qty',
-              style: AppTextStyles.font13BlackMedium,
-            ),
-          ),
-          Expanded(
-            child: Text(
-              AppStrings.currentLanguage == 'ar' ? 'السعر' : 'Unit',
-              style: AppTextStyles.font13BlackMedium,
-            ),
-          ),
-          Expanded(
-            child: Text(
-              AppStrings.currentLanguage == 'ar' ? 'الإجمالي' : 'Total',
+              AppStrings.total,
               style: AppTextStyles.font13BlackMedium,
             ),
           ),
@@ -350,12 +329,12 @@ class ProposalDetailsScreen extends StatelessWidget {
   String _statusLabel(String status) {
     switch (status.toLowerCase()) {
       case 'approved':
-        return 'Approved';
+        return AppStrings.approved;
       case 'rejected':
-        return 'Rejected';
+        return AppStrings.rejected;
       case 'pending':
       default:
-        return 'Pending';
+        return AppStrings.pending;
     }
   }
 

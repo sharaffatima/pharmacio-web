@@ -7,6 +7,7 @@ import '../../../../core/constants/colors.dart';
 import '../../../../core/constants/text_styles.dart';
 import '../../../../core/helpers/spacing.dart';
 import '../../../../core/public_widgets/loading_widget.dart';
+import '../../../../core/public_widgets/retry_button_widget.dart';
 import '../../../../core/public_widgets/snack_bar_widget.dart';
 import '../../../dashboard/presentation/widgets/sidebar_widget.dart';
 import '../../data/models/upload_entry.dart';
@@ -29,10 +30,14 @@ class UploadsScreen extends StatelessWidget {
             child: BlocConsumer<UploadsCubit, UploadsState>(
               listener: (context, state) {
                 state.whenOrNull(
-                  uploadSuccess: (response) =>
-                      showAppSnackBar(context, response.message ?? 'File uploaded successfully'),
-                  statusSuccess: (response) =>
-                      showAppSnackBar(context, response.message ?? "Status updated"),
+                  uploadSuccess: (response) => showAppSnackBar(
+                    context,
+                    AppStrings.uploadProcessingNotice,
+                  ),
+                  statusSuccess: (response) => showAppSnackBar(
+                    context,
+                    response.message ?? AppStrings.statusUpdated,
+                  ),
                   error: (error) => showAppSnackBar(context, error),
                 );
               },
@@ -45,7 +50,12 @@ class UploadsScreen extends StatelessWidget {
 
                 Widget content = state.maybeWhen(
                   loading: () => const LoadingWidget(),
-                  error: (error) => Center(child: Text(error)),
+                  error: (error) => RetryButtonWidget(
+                    message: error,
+                    onRetry: () => context
+                        .read<UploadsCubit>()
+                        .loadRecentlyUploadedFiles(),
+                  ),
                   successDeletedFile: (successMsg) =>
                       _buildContent(context, uploadsList),
                   orElse: () => _buildContent(context, uploadsList),
@@ -80,14 +90,6 @@ class UploadsScreen extends StatelessWidget {
           UploadDropzoneWidget(
             onBrowseFiles: () async {
               await context.read<UploadsCubit>().pickFiles();
-              if (context.mounted) {
-                showAppSnackBar(
-                  context,
-                  AppStrings.currentLanguage == 'ar'
-                      ? 'تم رفع الملفات بنجاح'
-                      : 'Files uploaded successfully',
-                );
-              }
             },
           ),
           verticalSpace(24),
@@ -234,7 +236,7 @@ class UploadsScreen extends StatelessWidget {
               TextButton(
                 onPressed: () => Navigator.of(ctx).pop(),
                 child: Text(
-                  AppStrings.currentLanguage == 'ar' ? 'إغلاق' : 'Close',
+                  AppStrings.close,
                   style: AppTextStyles.font14BlackRegular,
                 ),
               ),
@@ -253,20 +255,18 @@ class UploadsScreen extends StatelessWidget {
           borderRadius: BorderRadius.circular(12.r),
         ),
         title: Text(
-          AppStrings.currentLanguage == 'ar' ? 'تأكيد الحذف' : 'Confirm Delete',
+          AppStrings.confirmDelete,
           style: AppTextStyles.font16BlackSemiBold,
         ),
         content: Text(
-          AppStrings.currentLanguage == 'ar'
-              ? 'هل تريد حذف "${entry.filename}"؟'
-              : 'Delete "${entry.filename}"?',
+          AppStrings.deleteFileQuestion(entry.filename),
           style: AppTextStyles.font14BlackRegular,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
             child: Text(
-              AppStrings.currentLanguage == 'ar' ? 'إلغاء' : 'Cancel',
+              AppStrings.cancel,
               style: AppTextStyles.font14BlackRegular,
             ),
           ),
@@ -274,12 +274,7 @@ class UploadsScreen extends StatelessWidget {
             onPressed: () {
               Navigator.of(ctx).pop();
               context.read<UploadsCubit>().deleteFile(index);
-              showAppSnackBar(
-                context,
-                AppStrings.currentLanguage == 'ar'
-                    ? 'تم حذف الملف'
-                    : 'File deleted',
-              );
+              showAppSnackBar(context, AppStrings.fileDeleted);
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.brightRed,
@@ -288,7 +283,7 @@ class UploadsScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8.r),
               ),
             ),
-            child: Text(AppStrings.currentLanguage == 'ar' ? 'حذف' : 'Delete'),
+            child: Text(AppStrings.delete),
           ),
         ],
       ),

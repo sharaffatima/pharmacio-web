@@ -47,9 +47,7 @@ class RecentUploadsTableWidget extends StatelessWidget {
               padding: EdgeInsets.symmetric(vertical: 24.h),
               child: Center(
                 child: Text(
-                  AppStrings.currentLanguage == 'ar'
-                      ? 'لا توجد تحميلات'
-                      : 'No uploads yet',
+                  AppStrings.noUploadsYet,
                   style: AppTextStyles.font13GreyRegular,
                 ),
               ),
@@ -183,9 +181,7 @@ class RecentUploadsTableWidget extends StatelessWidget {
                   onTap: () => onView(index),
                   borderRadius: BorderRadius.circular(4.r),
                   child: Tooltip(
-                    message: AppStrings.currentLanguage == 'ar'
-                        ? 'عرض'
-                        : 'View',
+                    message: AppStrings.view,
                     child: Icon(
                       Icons.visibility_outlined,
                       size: 20.sp,
@@ -198,9 +194,7 @@ class RecentUploadsTableWidget extends StatelessWidget {
                   onTap: () => onDelete(index),
                   borderRadius: BorderRadius.circular(4.r),
                   child: Tooltip(
-                    message: AppStrings.currentLanguage == 'ar'
-                        ? 'حذف'
-                        : 'Delete',
+                    message: AppStrings.delete,
                     child: Icon(
                       Icons.delete_outline,
                       size: 20.sp,

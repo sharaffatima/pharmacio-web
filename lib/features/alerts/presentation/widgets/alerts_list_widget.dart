@@ -8,6 +8,10 @@ import '../../../../core/helpers/spacing.dart';
 import '../../data/models/user_notification_model.dart';
 
 class AlertsListWidget extends StatelessWidget {
+  static const String _severityCriticalKey = 'critical';
+  static const String _severityWarningKey = 'warning';
+  static const String _severityInfoKey = 'info';
+
   final List<UserNotificationModel> alerts;
   final ValueChanged<int> onResolve;
 
@@ -46,6 +50,7 @@ class AlertsListWidget extends StatelessWidget {
     final severityColor = _severityColor(severity);
     final severityBgColor = severityColor.withValues(alpha: 0.1);
     final severityIcon = _severityIcon(severity);
+    final severityLabel = _severityLabel(severity);
     final title = _titleFromType(alert.type ?? '');
 
     return Container(
@@ -99,7 +104,7 @@ class AlertsListWidget extends StatelessWidget {
                         borderRadius: BorderRadius.circular(4.r),
                       ),
                       child: Text(
-                        severity,
+                        severityLabel,
                         style: AppTextStyles.font12GreyRegular.copyWith(
                           color: severityColor,
                           fontWeight: FontWeight.w600,
@@ -146,25 +151,37 @@ class AlertsListWidget extends StatelessWidget {
 
   String _severityFromType(String type) {
     final value = type.toLowerCase();
-    if (value.contains('low_stock')) return 'Critical';
-    if (value.contains('warning')) return 'Warning';
-    return 'Info';
+    if (value.contains('low_stock')) return _severityCriticalKey;
+    if (value.contains('warning')) return _severityWarningKey;
+    return _severityInfoKey;
+  }
+
+  String _severityLabel(String severity) {
+    switch (severity) {
+      case _severityCriticalKey:
+        return AppStrings.severityCritical;
+      case _severityWarningKey:
+        return AppStrings.severityWarning;
+      case _severityInfoKey:
+      default:
+        return AppStrings.severityInfo;
+    }
   }
 
   String _titleFromType(String type) {
     final value = type.toLowerCase();
-    if (value.contains('low_stock')) return 'Low Stock Alert';
-    if (value.contains('inventory')) return 'Inventory Notification';
-    if (value.contains('sale')) return 'Sales Notification';
-    if (value.contains('file')) return 'Upload Notification';
-    return 'Notification';
+    if (value.contains('low_stock')) return AppStrings.alertTitleLowStock;
+    if (value.contains('inventory')) return AppStrings.alertTitleInventory;
+    if (value.contains('sale')) return AppStrings.alertTitleSales;
+    if (value.contains('file')) return AppStrings.alertTitleUpload;
+    return AppStrings.alertTitleNotification;
   }
 
   Color _severityColor(String severity) {
     switch (severity) {
-      case 'Critical':
+      case _severityCriticalKey:
         return AppColors.brightRed;
-      case 'Warning':
+      case _severityWarningKey:
         return AppColors.saffronAmber;
       default:
         return AppColors.skyBlue;
@@ -173,9 +190,9 @@ class AlertsListWidget extends StatelessWidget {
 
   IconData _severityIcon(String severity) {
     switch (severity) {
-      case 'Critical':
+      case _severityCriticalKey:
         return Icons.error_outline;
-      case 'Warning':
+      case _severityWarningKey:
         return Icons.warning_amber;
       default:
         return Icons.info_outline;

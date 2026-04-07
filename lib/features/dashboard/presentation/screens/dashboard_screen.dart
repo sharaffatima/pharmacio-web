@@ -6,6 +6,7 @@ import '../../../../core/constants/app_strings.dart';
 import '../../../../core/constants/colors.dart';
 import '../../../../core/helpers/spacing.dart';
 import '../../../../core/public_widgets/loading_widget.dart';
+import '../../../../core/public_widgets/retry_button_widget.dart';
 import '../../data/models/dashboard_recent_activity_item.dart';
 import '../../data/models/dashboard_stats_response.dart';
 import '../../logic/cubit/dashboard_cubit.dart';
@@ -31,7 +32,10 @@ class DashboardScreen extends StatelessWidget {
                 return state.when(
                   initial: () => const LoadingWidget(),
                   loading: () => const LoadingWidget(),
-                  error: (error) => Center(child: Text(error)),
+                  error: (error) => RetryButtonWidget(
+                    message: error,
+                    onRetry: () => context.read<DashboardCubit>().loadData(),
+                  ),
                   success: (stats, recentActivity) =>
                       _buildContent(stats, recentActivity),
                 );

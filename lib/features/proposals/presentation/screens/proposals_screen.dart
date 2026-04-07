@@ -7,6 +7,7 @@ import '../../../../core/constants/colors.dart';
 import '../../../../core/constants/text_styles.dart';
 import '../../../../core/helpers/spacing.dart';
 import '../../../../core/public_widgets/loading_widget.dart';
+import '../../../../core/public_widgets/retry_button_widget.dart';
 import '../../../../core/public_widgets/snack_bar_widget.dart';
 import '../../../dashboard/presentation/widgets/sidebar_widget.dart';
 import '../../data/models/purchase_proposal_model.dart';
@@ -19,8 +20,6 @@ import '../widgets/proposals_table_widget.dart';
 
 class ProposalsScreen extends StatelessWidget {
   const ProposalsScreen({super.key});
-
-  static final _statuses = ['All Statuses', 'Pending', 'Approved', 'Rejected'];
 
   @override
   Widget build(BuildContext context) {
@@ -36,23 +35,19 @@ class ProposalsScreen extends StatelessWidget {
                   successApproveProposal: (proposal, proposals) {
                     showAppSnackBar(
                       context,
-                      AppStrings.currentLanguage == 'ar'
-                          ? 'تمت الموافقة على المقترح'
-                          : 'Proposal approved successfully',
+                      AppStrings.proposalApprovedSuccess,
                     );
                   },
                   successRejectProposal: (proposal, proposals) {
                     showAppSnackBar(
                       context,
-                      AppStrings.currentLanguage == 'ar'
-                          ? 'تم رفض المقترح'
-                          : 'Proposal rejected successfully',
+                      AppStrings.proposalRejectedSuccess,
                     );
                   },
                   successGetProposalStatus: (status, proposals) {
                     showAppSnackBar(
                       context,
-                      '${AppStrings.currentLanguage == 'ar' ? 'الحالة الحالية' : 'Current status'}: ${status.status ?? '-'}',
+                      '${AppStrings.currentStatusLabel}: ${status.status ?? '-'}',
                     );
                   },
                   error: (error) => showAppSnackBar(context, error),
@@ -62,7 +57,10 @@ class ProposalsScreen extends StatelessWidget {
                 return state.when(
                   initial: () => const LoadingWidget(),
                   loading: () => const LoadingWidget(),
-                  error: (error) => Center(child: Text(error)),
+                  error: (error) => RetryButtonWidget(
+                    message: error,
+                    onRetry: () => context.read<ProposalsCubit>().loadData(),
+                  ),
                   successGetProposalsList: (proposals) =>
                       _buildContent(context, proposals),
                   successGetProposalDetail: (proposal, proposals) =>
@@ -87,6 +85,12 @@ class ProposalsScreen extends StatelessWidget {
     List<PurchaseProposalModel> proposals,
   ) {
     final cubit = context.read<ProposalsCubit>();
+    final statuses = [
+      AppStrings.allStatuses,
+      AppStrings.pending,
+      AppStrings.approved,
+      AppStrings.rejected,
+    ];
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 28.h),
       child: Column(
@@ -96,9 +100,9 @@ class ProposalsScreen extends StatelessWidget {
           verticalSpace(24),
           ProposalsStatCardsWidget(
             total: cubit.totalCount,
-            pending: cubit.countByStatus('Pending'),
-            approved: cubit.countByStatus('Approved'),
-            rejected: cubit.countByStatus('Rejected'),
+            pending: cubit.countByStatus(AppStrings.pending),
+            approved: cubit.countByStatus(AppStrings.approved),
+            rejected: cubit.countByStatus(AppStrings.rejected),
           ),
           verticalSpace(24),
           ProposalsFiltersWidget(
@@ -108,7 +112,7 @@ class ProposalsScreen extends StatelessWidget {
               ),
             onSearchChanged: cubit.updateSearch,
             selectedStatus: cubit.selectedStatus,
-            statuses: _statuses,
+            statuses: statuses,
             onStatusChanged: cubit.updateStatus,
             onClearFilters: cubit.clearFilters,
           ),
@@ -128,10 +132,10 @@ class ProposalsScreen extends StatelessWidget {
   ) async {
     await showDialog(
       context: context,
-      barrierColor: Colors.black.withValues(alpha: 0.45),
+      barrierColor: AppColors.blackOverlay45,
       builder: (dialogContext) {
         return Dialog(
-          backgroundColor: Colors.transparent,
+          backgroundColor: AppColors.transparent,
           insetPadding: EdgeInsets.symmetric(horizontal: 20.w),
           child: Container(
             width: 560.w,
@@ -142,7 +146,7 @@ class ProposalsScreen extends StatelessWidget {
               border: Border.all(color: AppColors.gainsboro, width: 1),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.08),
+                  color: AppColors.blackOverlay08,
                   blurRadius: 20,
                   offset: const Offset(0, 8),
                 ),
@@ -172,14 +176,14 @@ class ProposalsScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Proposal #${proposal.id ?? '-'}',
+                            AppStrings.proposalNumber(
+                              (proposal.id ?? '-').toString(),
+                            ),
                             style: AppTextStyles.font16BlackSemiBold,
                           ),
                           verticalSpace(2),
                           Text(
-                            AppStrings.currentLanguage == 'ar'
-                                ? 'اختر الإجراء المطلوب لهذا المقترح'
-                                : 'Choose the action you want for this proposal',
+                            AppStrings.chooseProposalActionDescription,
                             style: AppTextStyles.font12GreyRegular,
                           ),
                         ],
@@ -204,18 +208,14 @@ class ProposalsScreen extends StatelessWidget {
                   children: [
                     Expanded(
                       child: _buildDialogInfoTile(
-                        label: AppStrings.currentLanguage == 'ar'
-                            ? 'عدد العناصر'
-                            : 'Items',
+                        label: AppStrings.items,
                         value: (proposal.items?.length ?? 0).toString(),
                       ),
                     ),
                     horizontalSpace(12),
                     Expanded(
                       child: _buildDialogInfoTile(
-                        label: AppStrings.currentLanguage == 'ar'
-                            ? 'الإجمالي'
-                            : 'Total',
+                        label: AppStrings.total,
                         value: proposal.totalCost ?? '-',
                       ),
                     ),
@@ -223,9 +223,7 @@ class ProposalsScreen extends StatelessWidget {
                 ),
                 verticalSpace(12),
                 _buildDialogInfoTile(
-                  label: AppStrings.currentLanguage == 'ar'
-                      ? 'الحالة'
-                      : 'Status',
+                  label: AppStrings.status,
                   value: _statusLabel(proposal.status ?? ''),
                   statusColor: _statusColor(proposal.status ?? ''),
                 ),
@@ -243,11 +241,7 @@ class ProposalsScreen extends StatelessWidget {
                           size: 18.sp,
                           color: AppColors.charcoalBlack,
                         ),
-                        label: Text(
-                          AppStrings.currentLanguage == 'ar'
-                              ? 'التفاصيل'
-                              : 'Details',
-                        ),
+                        label: Text(AppStrings.details),
                         style: OutlinedButton.styleFrom(
                           side: BorderSide(color: AppColors.gainsboro),
                           foregroundColor: AppColors.charcoalBlack,
@@ -267,9 +261,7 @@ class ProposalsScreen extends StatelessWidget {
                           if (id == null) {
                             showAppSnackBar(
                               context,
-                              AppStrings.currentLanguage == 'ar'
-                                  ? 'لا يمكن تنفيذ العملية لأن المعرف غير متوفر'
-                                  : 'Cannot continue because proposal id is missing',
+                              AppStrings.cannotContinueMissingProposalId,
                             );
                             return;
                           }
@@ -280,11 +272,7 @@ class ProposalsScreen extends StatelessWidget {
                           size: 18.sp,
                           color: AppColors.coolGrey,
                         ),
-                        label: Text(
-                          AppStrings.currentLanguage == 'ar'
-                              ? 'الحالة'
-                              : 'Status',
-                        ),
+                        label: Text(AppStrings.status),
                         style: OutlinedButton.styleFrom(
                           side: BorderSide(color: AppColors.gainsboro),
                           foregroundColor: AppColors.coolGrey,
@@ -308,20 +296,14 @@ class ProposalsScreen extends StatelessWidget {
                           if (id == null) {
                             showAppSnackBar(
                               context,
-                              AppStrings.currentLanguage == 'ar'
-                                  ? 'لا يمكن تنفيذ العملية لأن المعرف غير متوفر'
-                                  : 'Cannot continue because proposal id is missing',
+                              AppStrings.cannotContinueMissingProposalId,
                             );
                             return;
                           }
                           context.read<ProposalsCubit>().approveProposal(id);
                         },
                         icon: Icon(Icons.check_circle, size: 18.sp),
-                        label: Text(
-                          AppStrings.currentLanguage == 'ar'
-                              ? 'موافقة'
-                              : 'Approve',
-                        ),
+                        label: Text(AppStrings.approveAction),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.emerald,
                           foregroundColor: AppColors.white,
@@ -341,9 +323,7 @@ class ProposalsScreen extends StatelessWidget {
                           if (id == null) {
                             showAppSnackBar(
                               context,
-                              AppStrings.currentLanguage == 'ar'
-                                  ? 'لا يمكن تنفيذ العملية لأن المعرف غير متوفر'
-                                  : 'Cannot continue because proposal id is missing',
+                              AppStrings.cannotContinueMissingProposalId,
                             );
                             return;
                           }
@@ -354,9 +334,7 @@ class ProposalsScreen extends StatelessWidget {
                           size: 18.sp,
                           color: AppColors.brightRed,
                         ),
-                        label: Text(
-                          AppStrings.currentLanguage == 'ar' ? 'رفض' : 'Reject',
-                        ),
+                        label: Text(AppStrings.rejectAction),
                         style: OutlinedButton.styleFrom(
                           side: BorderSide(color: AppColors.brightRed),
                           foregroundColor: AppColors.brightRed,
@@ -436,12 +414,12 @@ class ProposalsScreen extends StatelessWidget {
   String _statusLabel(String status) {
     switch (status.toLowerCase()) {
       case 'approved':
-        return 'Approved';
+        return AppStrings.approved;
       case 'rejected':
-        return 'Rejected';
+        return AppStrings.rejected;
       case 'pending':
       default:
-        return 'Pending';
+        return AppStrings.pending;
     }
   }
 

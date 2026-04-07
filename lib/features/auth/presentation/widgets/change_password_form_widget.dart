@@ -39,7 +39,7 @@ class _ChangePasswordFormWidgetState extends State<ChangePasswordFormWidget> {
         border: Border.all(color: AppColors.gainsboro),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
+            color: AppColors.blackOverlay04,
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -94,10 +94,7 @@ class _ChangePasswordFormWidgetState extends State<ChangePasswordFormWidget> {
                   cubit.confirmNewPasswordController.clear();
                   showAppSnackBar(
                     context,
-                    response.message ??
-                        (AppStrings.currentLanguage == 'ar'
-                            ? 'تم تغيير كلمة المرور بنجاح'
-                            : 'Password changed successfully'),
+                    response.message ?? AppStrings.passwordChangedSuccess,
                   );
                   context.pushNamedAndRemoveUntil(
                     Routes.dashboardScreen,

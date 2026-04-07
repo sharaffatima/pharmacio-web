@@ -3,6 +3,14 @@ import 'package:flutter/material.dart';
 class AppColors {
   static bool isDarkMode = false;
 
+  // ─── Overlay / Transparent ────────────────────────
+  static const Color transparent = Colors.transparent;
+  static Color blackOverlay45 = Colors.black.withValues(alpha: 0.45);
+  static Color blackOverlay08 = Colors.black.withValues(alpha: 0.08);
+  static Color blackOverlay04 = Colors.black.withValues(alpha: 0.04);
+  static Color greenOverlay10 = emerald.withValues(alpha: 0.1);
+  static Color redOverlay10 = brightRed.withValues(alpha: 0.1);
+
   // ─── Semantic Colors (theme-aware) ─────────────────
   static Color get white => isDarkMode ? const Color(0xFF1E1E2E) : Colors.white;
   static Color get black => isDarkMode ? const Color(0xFFE0E0E0) : Colors.black;

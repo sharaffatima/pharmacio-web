@@ -43,7 +43,7 @@ class SettingsHeaderWidget extends StatelessWidget {
         border: Border.all(color: AppColors.gainsboro),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
+            color: AppColors.blackOverlay04,
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -80,8 +80,8 @@ class SettingsHeaderWidget extends StatelessWidget {
                       ),
                       decoration: BoxDecoration(
                         color: isActive
-                            ? Colors.green.withValues(alpha: 0.1)
-                            : Colors.red.withValues(alpha: 0.1),
+                            ? AppColors.greenOverlay10
+                            : AppColors.redOverlay10,
                         borderRadius: BorderRadius.circular(20.r),
                       ),
                       child: Text(
@@ -89,7 +89,9 @@ class SettingsHeaderWidget extends StatelessWidget {
                             ? AppStrings.activeStatus
                             : AppStrings.inactiveStatus,
                         style: AppTextStyles.font12GreyRegular.copyWith(
-                          color: isActive ? Colors.green : Colors.red,
+                          color: isActive
+                              ? AppColors.emerald
+                              : AppColors.brightRed,
                         ),
                       ),
                     ),

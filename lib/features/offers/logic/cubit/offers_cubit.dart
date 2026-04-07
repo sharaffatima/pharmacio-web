@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../../../../core/constants/app_strings.dart';
 import '../../../../core/networking/error/error_handler/network_exceptions.dart';
 import '../../data/models/available_offer_item.dart';
 import '../../data/repos/offers_repo.dart';
@@ -15,8 +16,8 @@ class OffersCubit extends Cubit<OffersState> {
 
   List<AvailableOfferItem> _allOffers = [];
   String searchQuery = '';
-  String selectedSupplier = 'All Suppliers'; // mapped to status value
-  String selectedWarehouse = 'All Warehouses';
+  String selectedSupplier = AppStrings.allSuppliers; // mapped to status value
+  String selectedWarehouse = AppStrings.allWarehouses;
   int? sortColumnIndex;
   bool sortAscending = true;
 
@@ -61,8 +62,8 @@ class OffersCubit extends Cubit<OffersState> {
 
   void clearFilters() {
     searchQuery = '';
-    selectedSupplier = 'All Suppliers';
-    selectedWarehouse = 'All Warehouses';
+    selectedSupplier = AppStrings.allSuppliers;
+    selectedWarehouse = AppStrings.allWarehouses;
     sortColumnIndex = null;
     sortAscending = true;
     _emitFiltered();
@@ -85,13 +86,13 @@ class OffersCubit extends Cubit<OffersState> {
           .toList();
     }
 
-    if (selectedSupplier != 'All Suppliers') {
+    if (selectedSupplier != AppStrings.allSuppliers) {
       filtered = filtered
           .where((o) => _statusLabel(o.status ?? '') == selectedSupplier)
           .toList();
     }
 
-    if (selectedWarehouse != 'All Warehouses') {
+    if (selectedWarehouse != AppStrings.allWarehouses) {
       filtered = filtered
           .where((o) => _warehouseLabel(o.wareHouseName) == selectedWarehouse)
           .toList();
@@ -137,7 +138,7 @@ class OffersCubit extends Cubit<OffersState> {
 
   String _statusLabel(String status) {
     if (status.toLowerCase() == 'completed') {
-      return 'Completed';
+      return AppStrings.completed;
     }
     return status;
   }
@@ -145,7 +146,7 @@ class OffersCubit extends Cubit<OffersState> {
   String _warehouseLabel(String? warehouseName) {
     final value = warehouseName?.trim();
     if (value == null || value.isEmpty) {
-      return 'Unassigned';
+      return AppStrings.unassigned;
     }
     return value;
   }

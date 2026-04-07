@@ -10,6 +10,9 @@ import '../../features/auth/logic/cubits/auth_cubit.dart';
 import '../../features/alerts/data/datasources/alerts_remote_data_source.dart';
 import '../../features/alerts/data/repos/alerts_repo.dart';
 import '../../features/alerts/logic/cubit/alerts_cubit.dart';
+import '../../features/compare/data/datasources/compare_remote_data_source.dart';
+import '../../features/compare/data/repos/compare_repo.dart';
+import '../../features/compare/logic/cubit/compare_cubit.dart';
 import '../../features/dashboard/data/datasources/dashboard_remote_data_source.dart';
 import '../../features/dashboard/data/repos/dashboard_repo.dart';
 import '../../features/dashboard/logic/cubit/dashboard_cubit.dart';
@@ -89,6 +92,15 @@ Future<void> setupGetit() async {
   );
   getIt.registerLazySingleton<OffersRemoteDataSource>(
     () => OffersRemoteDataSourceImp(apiServicesImpl: getIt()),
+  );
+
+  // //! feature - compare
+  getIt.registerFactory<CompareCubit>(() => CompareCubit(getIt()));
+  getIt.registerLazySingleton<CompareRepo>(
+    () => CompareRepo(compareRemoteDataSource: getIt(), networkInfo: getIt()),
+  );
+  getIt.registerLazySingleton<CompareRemoteDataSource>(
+    () => CompareRemoteDataSourceImp(apiServicesImpl: getIt()),
   );
 
   // //! feature - proposals
