@@ -35,13 +35,9 @@ class ProposalDetailsScreen extends StatelessWidget {
         selectedIndex: 4,
         body: BlocListener<ProposalsCubit, ProposalsState>(
           listener: (context, state) {
-            state.whenOrNull(
-              error: (error) => showAppSnackBar(context, error),
-            );
+            state.whenOrNull(error: (error) => showAppSnackBar(context, error));
           },
-          child: Builder(
-            builder: (context) => _buildScrollBody(context),
-          ),
+          child: Builder(builder: (context) => _buildScrollBody(context)),
         ),
       ),
     );
@@ -152,7 +148,7 @@ class ProposalDetailsScreen extends StatelessWidget {
 
   Widget _buildPrintButton(BuildContext context) {
     return OutlinedButton.icon(
-      onPressed: () => FileDownloader.printCurrentPage(),
+      onPressed: () => _exportToExcel(context),
       icon: Icon(Icons.print_outlined, size: 18.sp),
       label: Text(AppStrings.printProposal),
       style: OutlinedButton.styleFrom(
@@ -183,24 +179,70 @@ class ProposalDetailsScreen extends StatelessWidget {
   }
 
   Future<void> _handleDownloadPdf(BuildContext context) async {
+    showAppSnackBar(context, AppStrings.downloadStarted);
+    final cubit = context.read<ProposalsCubit>();
     final id = proposal.id;
     if (id == null) {
-      showAppSnackBar(
-        context,
-        AppStrings.cannotContinueMissingProposalId,
-      );
+      showAppSnackBar(context, AppStrings.downloadFailed);
       return;
     }
 
-    showAppSnackBar(context, AppStrings.downloadStarted);
-    final bytes = await context
-        .read<ProposalsCubit>()
-        .downloadProposalPdfBytes(id);
-    if (bytes == null || bytes.isEmpty) return;
+    final bytes = await cubit.downloadProposalPdfBytes(id);
+    if (!context.mounted) return;
+    if (bytes == null || bytes.isEmpty) {
+      showAppSnackBar(context, AppStrings.downloadFailed);
+      return;
+    }
 
     FileDownloader.downloadBytes(
       bytes: Uint8List.fromList(bytes),
       filename: 'proposal_$id.pdf',
+      mimeType: 'application/pdf',
+    );
+  }
+
+  void _exportToExcel(BuildContext context) {
+    final data = <List<String>>[];
+
+    // Add proposal header
+    data.add(['Proposal ID', proposal.id?.toString() ?? '']);
+    data.add(['Status', proposal.status ?? '']);
+    data.add(['Total Cost', proposal.totalCost ?? '']);
+    data.add(['Created By', proposal.createdBy ?? '']);
+    data.add(['Approved By', proposal.approvedBy ?? '']);
+    data.add(['Created At', proposal.createdAt?.toString() ?? '']);
+    data.add(['Updated At', proposal.updatedAt?.toString() ?? '']);
+    data.add([]); // Empty row
+
+    // Add items header
+    data.add([
+      'Product Name',
+      'Strength',
+      'Company',
+      'Warehouse',
+      'Quantity',
+      'Unit Price',
+      'Line Total',
+    ]);
+
+    // Add items
+    if (proposal.items != null) {
+      for (final item in proposal.items!) {
+        data.add([
+          item.productName ?? '',
+          item.strength ?? '',
+          item.company ?? '',
+          item.wareHouseName ?? '',
+          item.proposedQuantity?.toString() ?? '',
+          item.unitPrice ?? '',
+          item.lineTotal ?? '',
+        ]);
+      }
+    }
+
+    FileDownloader.exportToExcel(
+      data: data,
+      filename: 'proposal_${proposal.id}.xlsx',
     );
   }
 

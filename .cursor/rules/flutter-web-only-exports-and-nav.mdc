@@ -1,0 +1,20 @@
+---
+description: Flutter Web فقط: تصدير Excel/PDF وتنقّل صحيح للـDashboard
+globs: lib/**/*.dart
+alwaysApply: false
+---
+
+# Flutter Web (Dart) Rules — Exports & Navigation
+
+- اشتغل **ويب فقط**: لا تغيّر سلوك/واجهات الموبايل إلا إذا كان التعديل مشترك وواضح أنه آمن.
+- **Print ≠ طباعة صفحة**: تجنّب `window.print()` إذا المطلوب إخراج الداتا؛ استخدم **تصدير Excel** أو **تحميل PDF bytes**.
+- **تحميل الملفات على الويب**:
+  - اعتمد `dart:html` (Blob + AnchorElement + click) لبدء التحميل.
+  - لو الملف من API، خليه **bytes حقيقية** (Dio `ResponseType.bytes`) ثم احفظه باسم و`mimeType` صحيح.
+- **PDF Download**:
+  - لا تربط زر PDF بتصدير Excel.
+  - لو رجعت bytes فاضية/Null اعرض رسالة فشل بدل تنزيل ملف فارغ.
+- **Back to dashboard**:
+  - زر “Back to dashboard” لازم يروح للـDashboard فعلياً، مو يرجع لآخر route.
+  - استخدم `pushNamedAndRemoveUntil(Routes.dashboardScreen, predicate: (_) => false)` إذا الهدف منع الرجوع للصفحات السابقة.
+

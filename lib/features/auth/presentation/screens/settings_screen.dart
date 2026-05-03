@@ -60,10 +60,7 @@ class SettingsScreen extends StatelessWidget {
           return Stack(
             children: [
               SingleChildScrollView(
-                padding: EdgeInsets.symmetric(
-                  horizontal: hPad,
-                  vertical: vPad,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: hPad, vertical: vPad),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -98,11 +95,10 @@ class SettingsScreen extends StatelessWidget {
       children: [
         InkWell(
           onTap: () {
-            if (Navigator.of(context).canPop()) {
-              context.pop();
-            } else {
-              context.pushReplacementNamed(Routes.dashboardScreen);
-            }
+            context.pushNamedAndRemoveUntil(
+              Routes.dashboardScreen,
+              predicate: (route) => false,
+            );
           },
           borderRadius: BorderRadius.circular(10.r),
           child: Container(
