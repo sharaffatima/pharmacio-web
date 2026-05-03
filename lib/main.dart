@@ -30,7 +30,10 @@ void main() async {
   // users logged in across page refreshes.
   final accessToken =
       AppSharedPreferences().getString(AppSharedPrefKeys.accessToken);
-  final hasValidSession = accessToken != null && accessToken.isNotEmpty;
+  final refreshToken =
+      AppSharedPreferences().getString(AppSharedPrefKeys.refreshToken);
+  final hasValidSession = (accessToken != null && accessToken.isNotEmpty) ||
+      (refreshToken != null && refreshToken.isNotEmpty);
 
   runApp(
     MultiBlocProvider(

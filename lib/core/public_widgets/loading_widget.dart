@@ -3,14 +3,18 @@ import 'package:flutter/material.dart';
 import '../constants/colors.dart';
 
 class LoadingWidget extends StatelessWidget {
-  const LoadingWidget({super.key});
+  final String? message;
+
+  const LoadingWidget({super.key, this.message});
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
+    return Center(
       child: Wrap(
+        alignment: WrapAlignment.center,
+        runAlignment: WrapAlignment.center,
         children: [
-          Padding(
+          const Padding(
             padding: EdgeInsets.all(3),
             child: SizedBox(
               height: 30,
@@ -20,6 +24,15 @@ class LoadingWidget extends StatelessWidget {
               ),
             ),
           ),
+          if (message != null && message!.trim().isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: Text(
+                message!,
+                textAlign: TextAlign.center,
+                style: TextStyle(color: AppColors.coolGrey),
+              ),
+            ),
         ],
       ),
     );

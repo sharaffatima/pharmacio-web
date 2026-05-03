@@ -24,6 +24,7 @@ class UploadsCubit extends Cubit<UploadsState> {
   }
 
   Future<void> pickFiles({required String warehouseName}) async {
+    if (state is UploadsLoading) return;
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['pdf'],

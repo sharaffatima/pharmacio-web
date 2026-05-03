@@ -62,7 +62,11 @@ class UploadsScreen extends StatelessWidget {
               if (isLoadingAction)
                 Container(
                   color: AppColors.white.withValues(alpha: 0.6),
-                  child: const Center(child: LoadingWidget()),
+                  child: Center(
+                    child: LoadingWidget(
+                      message: AppStrings.processingDocumentNotice,
+                    ),
+                  ),
                 ),
             ],
           );

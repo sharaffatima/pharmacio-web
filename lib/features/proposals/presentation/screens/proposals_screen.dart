@@ -162,7 +162,11 @@ class ProposalsScreen extends StatelessWidget {
     final bytes = await context
         .read<ProposalsCubit>()
         .downloadAllProposalsZipBytes();
-    if (bytes == null || bytes.isEmpty) return;
+    if (!context.mounted) return;
+    if (bytes == null || bytes.isEmpty) {
+      showAppSnackBar(context, AppStrings.downloadFailed);
+      return;
+    }
 
     FileDownloader.downloadBytes(
       bytes: Uint8List.fromList(bytes),

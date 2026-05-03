@@ -40,7 +40,9 @@ class CompareScreen extends StatelessWidget {
         builder: (context, state) {
           return state.when(
             initial: () => const LoadingWidget(),
-            loading: () => const LoadingWidget(),
+            loading: () => LoadingWidget(
+              message: AppStrings.processingDocumentNotice,
+            ),
             error: (error) => RetryButtonWidget(
               message: error,
               onRetry: () => context.read<CompareCubit>().loadData(),

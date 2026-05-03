@@ -112,11 +112,10 @@ class RegisterScreen extends StatelessWidget {
       children: [
         InkWell(
           onTap: () {
-            if (Navigator.of(context).canPop()) {
-              context.pop();
-            } else {
-              context.pushReplacementNamed(Routes.dashboardScreen);
-            }
+            context.pushNamedAndRemoveUntil(
+              Routes.dashboardScreen,
+              predicate: (route) => false,
+            );
           },
           borderRadius: BorderRadius.circular(10.r),
           child: Container(

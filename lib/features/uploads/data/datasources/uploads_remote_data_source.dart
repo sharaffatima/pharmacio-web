@@ -36,6 +36,7 @@ class UploadsRemoteDataSourceImp implements UploadsRemoteDataSource {
       // Attach warehouse name so the backend can persist it
       // alongside the uploaded file.
       formData.fields.add(MapEntry('warehouse_name', warehouseName));
+      formData.fields.add(MapEntry('ware_house_name', warehouseName));
 
       for (var file in files) {
         if (file.bytes != null) {
