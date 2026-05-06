@@ -57,9 +57,8 @@ class AppStrings {
 
   static String get cancel => currentLanguage == 'ar' ? 'إلغاء' : 'Cancel';
 
-  static String get backToDashboard => currentLanguage == 'ar'
-      ? 'العودة إلى لوحة التحكم'
-      : 'Back to Dashboard';
+  static String get backToDashboard =>
+      currentLanguage == 'ar' ? 'العودة إلى لوحة التحكم' : 'Back to Dashboard';
 
   // ─── Settings ─────────────────────────────────────────
   static String get settingsTitle =>
@@ -568,12 +567,14 @@ class AppStrings {
   static String get downloadPdf =>
       currentLanguage == 'ar' ? 'تحميل PDF' : 'Download PDF';
 
+  static String get exportProposalExcel =>
+      currentLanguage == 'ar' ? 'تصدير إلى Excel' : 'Export to Excel';
+
   static String get printProposal =>
       currentLanguage == 'ar' ? 'طباعة' : 'Print';
 
-  static String get downloadAllZip => currentLanguage == 'ar'
-      ? 'تحميل الكل (ZIP)'
-      : 'Download All (ZIP)';
+  static String get downloadAllZip =>
+      currentLanguage == 'ar' ? 'تحميل الكل (ZIP)' : 'Download All (ZIP)';
 
   static String get supplierSection =>
       currentLanguage == 'ar' ? 'القسم الخاص بالمورّد' : 'Supplier Section';
@@ -591,9 +592,8 @@ class AppStrings {
   static String get downloadStarted =>
       currentLanguage == 'ar' ? 'بدأ التحميل...' : 'Download started...';
 
-  static String get downloadFailed => currentLanguage == 'ar'
-      ? 'تعذّر تحميل الملف'
-      : 'Download failed';
+  static String get downloadFailed =>
+      currentLanguage == 'ar' ? 'تعذّر تحميل الملف' : 'Download failed';
 
   static String get featureUnavailableYet => currentLanguage == 'ar'
       ? 'هذه الميزة غير متاحة بعد. يتم تجهيزها من قِبل الباكند.'
@@ -686,13 +686,13 @@ class AppStrings {
       ? 'تم تسجيل البيع بنجاح. الكمية المتبقية: $remainingQuantity'
       : 'Sale recorded successfully. Remaining quantity: $remainingQuantity';
 
-    static String inventorySaleOptionLabel({
-        required String product,
-        required int inventoryId,
-        required int quantity,
-    }) => currentLanguage == 'ar'
-            ? '$product - رقم: $inventoryId - الكمية: $quantity'
-            : '$product - ID: $inventoryId - Qty: $quantity';
+  static String inventorySaleOptionLabel({
+    required String product,
+    required int inventoryId,
+    required int quantity,
+  }) => currentLanguage == 'ar'
+      ? '$product - رقم: $inventoryId - الكمية: $quantity'
+      : '$product - ID: $inventoryId - Qty: $quantity';
 
   static String adjustQuantityTitle(String product) => currentLanguage == 'ar'
       ? 'تعديل الكمية: $product'

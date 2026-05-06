@@ -113,6 +113,16 @@ Future<void> setupGetit() async {
     () => ProposalsRemoteDataSourceImp(apiServicesImpl: getIt()),
   );
 
+  // //! feature - opening balance (WIP - commented to allow core app run)
+  // getIt.registerFactory<OpeningBalanceCubit>(() => OpeningBalanceCubit(getIt()));
+  // getIt.registerLazySingleton<OpeningBalanceRepo>(
+  //   () => OpeningBalanceRepo(
+  //       openingBalanceRemoteDataSource: getIt(), networkInfo: getIt()),
+  // );
+  // getIt.registerLazySingleton<OpeningBalanceRemoteDataSource>(
+  //   () => OpeningBalanceRemoteDataSourceImp(apiServicesImpl: getIt()),
+  // );
+
   //! Core
 
   getIt.registerLazySingleton<NetworkInfo>(

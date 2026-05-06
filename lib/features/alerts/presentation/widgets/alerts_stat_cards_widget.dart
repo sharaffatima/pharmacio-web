@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/constants/colors.dart';
 import '../../../../core/constants/text_styles.dart';
+import '../../../../core/helpers/app_responsive.dart';
 import '../../../../core/helpers/spacing.dart';
 
 class AlertsStatCardsWidget extends StatelessWidget {
@@ -20,37 +21,48 @@ class AlertsStatCardsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cards = [
+      _buildCard(
+        label: AppStrings.activeAlertsCount,
+        value: '$activeAlerts',
+        color: AppColors.black,
+        icon: Icons.notifications_outlined,
+        iconColor: AppColors.coolGrey,
+      ),
+      _buildCard(
+        label: AppStrings.criticalAlerts,
+        value: '$criticalAlerts',
+        color: AppColors.brightRed,
+        icon: Icons.error_outline,
+        iconColor: AppColors.brightRed,
+      ),
+      _buildCard(
+        label: AppStrings.resolvedToday,
+        value: '$resolvedToday',
+        color: AppColors.emerald,
+        icon: Icons.check_circle_outline,
+        iconColor: AppColors.emerald,
+      ),
+    ];
+
+    if (AppResponsive.isMobile(context)) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (var i = 0; i < cards.length; i++) ...[
+            cards[i],
+            if (i < cards.length - 1) verticalSpace(12),
+          ],
+        ],
+      );
+    }
+
     return Row(
       children: [
-        Expanded(
-          child: _buildCard(
-            label: AppStrings.activeAlertsCount,
-            value: '$activeAlerts',
-            color: AppColors.black,
-            icon: Icons.notifications_outlined,
-            iconColor: AppColors.coolGrey,
-          ),
-        ),
-        horizontalSpace(16),
-        Expanded(
-          child: _buildCard(
-            label: AppStrings.criticalAlerts,
-            value: '$criticalAlerts',
-            color: AppColors.brightRed,
-            icon: Icons.error_outline,
-            iconColor: AppColors.brightRed,
-          ),
-        ),
-        horizontalSpace(16),
-        Expanded(
-          child: _buildCard(
-            label: AppStrings.resolvedToday,
-            value: '$resolvedToday',
-            color: AppColors.emerald,
-            icon: Icons.check_circle_outline,
-            iconColor: AppColors.emerald,
-          ),
-        ),
+        for (var i = 0; i < cards.length; i++) ...[
+          Expanded(child: cards[i]),
+          if (i < cards.length - 1) horizontalSpace(16),
+        ],
       ],
     );
   }

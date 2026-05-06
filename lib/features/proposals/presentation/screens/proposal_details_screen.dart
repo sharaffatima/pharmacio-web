@@ -14,15 +14,24 @@ import '../../../../core/helpers/file_downloader.dart';
 import '../../../../core/helpers/spacing.dart';
 import '../../../../core/public_widgets/responsive_scaffold.dart';
 import '../../../../core/public_widgets/snack_bar_widget.dart';
+import '../../../../core/routing/routes.dart';
 import '../../data/models/proposal_item_model.dart';
 import '../../data/models/purchase_proposal_model.dart';
 import '../../logic/cubit/proposals_cubit.dart';
 import '../widgets/supplier_section_widget.dart';
 
-class ProposalDetailsScreen extends StatelessWidget {
+class ProposalDetailsScreen extends StatefulWidget {
   final PurchaseProposalModel proposal;
 
   const ProposalDetailsScreen({super.key, required this.proposal});
+
+  @override
+  State<ProposalDetailsScreen> createState() => _ProposalDetailsScreenState();
+}
+
+class _ProposalDetailsScreenState extends State<ProposalDetailsScreen> {
+  bool _isDownloadingPdf = false;
+  bool _isExportingExcel = false;
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +85,7 @@ class ProposalDetailsScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            AppStrings.proposalNumber((proposal.id ?? '-').toString()),
+            AppStrings.proposalNumber((widget.proposal.id ?? '-').toString()),
             style: AppTextStyles.font24BlackBold,
           ),
           verticalSpace(2),
@@ -127,7 +136,12 @@ class ProposalDetailsScreen extends StatelessWidget {
       onTap: () {
         if (Navigator.of(context).canPop()) {
           context.pop();
+          return;
         }
+        context.pushNamedAndRemoveUntil(
+          Routes.dashboardScreen,
+          predicate: (route) => false,
+        );
       },
       borderRadius: BorderRadius.circular(10.r),
       child: Container(
@@ -148,9 +162,15 @@ class ProposalDetailsScreen extends StatelessWidget {
 
   Widget _buildPrintButton(BuildContext context) {
     return OutlinedButton.icon(
-      onPressed: () => _exportToExcel(context),
-      icon: Icon(Icons.print_outlined, size: 18.sp),
-      label: Text(AppStrings.printProposal),
+      onPressed: _isExportingExcel ? null : () => _handleExportToExcel(context),
+      icon: _isExportingExcel
+          ? SizedBox(
+              width: 18.sp,
+              height: 18.sp,
+              child: const CircularProgressIndicator(strokeWidth: 2),
+            )
+          : Icon(Icons.print_outlined, size: 18.sp),
+      label: Text(AppStrings.exportProposalExcel),
       style: OutlinedButton.styleFrom(
         side: BorderSide(color: AppColors.gainsboro),
         foregroundColor: AppColors.charcoalBlack,
@@ -164,8 +184,14 @@ class ProposalDetailsScreen extends StatelessWidget {
 
   Widget _buildDownloadButton(BuildContext context) {
     return ElevatedButton.icon(
-      onPressed: () => _handleDownloadPdf(context),
-      icon: Icon(Icons.download_outlined, size: 18.sp),
+      onPressed: _isDownloadingPdf ? null : () => _handleDownloadPdf(context),
+      icon: _isDownloadingPdf
+          ? SizedBox(
+              width: 18.sp,
+              height: 18.sp,
+              child: const CircularProgressIndicator(strokeWidth: 2),
+            )
+          : Icon(Icons.download_outlined, size: 18.sp),
       label: Text(AppStrings.downloadPdf),
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColors.charcoalBlack,
@@ -179,11 +205,17 @@ class ProposalDetailsScreen extends StatelessWidget {
   }
 
   Future<void> _handleDownloadPdf(BuildContext context) async {
+    setState(() {
+      _isDownloadingPdf = true;
+    });
     showAppSnackBar(context, AppStrings.downloadStarted);
     final cubit = context.read<ProposalsCubit>();
-    final id = proposal.id;
+    final id = widget.proposal.id;
     if (id == null) {
       showAppSnackBar(context, AppStrings.downloadFailed);
+      setState(() {
+        _isDownloadingPdf = false;
+      });
       return;
     }
 
@@ -191,6 +223,9 @@ class ProposalDetailsScreen extends StatelessWidget {
     if (!context.mounted) return;
     if (bytes == null || bytes.isEmpty) {
       showAppSnackBar(context, AppStrings.downloadFailed);
+      setState(() {
+        _isDownloadingPdf = false;
+      });
       return;
     }
 
@@ -199,12 +234,19 @@ class ProposalDetailsScreen extends StatelessWidget {
       filename: 'proposal_$id.pdf',
       mimeType: 'application/pdf',
     );
+    setState(() {
+      _isDownloadingPdf = false;
+    });
   }
 
-  void _exportToExcel(BuildContext context) {
+  Future<void> _handleExportToExcel(BuildContext context) async {
+    setState(() {
+      _isExportingExcel = true;
+    });
+
+    final proposal = widget.proposal;
     final data = <List<String>>[];
 
-    // Add proposal header
     data.add(['Proposal ID', proposal.id?.toString() ?? '']);
     data.add(['Status', proposal.status ?? '']);
     data.add(['Total Cost', proposal.totalCost ?? '']);
@@ -212,9 +254,7 @@ class ProposalDetailsScreen extends StatelessWidget {
     data.add(['Approved By', proposal.approvedBy ?? '']);
     data.add(['Created At', proposal.createdAt?.toString() ?? '']);
     data.add(['Updated At', proposal.updatedAt?.toString() ?? '']);
-    data.add([]); // Empty row
-
-    // Add items header
+    data.add([]);
     data.add([
       'Product Name',
       'Strength',
@@ -225,7 +265,6 @@ class ProposalDetailsScreen extends StatelessWidget {
       'Line Total',
     ]);
 
-    // Add items
     if (proposal.items != null) {
       for (final item in proposal.items!) {
         data.add([
@@ -242,8 +281,12 @@ class ProposalDetailsScreen extends StatelessWidget {
 
     FileDownloader.exportToExcel(
       data: data,
-      filename: 'proposal_${proposal.id}.xlsx',
+      filename: 'proposal_${proposal.id ?? 'unknown'}.xlsx',
     );
+
+    setState(() {
+      _isExportingExcel = false;
+    });
   }
 
   // ─── Summary Card ───────────────────────────────────
@@ -270,32 +313,32 @@ class ProposalDetailsScreen extends StatelessWidget {
             children: [
               _buildInfoTile(
                 label: AppStrings.status,
-                value: _statusLabel(proposal.status ?? ""),
-                statusColor: _statusColor(proposal.status ?? ""),
+                value: _statusLabel(widget.proposal.status ?? ""),
+                statusColor: _statusColor(widget.proposal.status ?? ""),
               ),
               _buildInfoTile(
                 label: AppStrings.totalCostLabel,
-                value: proposal.totalCost ?? '-',
+                value: widget.proposal.totalCost ?? '-',
               ),
               _buildInfoTile(
                 label: AppStrings.items,
-                value: (proposal.items ?? []).length.toString(),
+                value: (widget.proposal.items ?? []).length.toString(),
               ),
               _buildInfoTile(
                 label: AppStrings.createdBy,
-                value: proposal.createdBy ?? '-',
+                value: widget.proposal.createdBy ?? '-',
               ),
               _buildInfoTile(
                 label: AppStrings.approvedByLabel,
-                value: proposal.approvedBy ?? '-',
+                value: widget.proposal.approvedBy ?? '-',
               ),
               _buildInfoTile(
                 label: AppStrings.createdAtLabel,
-                value: _formatDateTime(proposal.createdAt),
+                value: _formatDateTime(widget.proposal.createdAt),
               ),
               _buildInfoTile(
                 label: AppStrings.updatedAtLabel,
-                value: _formatDateTime(proposal.updatedAt),
+                value: _formatDateTime(widget.proposal.updatedAt),
               ),
             ],
           ),
@@ -351,7 +394,7 @@ class ProposalDetailsScreen extends StatelessWidget {
 
   // ─── Suppliers Sections ─────────────────────────────
   Widget _buildSuppliersList(BuildContext context) {
-    final items = proposal.items ?? const <ProposalItemModel>[];
+    final items = widget.proposal.items ?? const <ProposalItemModel>[];
 
     if (items.isEmpty) {
       return Container(

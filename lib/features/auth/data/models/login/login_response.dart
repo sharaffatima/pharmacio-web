@@ -5,7 +5,7 @@ part 'login_response.g.dart';
 @JsonSerializable(explicitToJson: true)
 class LoginResponse {
   final User? user;
-  final List<String>? roles;
+  final List<dynamic>? roles;
   final List<String>? permissions;
   final Token? token;
   final String? message;

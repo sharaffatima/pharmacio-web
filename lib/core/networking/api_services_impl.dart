@@ -117,7 +117,9 @@ class ApiServicesImpl implements ApiServices {
         data: formData ?? body,
         options: Options(
           headers: _headers,
-          contentType: Headers.jsonContentType,
+          // Let Dio set multipart/form-data with the right boundary when
+          // sending a FormData body; only force JSON for plain bodies.
+          contentType: formData != null ? null : Headers.jsonContentType,
         ),
       );
       return _parseJsonResponse(response);
@@ -142,7 +144,7 @@ class ApiServicesImpl implements ApiServices {
         data: formData ?? body,
         options: Options(
           headers: _headers,
-          contentType: Headers.jsonContentType,
+          contentType: formData != null ? null : Headers.jsonContentType,
         ),
       );
       return _parseJsonResponse(response);
@@ -168,7 +170,7 @@ class ApiServicesImpl implements ApiServices {
         data: formData ?? body,
         options: Options(
           headers: _headers,
-          contentType: Headers.jsonContentType,
+          contentType: formData != null ? null : Headers.jsonContentType,
         ),
       );
       return _parseJsonResponse(response);

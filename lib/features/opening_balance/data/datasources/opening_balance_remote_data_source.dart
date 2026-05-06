@@ -6,27 +6,26 @@ import '../../../../core/helpers/app_shared_preferences.dart';
 import '../../../../core/networking/api_services_impl.dart';
 import '../../../../core/networking/app_link_url.dart';
 import '../../../../core/networking/error/error_handler/network_exceptions.dart';
-import '../models/upload_response.dart';
+import '../models/opening_balance_response.dart';
 
-abstract class UploadsRemoteDataSource {
-  Future<UploadResponse> uploadFiles(
+abstract class OpeningBalanceRemoteDataSource {
+  Future<OpeningBalanceResponse> importExcelFile(
     List<PlatformFile> files, {
     required String warehouseName,
   });
-  Future<UploadResponse> checkUploadStatus(String uploadId);
 }
 
-class UploadsRemoteDataSourceImp implements UploadsRemoteDataSource {
+class OpeningBalanceRemoteDataSourceImp implements OpeningBalanceRemoteDataSource {
   final ApiServicesImpl apiServicesImpl;
 
-  UploadsRemoteDataSourceImp({required this.apiServicesImpl});
+  OpeningBalanceRemoteDataSourceImp({required this.apiServicesImpl});
 
   String? get _accessToken =>
       AppSharedPreferences().getString(AppSharedPrefKeys.accessToken) ??
       AppSharedPreferences().getString(AppSharedPrefKeys.refreshToken);
 
   @override
-  Future<UploadResponse> uploadFiles(
+  Future<OpeningBalanceResponse> importExcelFile(
     List<PlatformFile> files, {
     required String warehouseName,
   }) async {
@@ -36,6 +35,7 @@ class UploadsRemoteDataSourceImp implements UploadsRemoteDataSource {
       // Attach warehouse name so the backend can persist it
       // alongside the uploaded file.
       formData.fields.add(MapEntry('warehouse_name', warehouseName));
+      formData.fields.add(MapEntry('ware_house_name', warehouseName));
 
       for (var file in files) {
         if (file.bytes != null) {
@@ -49,27 +49,12 @@ class UploadsRemoteDataSourceImp implements UploadsRemoteDataSource {
       }
 
       final request = await apiServicesImpl.post(
-        AppLinkUrl.upload,
+        AppLinkUrl.openingBalanceImport,
         formData: formData,
         token: _accessToken,
       );
 
-      return UploadResponse.fromJson(request);
-    } on DioException catch (e) {
-      throw NetworkExceptions.getException(e);
-    } catch (e) {
-      throw NetworkExceptions.getException(e);
-    }
-  }
-
-  @override
-  Future<UploadResponse> checkUploadStatus(String uploadId) async {
-    try {
-      final request = await apiServicesImpl.get(
-        '${AppLinkUrl.uploadStatus}$uploadId/status/',
-        token: _accessToken,
-      );
-      return UploadResponse.fromJson(request);
+      return OpeningBalanceResponse.fromJson(request);
     } on DioException catch (e) {
       throw NetworkExceptions.getException(e);
     } catch (e) {

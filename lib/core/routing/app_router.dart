@@ -89,6 +89,11 @@ class AppRouter {
           ),
         );
 
+      case Routes.openingBalanceScreen:
+        return MaterialPageRoute(
+          builder: (_) => const Text('Opening Balance - WIP (Phase 5)'),
+        );
+
       case Routes.registerScreen:
         return MaterialPageRoute(
           builder: (_) => BlocProvider(

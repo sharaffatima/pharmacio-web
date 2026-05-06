@@ -15,6 +15,8 @@ class FileDownloader {
     final url = html.Url.createObjectUrlFromBlob(blob);
     final anchor = html.AnchorElement(href: url)
       ..download = filename
+      ..target = '_blank'
+      ..rel = 'noopener noreferrer'
       ..style.display = 'none';
     html.document.body?.append(anchor);
     anchor.click();
@@ -37,9 +39,10 @@ class FileDownloader {
     if (headers != null && headers.isNotEmpty) {
       for (int i = 0; i < headers.length; i++) {
         sheet
-                .cell(CellIndex.indexByColumnRow(columnIndex: i, rowIndex: 0))
-                .value =
-            TextCellValue(headers[i]);
+            .cell(CellIndex.indexByColumnRow(columnIndex: i, rowIndex: 0))
+            .value = TextCellValue(
+          headers[i],
+        );
       }
     }
 
@@ -47,14 +50,12 @@ class FileDownloader {
       for (int col = 0; col < data[row].length; col++) {
         final rowIndex = headers != null && headers.isNotEmpty ? row + 1 : row;
         sheet
-                .cell(
-                  CellIndex.indexByColumnRow(
-                    columnIndex: col,
-                    rowIndex: rowIndex,
-                  ),
-                )
-                .value =
-            TextCellValue(data[row][col]);
+            .cell(
+              CellIndex.indexByColumnRow(columnIndex: col, rowIndex: rowIndex),
+            )
+            .value = TextCellValue(
+          data[row][col],
+        );
       }
     }
 
@@ -69,4 +70,3 @@ class FileDownloader {
     }
   }
 }
-

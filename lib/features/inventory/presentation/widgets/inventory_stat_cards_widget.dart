@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/constants/colors.dart';
 import '../../../../core/constants/text_styles.dart';
+import '../../../../core/helpers/app_responsive.dart';
 import '../../../../core/helpers/spacing.dart';
 
 class InventoryStatCardsWidget extends StatelessWidget {
@@ -20,33 +21,44 @@ class InventoryStatCardsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cards = [
+      _buildCard(
+        label: AppStrings.totalItems,
+        value: '$totalItems',
+        color: AppColors.black,
+      ),
+      _buildCard(
+        label: AppStrings.lowStockItems,
+        value: '$lowStockItems',
+        color: AppColors.brightRed,
+        icon: Icons.warning_amber_rounded,
+        iconColor: AppColors.brightRed,
+      ),
+      _buildCard(
+        label: AppStrings.totalStockValue,
+        value: '$totalStockValue',
+        color: AppColors.black,
+      ),
+    ];
+
+    if (AppResponsive.isMobile(context)) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (var i = 0; i < cards.length; i++) ...[
+            cards[i],
+            if (i < cards.length - 1) verticalSpace(12),
+          ],
+        ],
+      );
+    }
+
     return Row(
       children: [
-        Expanded(
-          child: _buildCard(
-            label: AppStrings.totalItems,
-            value: '$totalItems',
-            color: AppColors.black,
-          ),
-        ),
-        horizontalSpace(16),
-        Expanded(
-          child: _buildCard(
-            label: AppStrings.lowStockItems,
-            value: '$lowStockItems',
-            color: AppColors.brightRed,
-            icon: Icons.warning_amber_rounded,
-            iconColor: AppColors.brightRed,
-          ),
-        ),
-        horizontalSpace(16),
-        Expanded(
-          child: _buildCard(
-            label: AppStrings.totalStockValue,
-            value: '$totalStockValue',
-            color: AppColors.black,
-          ),
-        ),
+        for (var i = 0; i < cards.length; i++) ...[
+          Expanded(child: cards[i]),
+          if (i < cards.length - 1) horizontalSpace(16),
+        ],
       ],
     );
   }

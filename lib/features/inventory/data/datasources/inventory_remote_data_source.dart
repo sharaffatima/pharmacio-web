@@ -96,16 +96,93 @@ class InventoryRemoteDataSourceImp implements InventoryRemoteDataSource {
     InventorySaleRequestBody requestBody,
   ) async {
     try {
+      // Backend replaced /sales/ with the POS checkout flow. The
+      // single-item "Record Sale" dialog wraps its input into a one-item
+      // cart paid in cash so the existing UX still works.
+      final amount = (double.tryParse(requestBody.unitPrice) ?? 0) *
+          requestBody.quantitySold;
+      final amountPaid = amount.toStringAsFixed(2);
+      final body = {
+        'items': [
+          {
+            'inventory_id': requestBody.inventoryId,
+            'quantity': requestBody.quantitySold,
+            'unit_price': requestBody.unitPrice,
+          },
+        ],
+        'payments': [
+          {
+            'payment_method': 'cash',
+            'amount_paid': amountPaid,
+          },
+        ],
+      };
       final request = await apiServicesImpl.post(
-        AppLinkUrl.sales,
-        body: requestBody.toJson(),
+        AppLinkUrl.posCheckout,
+        body: body,
         token: _accessToken,
       );
-      return InventorySaleResponse.fromJson(request as Map<String, dynamic>);
+      return _parseSaleResponse(request, fallback: requestBody);
     } on DioException catch (e) {
       throw NetworkExceptions.getException(e);
     } catch (e) {
       throw NetworkExceptions.getException(e);
     }
+  }
+
+  /// POS checkout returns a transaction wrapper rather than the legacy
+  /// flat sale shape. Read whichever of the two formats the backend
+  /// returns, falling back to the request payload so the UI still
+  /// surfaces a sensible "remaining quantity" message.
+  InventorySaleResponse _parseSaleResponse(
+    dynamic raw, {
+    required InventorySaleRequestBody fallback,
+  }) {
+    if (raw is! Map) {
+      return InventorySaleResponse(
+        inventoryId: fallback.inventoryId,
+        quantitySold: fallback.quantitySold,
+        unitPrice: fallback.unitPrice,
+        soldAt: fallback.soldAt,
+      );
+    }
+    final json = Map<String, dynamic>.from(raw);
+    final items = json['items'];
+    Map<String, dynamic>? firstItem;
+    if (items is List && items.isNotEmpty && items.first is Map) {
+      firstItem = Map<String, dynamic>.from(items.first as Map);
+    }
+    final source = firstItem ?? json;
+    int? remaining;
+    final remainingRaw = source['remaining_quantity'] ??
+        source['remaining'] ??
+        source['inventory_remaining_quantity'];
+    if (remainingRaw is num) {
+      remaining = remainingRaw.toInt();
+    } else if (remainingRaw is String) {
+      remaining = int.tryParse(remainingRaw);
+    }
+    DateTime? soldAt;
+    final soldAtRaw = json['created_at'] ?? source['sold_at'];
+    if (soldAtRaw is String) {
+      soldAt = DateTime.tryParse(soldAtRaw);
+    }
+    return InventorySaleResponse(
+      id: json['id'] is int
+          ? json['id'] as int
+          : (firstItem?['id'] is int ? firstItem!['id'] as int : null),
+      productName:
+          (source['product_name'] ?? source['product'])?.toString(),
+      strength: source['strength']?.toString(),
+      quantitySold: source['quantity'] is num
+          ? (source['quantity'] as num).toInt()
+          : fallback.quantitySold,
+      unitPrice: source['unit_price']?.toString() ?? fallback.unitPrice,
+      soldAt: soldAt ?? fallback.soldAt,
+      inventoryId: source['inventory_id'] is num
+          ? (source['inventory_id'] as num).toInt()
+          : fallback.inventoryId,
+      remainingQuantity: remaining,
+    );
   }
 }

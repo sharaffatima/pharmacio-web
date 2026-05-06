@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/constants/colors.dart';
 import '../../../../core/constants/text_styles.dart';
+import '../../../../core/helpers/app_responsive.dart';
 import '../../../../core/helpers/spacing.dart';
 
 class ProposalsStatCardsWidget extends StatelessWidget {
@@ -22,39 +23,48 @@ class ProposalsStatCardsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cards = [
+      _buildCard(
+        value: '$total',
+        label: AppStrings.totalProposals,
+        color: AppColors.skyBlue,
+      ),
+      _buildCard(
+        value: '$pending',
+        label: AppStrings.pending,
+        color: AppColors.saffronAmber,
+      ),
+      _buildCard(
+        value: '$approved',
+        label: AppStrings.approved,
+        color: AppColors.emerald,
+      ),
+      _buildCard(
+        value: '$rejected',
+        label: AppStrings.rejected,
+        color: AppColors.brightRed,
+      ),
+    ];
+
+    if (AppResponsive.isMobile(context)) {
+      // 2x2 grid on mobile
+      final width = MediaQuery.of(context).size.width;
+      final cardWidth = (width - 16.w * 2 - 12.w) / 2;
+      return Wrap(
+        spacing: 12.w,
+        runSpacing: 12.h,
+        children: cards
+            .map((c) => SizedBox(width: cardWidth, child: c))
+            .toList(),
+      );
+    }
+
     return Row(
       children: [
-        Expanded(
-          child: _buildCard(
-            value: '$total',
-            label: AppStrings.totalProposals,
-            color: AppColors.skyBlue,
-          ),
-        ),
-        horizontalSpace(16),
-        Expanded(
-          child: _buildCard(
-            value: '$pending',
-            label: AppStrings.pending,
-            color: AppColors.saffronAmber,
-          ),
-        ),
-        horizontalSpace(16),
-        Expanded(
-          child: _buildCard(
-            value: '$approved',
-            label: AppStrings.approved,
-            color: AppColors.emerald,
-          ),
-        ),
-        horizontalSpace(16),
-        Expanded(
-          child: _buildCard(
-            value: '$rejected',
-            label: AppStrings.rejected,
-            color: AppColors.brightRed,
-          ),
-        ),
+        for (var i = 0; i < cards.length; i++) ...[
+          Expanded(child: cards[i]),
+          if (i < cards.length - 1) horizontalSpace(16),
+        ],
       ],
     );
   }
