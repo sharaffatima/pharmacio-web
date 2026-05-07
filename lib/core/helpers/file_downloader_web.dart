@@ -6,11 +6,11 @@ import 'dart:typed_data';
 import 'package:excel/excel.dart';
 
 class FileDownloader {
-  static void downloadBytes({
+  static Future<void> downloadBytes({
     required Uint8List bytes,
     required String filename,
     String mimeType = 'application/pdf',
-  }) {
+  }) async {
     final blob = html.Blob([bytes], mimeType);
     final url = html.Url.createObjectUrlFromBlob(blob);
     final anchor = html.AnchorElement(href: url)
@@ -28,11 +28,11 @@ class FileDownloader {
     html.window.print();
   }
 
-  static void exportToExcel({
+  static Future<void> exportToExcel({
     required List<List<String>> data,
     required String filename,
     List<String>? headers,
-  }) {
+  }) async {
     final excel = Excel.createExcel();
     final sheet = excel['Sheet1'];
 
@@ -61,7 +61,7 @@ class FileDownloader {
 
     final bytes = excel.encode();
     if (bytes != null) {
-      downloadBytes(
+      await downloadBytes(
         bytes: Uint8List.fromList(bytes),
         filename: filename,
         mimeType:

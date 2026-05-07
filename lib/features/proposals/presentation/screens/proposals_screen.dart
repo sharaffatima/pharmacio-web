@@ -33,16 +33,10 @@ class ProposalsScreen extends StatelessWidget {
         listener: (context, state) {
           state.whenOrNull(
             successApproveProposal: (proposal, proposals) {
-              showAppSnackBar(
-                context,
-                AppStrings.proposalApprovedSuccess,
-              );
+              showAppSnackBar(context, AppStrings.proposalApprovedSuccess);
             },
             successRejectProposal: (proposal, proposals) {
-              showAppSnackBar(
-                context,
-                AppStrings.proposalRejectedSuccess,
-              );
+              showAppSnackBar(context, AppStrings.proposalRejectedSuccess);
             },
             successGetProposalStatus: (status, proposals) {
               showAppSnackBar(
@@ -168,11 +162,16 @@ class ProposalsScreen extends StatelessWidget {
       return;
     }
 
-    FileDownloader.downloadBytes(
-      bytes: Uint8List.fromList(bytes),
-      filename: 'proposals.zip',
-      mimeType: 'application/zip',
-    );
+    try {
+      await FileDownloader.downloadBytes(
+        bytes: Uint8List.fromList(bytes),
+        filename: 'proposals.zip',
+        mimeType: 'application/zip',
+      );
+    } catch (_) {
+      if (!context.mounted) return;
+      showAppSnackBar(context, AppStrings.downloadFailed);
+    }
   }
 
   Future<void> _showProposalActionsDialog(

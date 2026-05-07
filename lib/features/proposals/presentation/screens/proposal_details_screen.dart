@@ -229,14 +229,21 @@ class _ProposalDetailsScreenState extends State<ProposalDetailsScreen> {
       return;
     }
 
-    FileDownloader.downloadBytes(
-      bytes: Uint8List.fromList(bytes),
-      filename: 'proposal_$id.pdf',
-      mimeType: 'application/pdf',
-    );
-    setState(() {
-      _isDownloadingPdf = false;
-    });
+    try {
+      await FileDownloader.downloadBytes(
+        bytes: Uint8List.fromList(bytes),
+        filename: 'proposal_$id.pdf',
+        mimeType: 'application/pdf',
+      );
+    } catch (_) {
+      if (!context.mounted) return;
+      showAppSnackBar(context, AppStrings.downloadFailed);
+    } finally {
+      if (!context.mounted) return;
+      setState(() {
+        _isDownloadingPdf = false;
+      });
+    }
   }
 
   Future<void> _handleExportToExcel(BuildContext context) async {
