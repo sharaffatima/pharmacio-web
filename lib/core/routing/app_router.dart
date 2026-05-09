@@ -13,6 +13,8 @@ import '../../features/dashboard/logic/cubit/dashboard_cubit.dart';
 import '../../features/dashboard/presentation/screens/dashboard_screen.dart';
 import '../../features/inventory/logic/cubit/inventory_cubit.dart';
 import '../../features/inventory/presentation/screens/inventory_screen.dart';
+import '../../features/pos/logic/cubit/pos_cubit.dart';
+import '../../features/pos/presentation/screens/pos_screen.dart';
 import '../../features/offers/logic/cubit/offers_cubit.dart';
 import '../../features/offers/presentation/screens/offers_screen.dart';
 import '../../features/proposals/logic/cubit/proposals_cubit.dart';
@@ -109,6 +111,14 @@ class AppRouter {
           (_) => BlocProvider(
             create: (_) => getIt<InventoryCubit>()..loadData(),
             child: const InventoryScreen(),
+          ),
+        );
+
+      case Routes.posScreen:
+        return _buildProtectedRoute(
+          (_) => BlocProvider(
+            create: (_) => getIt<PosCubit>(),
+            child: const PosScreen(),
           ),
         );
 

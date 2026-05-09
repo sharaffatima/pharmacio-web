@@ -14,10 +14,23 @@ import '../../../../core/routing/routes.dart';
 import '../../../../core/theme/theme_cubit.dart';
 import '../../../auth/logic/cubits/auth_cubit.dart';
 
-class SidebarWidget extends StatelessWidget {
+class SidebarWidget extends StatefulWidget {
   final int selectedIndex;
 
   const SidebarWidget({super.key, required this.selectedIndex});
+
+  @override
+  State<SidebarWidget> createState() => _SidebarWidgetState();
+}
+
+class _SidebarWidgetState extends State<SidebarWidget> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,28 +56,42 @@ class SidebarWidget extends StatelessWidget {
           ),
 
           // ─── Menu Items ───────────────────────────
-          ..._buildMenuItems(context),
+          Expanded(
+            child: Scrollbar(
+              controller: _scrollController,
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                padding: EdgeInsets.only(bottom: 20.h),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ..._buildMenuItems(context),
+                    verticalSpace(12),
+                    Divider(color: AppColors.gainsboro, height: 1),
+                    verticalSpace(8),
 
-          const Spacer(),
+                    // ─── Register New Admin ────────────────────
+                    _buildRegisterButton(context),
 
-          // ─── Register New Admin ────────────────────
-          _buildRegisterButton(context),
+                    // ─── Language Toggle ───────────────────────
+                    _buildLanguageToggle(context),
 
-          // ─── Language Toggle ───────────────────────
-          _buildLanguageToggle(context),
+                    // ─── Theme Toggle ──────────────────────────
+                    _buildThemeToggle(context),
 
-          // ─── Theme Toggle ──────────────────────────
-          _buildThemeToggle(context),
-
-          // ─── Logout ───────────────────────────────
-          _buildMenuItem(
-            context: context,
-            icon: Icons.logout,
-            label: AppStrings.logout,
-            index: -1,
-            isLogout: true,
+                    // ─── Logout ───────────────────────────────
+                    _buildMenuItem(
+                      context: context,
+                      icon: Icons.logout,
+                      label: AppStrings.logout,
+                      index: -1,
+                      isLogout: true,
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
-          verticalSpace(20),
         ],
       ),
     );
@@ -77,8 +104,9 @@ class SidebarWidget extends StatelessWidget {
     3: Routes.compareScreen,
     4: Routes.proposalsScreen,
     5: Routes.inventoryScreen,
-    6: Routes.alertsScreen,
-    7: Routes.settingsScreen,
+    6: Routes.posScreen,
+    7: Routes.alertsScreen,
+    8: Routes.settingsScreen,
   };
 
   List<Widget> _buildMenuItems(BuildContext context) {
@@ -89,6 +117,7 @@ class SidebarWidget extends StatelessWidget {
       _SidebarItem(Icons.compare_arrows, AppStrings.compare),
       _SidebarItem(Icons.assignment_outlined, AppStrings.proposals),
       _SidebarItem(Icons.inventory_2_outlined, AppStrings.inventory),
+      _SidebarItem(Icons.point_of_sale_outlined, AppStrings.pos),
       _SidebarItem(Icons.notifications_outlined, AppStrings.alertsAndLogs),
       _SidebarItem(Icons.settings, AppStrings.settings),
     ];
@@ -110,7 +139,7 @@ class SidebarWidget extends StatelessWidget {
     required int index,
     bool isLogout = false,
   }) {
-    final isSelected = index == selectedIndex;
+    final isSelected = index == widget.selectedIndex;
 
     return InkWell(
       onTap: () {
@@ -118,7 +147,7 @@ class SidebarWidget extends StatelessWidget {
           _showLogoutConfirmDialog(context);
           return;
         }
-        if (index == selectedIndex) return;
+        if (index == widget.selectedIndex) return;
 
         final route = _indexToRoute[index];
         if (route != null) {
@@ -150,15 +179,19 @@ class SidebarWidget extends StatelessWidget {
               color: isSelected ? AppColors.skyBlue : AppColors.coolGrey,
             ),
             horizontalSpace(12),
-            Text(
-              label,
-              style: AppTextStyles.font14BlackRegular.copyWith(
-                color: isSelected
-                    ? AppColors.skyBlue
-                    : isLogout
-                    ? AppColors.coolGrey
-                    : AppColors.black,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+            Expanded(
+              child: Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTextStyles.font14BlackRegular.copyWith(
+                  color: isSelected
+                      ? AppColors.skyBlue
+                      : isLogout
+                      ? AppColors.coolGrey
+                      : AppColors.black,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                ),
               ),
             ),
           ],
@@ -254,10 +287,14 @@ class SidebarWidget extends StatelessWidget {
               color: AppColors.coolGrey,
             ),
             horizontalSpace(12),
-            Text(
-              AppStrings.registerNewAdmin,
-              style: AppTextStyles.font14BlackRegular.copyWith(
-                color: AppColors.coolGrey,
+            Expanded(
+              child: Text(
+                AppStrings.registerNewAdmin,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTextStyles.font14BlackRegular.copyWith(
+                  color: AppColors.coolGrey,
+                ),
               ),
             ),
           ],
@@ -272,7 +309,7 @@ class SidebarWidget extends StatelessWidget {
     return InkWell(
       onTap: () {
         cubit.toggleLanguage();
-        final route = _indexToRoute[selectedIndex];
+        final route = _indexToRoute[widget.selectedIndex];
         if (route != null) {
           context.pushReplacementNamed(route);
         }
@@ -283,10 +320,14 @@ class SidebarWidget extends StatelessWidget {
           children: [
             Icon(Icons.language, size: 20.sp, color: AppColors.coolGrey),
             horizontalSpace(12),
-            Text(
-              AppStrings.switchLanguageLabel,
-              style: AppTextStyles.font14BlackRegular.copyWith(
-                color: AppColors.coolGrey,
+            Expanded(
+              child: Text(
+                AppStrings.switchLanguageLabel,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTextStyles.font14BlackRegular.copyWith(
+                  color: AppColors.coolGrey,
+                ),
               ),
             ),
           ],
@@ -302,7 +343,7 @@ class SidebarWidget extends StatelessWidget {
     return InkWell(
       onTap: () {
         cubit.toggleTheme();
-        final route = _indexToRoute[selectedIndex];
+        final route = _indexToRoute[widget.selectedIndex];
         if (route != null) {
           context.pushReplacementNamed(route);
         }
@@ -317,10 +358,14 @@ class SidebarWidget extends StatelessWidget {
               color: AppColors.coolGrey,
             ),
             horizontalSpace(12),
-            Text(
-              isDark ? AppStrings.lightMode : AppStrings.darkMode,
-              style: AppTextStyles.font14BlackRegular.copyWith(
-                color: AppColors.coolGrey,
+            Expanded(
+              child: Text(
+                isDark ? AppStrings.lightMode : AppStrings.darkMode,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTextStyles.font14BlackRegular.copyWith(
+                  color: AppColors.coolGrey,
+                ),
               ),
             ),
           ],

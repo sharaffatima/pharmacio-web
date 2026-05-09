@@ -436,6 +436,8 @@ class AppStrings {
       currentLanguage == 'ar' ? 'النشطة والأخيرة' : 'Active & Recent Alerts';
 
   static String get resolve => currentLanguage == 'ar' ? 'حل' : 'Resolve';
+  static String get alertTitleNotification =>
+      currentLanguage == 'ar' ? 'تنبيه' : 'Alert';
 
   // ─── Shared Labels & Messages ─────────────────────
   static String get appTitle => currentLanguage == 'ar'
@@ -581,18 +583,12 @@ class AppStrings {
   static String get addItem =>
       currentLanguage == 'ar' ? 'إضافة عنصر' : 'Add Item';
 
-  static String get recordSale =>
-      currentLanguage == 'ar' ? 'تسجيل بيع' : 'Record Sale';
-
   static String get createInventoryItem =>
       currentLanguage == 'ar' ? 'إضافة عنصر مخزون' : 'Create Inventory Item';
 
   static String get enterInventoryDetails => currentLanguage == 'ar'
       ? 'أدخل بيانات العنصر الجديد'
       : 'Enter details for the new inventory item';
-
-  static String get recordInventorySale =>
-      currentLanguage == 'ar' ? 'تسجيل عملية بيع' : 'Record Inventory Sale';
 
   static String get enterSaleDetails => currentLanguage == 'ar'
       ? 'أدخل بيانات عملية البيع'
@@ -616,12 +612,6 @@ class AppStrings {
   static String get unitPrice =>
       currentLanguage == 'ar' ? 'سعر الوحدة' : 'Unit Price';
 
-  static String get soldAt => currentLanguage == 'ar' ? 'وقت البيع' : 'Sold At';
-
-  static String get soldAtIsoHint => currentLanguage == 'ar'
-      ? 'تاريخ/وقت البيع (ISO 8601)'
-      : 'Sale date/time (ISO 8601)';
-
   static String get minThreshold =>
       currentLanguage == 'ar' ? 'حد التنبيه الأدنى' : 'Min Threshold';
 
@@ -631,38 +621,13 @@ class AppStrings {
       ? 'يرجى إدخال كل القيم بشكل صحيح'
       : 'Please provide valid values for all fields';
 
-  static String get validSaleValues => currentLanguage == 'ar'
-      ? 'يرجى إدخال بيانات بيع صحيحة'
-      : 'Please provide valid sale values';
-
   static String get noInventoryItemsToSell => currentLanguage == 'ar'
       ? 'لا توجد عناصر مخزون متاحة للبيع'
       : 'No inventory items available for sale';
 
-  static String get inventoryIdsUnavailable => currentLanguage == 'ar'
-      ? 'تعذر جلب معرفات الأدوية من واجهة المخزون الخاصة بالبيع'
-      : 'Could not fetch drug ids from sale inventory API';
-
   static String get cannotAdjustItemMissingId => currentLanguage == 'ar'
       ? 'تعذر تعديل العنصر لعدم توفر رقم التعريف'
       : 'Cannot adjust this item because id is missing';
-
-  static String get cannotRecordSaleMissingId => currentLanguage == 'ar'
-      ? 'تعذر تسجيل البيع لعدم توفر رقم تعريف العنصر'
-      : 'Cannot record sale because inventory id is missing';
-
-  static String saleRecordedSuccess(int remainingQuantity) =>
-      currentLanguage == 'ar'
-      ? 'تم تسجيل البيع بنجاح. الكمية المتبقية: $remainingQuantity'
-      : 'Sale recorded successfully. Remaining quantity: $remainingQuantity';
-
-  static String inventorySaleOptionLabel({
-    required String product,
-    required int inventoryId,
-    required int quantity,
-  }) => currentLanguage == 'ar'
-      ? '$product - رقم: $inventoryId - الكمية: $quantity'
-      : '$product - ID: $inventoryId - Qty: $quantity';
 
   static String adjustQuantityTitle(String product) => currentLanguage == 'ar'
       ? 'تعديل الكمية: $product'
@@ -706,6 +671,46 @@ class AppStrings {
   static String get alertTitleUpload =>
       currentLanguage == 'ar' ? 'إشعار الرفع' : 'Upload Notification';
 
-  static String get alertTitleNotification =>
-      currentLanguage == 'ar' ? 'إشعار' : 'Notification';
+  // ─── POS ──────────────────────────────────────────
+  static String get posManagement =>
+      currentLanguage == 'ar' ? 'إدارة نقاط البيع' : 'POS Management';
+  static String get posSubtitle => currentLanguage == 'ar'
+      ? 'إدارة المبيعات وإصدار الفواتير'
+      : 'Manage sales and issue receipts';
+  static String get pos => currentLanguage == 'ar' ? 'نقاط البيع' : 'POS';
+  static String get posTransactions =>
+      currentLanguage == 'ar' ? 'المعاملات' : 'Transactions';
+  static String get newCheckout =>
+      currentLanguage == 'ar' ? 'عملية بيع جديدة' : 'New Checkout';
+  static String get checkout => currentLanguage == 'ar' ? 'دفع' : 'Checkout';
+  static String get receiptNumber =>
+      currentLanguage == 'ar' ? 'رقم الفاتورة' : 'Receipt Number';
+  static String get subtotal =>
+      currentLanguage == 'ar' ? 'المجموع الفرعي' : 'Subtotal';
+  static String get discount => currentLanguage == 'ar' ? 'الخصم' : 'Discount';
+  static String get totalAmount =>
+      currentLanguage == 'ar' ? 'الإجمالي' : 'Total Amount';
+  static String get payments =>
+      currentLanguage == 'ar' ? 'المدفوعات' : 'Payments';
+  static String get paymentMethod =>
+      currentLanguage == 'ar' ? 'طريقة الدفع' : 'Payment Method';
+  static String get amountPaid =>
+      currentLanguage == 'ar' ? 'المبلغ المدفوع' : 'Amount Paid';
+  static String get cash => currentLanguage == 'ar' ? 'كاش' : 'Cash';
+  static String get card => currentLanguage == 'ar' ? 'بطاقة' : 'Card';
+  static String get refund => currentLanguage == 'ar' ? 'استرجاع' : 'Refund';
+  static String get refundSuccess =>
+      currentLanguage == 'ar' ? 'تم الاسترجاع بنجاح' : 'Refund successful';
+  static String get receipt => currentLanguage == 'ar' ? 'الفاتورة' : 'Receipt';
+  static String get checkoutSuccess =>
+      currentLanguage == 'ar' ? 'تمت عملية البيع بنجاح' : 'Checkout successful';
+  static String get selectItem =>
+      currentLanguage == 'ar' ? 'اختر عنصر' : 'Select Item';
+  static String get add => currentLanguage == 'ar' ? 'إضافة' : 'Add';
+
+  static String get printReceipt =>
+      currentLanguage == 'ar' ? 'طباعة الفاتورة' : 'Print Receipt';
+  static String get missingTransactionId => currentLanguage == 'ar'
+      ? 'تعذر تنفيذ العملية لعدم توفر رقم المعاملة'
+      : 'Cannot complete this action because transaction id is missing';
 }

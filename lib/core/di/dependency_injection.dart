@@ -28,6 +28,9 @@ import '../../features/proposals/logic/cubit/proposals_cubit.dart';
 import '../../features/uploads/data/datasources/uploads_remote_data_source.dart';
 import '../../features/uploads/data/repos/uploads_repo.dart';
 import '../../features/uploads/logic/cubit/uploads_cubit.dart';
+import '../../features/pos/data/datasources/pos_remote_data_source.dart';
+import '../../features/pos/data/repos/pos_repo.dart';
+import '../../features/pos/logic/cubit/pos_cubit.dart';
 import '../networking/api_services_impl.dart';
 import '../networking/network_info.dart';
 
@@ -111,6 +114,15 @@ Future<void> setupGetit() async {
   );
   getIt.registerLazySingleton<ProposalsRemoteDataSource>(
     () => ProposalsRemoteDataSourceImp(apiServicesImpl: getIt()),
+  );
+
+  // //! feature - pos
+  getIt.registerFactory<PosCubit>(() => PosCubit(getIt(), getIt()));
+  getIt.registerLazySingleton<PosRepo>(
+    () => PosRepo(posRemoteDataSource: getIt(), networkInfo: getIt()),
+  );
+  getIt.registerLazySingleton<PosRemoteDataSource>(
+    () => PosRemoteDataSourceImp(apiServicesImpl: getIt()),
   );
 
   //! Core

@@ -10,8 +10,7 @@ import '../models/inventory_adjust_response.dart';
 import '../models/inventory_api_item.dart';
 import '../models/inventory_create_request_body.dart';
 import '../models/inventory_list_response.dart';
-import '../models/inventory_sale_request_body.dart';
-import '../models/inventory_sale_response.dart';
+
 
 abstract class InventoryRemoteDataSource {
   Future<InventoryListResponse> getInventoryList();
@@ -25,9 +24,7 @@ abstract class InventoryRemoteDataSource {
     required InventoryAdjustRequestBody requestBody,
   });
 
-  Future<InventorySaleResponse> recordSale(
-    InventorySaleRequestBody requestBody,
-  );
+
 }
 
 class InventoryRemoteDataSourceImp implements InventoryRemoteDataSource {
@@ -91,21 +88,5 @@ class InventoryRemoteDataSourceImp implements InventoryRemoteDataSource {
     }
   }
 
-  @override
-  Future<InventorySaleResponse> recordSale(
-    InventorySaleRequestBody requestBody,
-  ) async {
-    try {
-      final request = await apiServicesImpl.post(
-        AppLinkUrl.sales,
-        body: requestBody.toJson(),
-        token: _accessToken,
-      );
-      return InventorySaleResponse.fromJson(request as Map<String, dynamic>);
-    } on DioException catch (e) {
-      throw NetworkExceptions.getException(e);
-    } catch (e) {
-      throw NetworkExceptions.getException(e);
-    }
-  }
+
 }

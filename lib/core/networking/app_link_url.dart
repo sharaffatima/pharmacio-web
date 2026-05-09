@@ -28,4 +28,7 @@ class AppLinkUrl {
   static const String compareOffers = "/purchase-proposals/compare/";
   static const String generatePurchaseProposal =
       "/purchase-proposals/generate/";
+  // POS
+  static const String posCheckout = "/pos/checkout/";
+  static const String posTransactions = "/pos/transactions/";
 }

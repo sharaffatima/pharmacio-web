@@ -14,7 +14,13 @@ import 'package:pharmacio_flutter_web/pharmacio_web_app.dart';
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(PharmacioWebApp(appRouter: AppRouter()));
+    await tester.pumpWidget(
+      PharmacioWebApp(
+        appRouter: AppRouter(),
+        initialRoute: '',
+        showSessionExpiredOnStart: false,
+      ),
+    );
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);

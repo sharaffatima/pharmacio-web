@@ -9,4 +9,5 @@ class Routes {
   static const String alertsScreen = '/AlertsScreen';
   static const String registerScreen = '/RegisterScreen';
   static const String settingsScreen = '/SettingsScreen';
+  static const String posScreen = '/PosScreen';
 }
