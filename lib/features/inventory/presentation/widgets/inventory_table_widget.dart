@@ -6,6 +6,7 @@ import '../../../../core/constants/colors.dart';
 import '../../../../core/constants/text_styles.dart';
 import '../../../../core/helpers/spacing.dart';
 import '../../data/models/inventory_api_item.dart';
+import '../../../../core/public_widgets/horizontal_scroll_table.dart';
 
 class InventoryTableWidget extends StatelessWidget {
   final List<InventoryApiItem> entries;
@@ -19,6 +20,20 @@ class InventoryTableWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final table = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '${AppStrings.inventoryItems} (${entries.length})',
+          style: AppTextStyles.font16BlackSemiBold,
+        ),
+        verticalSpace(16),
+        _buildHeaderRow(),
+        Divider(color: AppColors.gainsboro, height: 1),
+        ...entries.asMap().entries.map((e) => _buildDataRow(e.value, e.key)),
+      ],
+    );
+
     return Container(
       padding: EdgeInsets.all(24.r),
       decoration: BoxDecoration(
@@ -26,18 +41,9 @@ class InventoryTableWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(12.r),
         border: Border.all(color: AppColors.gainsboro, width: 1),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            '${AppStrings.inventoryItems} (${entries.length})',
-            style: AppTextStyles.font16BlackSemiBold,
-          ),
-          verticalSpace(16),
-          _buildHeaderRow(),
-          Divider(color: AppColors.gainsboro, height: 1),
-          ...entries.asMap().entries.map((e) => _buildDataRow(e.value, e.key)),
-        ],
+      child: HorizontalScrollTable(
+        minWidth: 900,
+        child: table,
       ),
     );
   }

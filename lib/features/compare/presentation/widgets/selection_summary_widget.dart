@@ -22,8 +22,8 @@ class SelectionSummaryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final canCompare = selectedCount >= 2;
-    final canGenerate = selectedCount >= 2 && comparedItemsCount > 0;
+    final canCompare = selectedCount >= 1;
+    final canGenerate = selectedCount >= 1 && comparedItemsCount > 0;
 
     return Container(
       padding: EdgeInsets.all(24.r),
@@ -131,7 +131,7 @@ class SelectionSummaryWidget extends StatelessWidget {
           // ─── Hint Text ────────────────────────────
           if (!canCompare)
             Text(
-              AppStrings.selectAtLeast2,
+              AppStrings.selectAtLeast1,
               style: AppTextStyles.font12GreyRegular,
               textAlign: TextAlign.center,
             ),

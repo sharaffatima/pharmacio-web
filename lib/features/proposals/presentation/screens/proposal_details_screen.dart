@@ -5,9 +5,13 @@ import '../../../../core/constants/app_strings.dart';
 import '../../../../core/constants/colors.dart';
 import '../../../../core/constants/text_styles.dart';
 import '../../../../core/helpers/spacing.dart';
-import '../../../dashboard/presentation/widgets/sidebar_widget.dart';
+import '../../../../core/public_widgets/responsive_scaffold.dart';
+import '../../../../core/public_widgets/horizontal_scroll_table.dart';
 import '../../data/models/proposal_item_model.dart';
 import '../../data/models/purchase_proposal_model.dart';
+import '../../../../core/helpers/pdf_generator.dart';
+import '../../../../core/helpers/file_downloader.dart';
+import '../../../../core/helpers/formatters.dart';
 
 class ProposalDetailsScreen extends StatelessWidget {
   final PurchaseProposalModel proposal;
@@ -16,27 +20,25 @@ class ProposalDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.offWhiteGrey,
-      body: Row(
-        children: [
-          const SidebarWidget(selectedIndex: 4),
-          Expanded(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 28.h),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildHeader(context),
-                  verticalSpace(24),
-                  _buildSummaryCard(),
-                  verticalSpace(24),
-                  _buildItemsCard(),
-                ],
-              ),
-            ),
-          ),
-        ],
+    final isMobile = MediaQuery.of(context).size.width < 900;
+    return ResponsiveScaffold(
+      selectedIndex: 4,
+      title: AppStrings.proposals,
+      body: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(
+          horizontal: isMobile ? 16.w : 32.w,
+          vertical: isMobile ? 20.h : 28.h,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildHeader(context),
+            verticalSpace(24),
+            _buildSummaryCard(),
+            verticalSpace(24),
+            _buildSupplierSections(),
+          ],
+        ),
       ),
     );
   }
@@ -78,6 +80,20 @@ class ProposalDetailsScreen extends StatelessWidget {
             ],
           ),
         ),
+        ElevatedButton.icon(
+          onPressed: () async {
+            final pdfBytes = await PdfGenerator.generateProposalPdf(proposal);
+            FileDownloader.downloadFile(
+                pdfBytes, 'Proposal_${proposal.id ?? "Unknown"}.pdf');
+          },
+          icon: const Icon(Icons.download_outlined, size: 20),
+          label: const Text('Download PDF'),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.charcoalBlack,
+            foregroundColor: AppColors.white,
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+          ),
+        ),
       ],
     );
   }
@@ -110,7 +126,7 @@ class ProposalDetailsScreen extends StatelessWidget {
               ),
               _buildInfoTile(
                 label: AppStrings.totalCostLabel,
-                value: proposal.totalCost ?? '-',
+                value: AppFormatters.formatCurrency(proposal.totalCost),
               ),
               _buildInfoTile(
                 label: AppStrings.items,
@@ -184,11 +200,68 @@ class ProposalDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildItemsCard() {
+  Widget _buildSupplierSections() {
     final items = proposal.items ?? const <ProposalItemModel>[];
+
+    if (items.isEmpty) {
+      return Container(
+        width: double.infinity,
+        padding: EdgeInsets.all(20.r),
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(12.r),
+          border: Border.all(color: AppColors.gainsboro, width: 1),
+        ),
+        child: Text(
+          AppStrings.noItemsFound,
+          style: AppTextStyles.font13GreyRegular,
+        ),
+      );
+    }
+
+    final groupedItems = <String, List<ProposalItemModel>>{};
+    for (final item in items) {
+      final supplier = item.wareHouseName ?? AppStrings.unknown;
+      groupedItems.putIfAbsent(supplier, () => []).add(item);
+    }
+
+    return Column(
+      children: groupedItems.entries.map((entry) {
+        return _buildSingleSupplierCard(entry.key, entry.value);
+      }).toList(),
+    );
+  }
+
+  Widget _buildSingleSupplierCard(
+      String supplier, List<ProposalItemModel> items) {
+    double total = 0;
+    for (final item in items) {
+      final lineTotalStr =
+          item.lineTotal?.replaceAll(RegExp(r'[^0-9.]'), '') ?? '0';
+      if (lineTotalStr.isNotEmpty) {
+        total += double.tryParse(lineTotalStr) ?? 0;
+      }
+    }
+
+    final table = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildItemsHeader(),
+        verticalSpace(8),
+        ListView.separated(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: items.length,
+          separatorBuilder: (_, __) =>
+              Divider(height: 1, color: AppColors.gainsboro),
+          itemBuilder: (_, index) => _buildItemRow(items[index]),
+        ),
+      ],
+    );
 
     return Container(
       width: double.infinity,
+      margin: EdgeInsets.only(bottom: 24.h),
       padding: EdgeInsets.all(20.r),
       decoration: BoxDecoration(
         color: AppColors.white,
@@ -198,33 +271,46 @@ class ProposalDetailsScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            AppStrings.proposalItems,
-            style: AppTextStyles.font16BlackSemiBold,
-          ),
-          verticalSpace(14),
-          _buildItemsHeader(),
-          verticalSpace(8),
-          if (items.isEmpty)
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 16.h),
-              child: Text(
-                AppStrings.noItemsFound,
-                style: AppTextStyles.font13GreyRegular,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(6.r),
+                    decoration: BoxDecoration(
+                      color: AppColors.skyBlue.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(8.r),
+                    ),
+                    child: Icon(Icons.storefront_outlined,
+                        color: AppColors.skyBlue, size: 20.sp),
+                  ),
+                  horizontalSpace(10),
+                  Text(
+                    supplier,
+                    style: AppTextStyles.font16BlackSemiBold,
+                  ),
+                ],
               ),
-            ),
-          if (items.isNotEmpty)
-            ListView.separated(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: items.length,
-              separatorBuilder: (_, __) =>
-                  Divider(height: 1, color: AppColors.gainsboro),
-              itemBuilder: (_, index) {
-                final item = items[index];
-                return _buildItemRow(item);
-              },
-            ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                decoration: BoxDecoration(
+                  color: AppColors.emerald.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+                child: Text(
+                  '${AppStrings.total}: ${AppFormatters.formatCurrency(total)}',
+                  style: AppTextStyles.font13BlackMedium.copyWith(
+                      color: AppColors.emerald, fontWeight: FontWeight.w700),
+                ),
+              ),
+            ],
+          ),
+          verticalSpace(16),
+          HorizontalScrollTable(
+            minWidth: 800,
+            child: table,
+          ),
         ],
       ),
     );
@@ -300,13 +386,13 @@ class ProposalDetailsScreen extends StatelessWidget {
           ),
           Expanded(
             child: Text(
-              item.unitPrice ?? '-',
+              AppFormatters.formatCurrency(item.unitPrice),
               style: AppTextStyles.font13GreyRegular,
             ),
           ),
           Expanded(
             child: Text(
-              item.lineTotal ?? '-',
+              AppFormatters.formatCurrency(item.lineTotal),
               style: AppTextStyles.font13GreyRegular,
             ),
           ),

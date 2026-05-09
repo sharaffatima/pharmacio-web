@@ -20,34 +20,65 @@ class InventoryStatCardsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: _buildCard(
-            label: AppStrings.totalItems,
-            value: '$totalItems',
-            color: AppColors.black,
-          ),
-        ),
-        horizontalSpace(16),
-        Expanded(
-          child: _buildCard(
-            label: AppStrings.lowStockItems,
-            value: '$lowStockItems',
-            color: AppColors.brightRed,
-            icon: Icons.warning_amber_rounded,
-            iconColor: AppColors.brightRed,
-          ),
-        ),
-        horizontalSpace(16),
-        Expanded(
-          child: _buildCard(
-            label: AppStrings.totalStockValue,
-            value: '$totalStockValue',
-            color: AppColors.black,
-          ),
-        ),
-      ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isNarrow = constraints.maxWidth < 700;
+        if (isNarrow) {
+          return Column(
+            children: [
+              _buildCard(
+                label: AppStrings.totalItems,
+                value: '$totalItems',
+                color: AppColors.black,
+              ),
+              verticalSpace(12),
+              _buildCard(
+                label: AppStrings.lowStockItems,
+                value: '$lowStockItems',
+                color: AppColors.brightRed,
+                icon: Icons.warning_amber_rounded,
+                iconColor: AppColors.brightRed,
+              ),
+              verticalSpace(12),
+              _buildCard(
+                label: AppStrings.totalStockValue,
+                value: '$totalStockValue',
+                color: AppColors.black,
+              ),
+            ],
+          );
+        }
+
+        return Row(
+          children: [
+            Expanded(
+              child: _buildCard(
+                label: AppStrings.totalItems,
+                value: '$totalItems',
+                color: AppColors.black,
+              ),
+            ),
+            horizontalSpace(16),
+            Expanded(
+              child: _buildCard(
+                label: AppStrings.lowStockItems,
+                value: '$lowStockItems',
+                color: AppColors.brightRed,
+                icon: Icons.warning_amber_rounded,
+                iconColor: AppColors.brightRed,
+              ),
+            ),
+            horizontalSpace(16),
+            Expanded(
+              child: _buildCard(
+                label: AppStrings.totalStockValue,
+                value: '$totalStockValue',
+                color: AppColors.black,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 

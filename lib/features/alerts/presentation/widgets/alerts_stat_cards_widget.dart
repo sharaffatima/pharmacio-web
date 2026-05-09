@@ -20,38 +20,73 @@ class AlertsStatCardsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: _buildCard(
-            label: AppStrings.activeAlertsCount,
-            value: '$activeAlerts',
-            color: AppColors.black,
-            icon: Icons.notifications_outlined,
-            iconColor: AppColors.coolGrey,
-          ),
-        ),
-        horizontalSpace(16),
-        Expanded(
-          child: _buildCard(
-            label: AppStrings.criticalAlerts,
-            value: '$criticalAlerts',
-            color: AppColors.brightRed,
-            icon: Icons.error_outline,
-            iconColor: AppColors.brightRed,
-          ),
-        ),
-        horizontalSpace(16),
-        Expanded(
-          child: _buildCard(
-            label: AppStrings.resolvedToday,
-            value: '$resolvedToday',
-            color: AppColors.emerald,
-            icon: Icons.check_circle_outline,
-            iconColor: AppColors.emerald,
-          ),
-        ),
-      ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isNarrow = constraints.maxWidth < 700;
+        if (isNarrow) {
+          return Column(
+            children: [
+              _buildCard(
+                label: AppStrings.activeAlertsCount,
+                value: '$activeAlerts',
+                color: AppColors.black,
+                icon: Icons.notifications_outlined,
+                iconColor: AppColors.coolGrey,
+              ),
+              verticalSpace(12),
+              _buildCard(
+                label: AppStrings.criticalAlerts,
+                value: '$criticalAlerts',
+                color: AppColors.brightRed,
+                icon: Icons.error_outline,
+                iconColor: AppColors.brightRed,
+              ),
+              verticalSpace(12),
+              _buildCard(
+                label: AppStrings.resolvedToday,
+                value: '$resolvedToday',
+                color: AppColors.emerald,
+                icon: Icons.check_circle_outline,
+                iconColor: AppColors.emerald,
+              ),
+            ],
+          );
+        }
+
+        return Row(
+          children: [
+            Expanded(
+              child: _buildCard(
+                label: AppStrings.activeAlertsCount,
+                value: '$activeAlerts',
+                color: AppColors.black,
+                icon: Icons.notifications_outlined,
+                iconColor: AppColors.coolGrey,
+              ),
+            ),
+            horizontalSpace(16),
+            Expanded(
+              child: _buildCard(
+                label: AppStrings.criticalAlerts,
+                value: '$criticalAlerts',
+                color: AppColors.brightRed,
+                icon: Icons.error_outline,
+                iconColor: AppColors.brightRed,
+              ),
+            ),
+            horizontalSpace(16),
+            Expanded(
+              child: _buildCard(
+                label: AppStrings.resolvedToday,
+                value: '$resolvedToday',
+                color: AppColors.emerald,
+                icon: Icons.check_circle_outline,
+                iconColor: AppColors.emerald,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 

@@ -38,13 +38,19 @@ class AlertsListWidget extends StatelessWidget {
             style: AppTextStyles.font16BlackSemiBold,
           ),
           verticalSpace(16),
-          ...alerts.asMap().entries.map((e) => _buildAlertCard(e.value, e.key)),
+          ...alerts.asMap().entries.map(
+            (e) => _buildAlertCard(context, e.value, e.key),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildAlertCard(UserNotificationModel alert, int index) {
+  Widget _buildAlertCard(
+    BuildContext context,
+    UserNotificationModel alert,
+    int index,
+  ) {
     final isRead = alert.isRead ?? false;
     final severity = _severityFromType(alert.type ?? '');
     final severityColor = _severityColor(severity);
@@ -52,6 +58,8 @@ class AlertsListWidget extends StatelessWidget {
     final severityIcon = _severityIcon(severity);
     final severityLabel = _severityLabel(severity);
     final title = _titleFromType(alert.type ?? '');
+
+    final isNarrow = MediaQuery.of(context).size.width < 500;
 
     return Container(
       margin: EdgeInsets.only(bottom: 12.h),
@@ -66,34 +74,41 @@ class AlertsListWidget extends StatelessWidget {
           width: 1,
         ),
       ),
-      child: Row(
-        children: [
-          // Severity Icon
-          Container(
-            padding: EdgeInsets.all(8.r),
-            decoration: BoxDecoration(
-              color: severityBgColor,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(severityIcon, size: 20.sp, color: severityColor),
-          ),
-          horizontalSpace(16),
-
-          // Content
-          Expanded(
-            child: Column(
+      child: isNarrow
+          ? Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   children: [
-                    Text(
-                      title,
-                      style: AppTextStyles.font14BlackRegular.copyWith(
-                        fontWeight: FontWeight.w600,
-                        decoration: isRead ? TextDecoration.lineThrough : null,
+                    Container(
+                      padding: EdgeInsets.all(8.r),
+                      decoration: BoxDecoration(
+                        color: severityBgColor,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        severityIcon,
+                        size: 20.sp,
+                        color: severityColor,
                       ),
                     ),
-                    horizontalSpace(8),
+                    horizontalSpace(12),
+                    Expanded(
+                      child: Text(
+                        title,
+                        style: AppTextStyles.font14BlackRegular.copyWith(
+                          fontWeight: FontWeight.w600,
+                          decoration: isRead
+                              ? TextDecoration.lineThrough
+                              : null,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                verticalSpace(8),
+                Row(
+                  children: [
                     Container(
                       padding: EdgeInsets.symmetric(
                         horizontal: 8.w,
@@ -114,38 +129,123 @@ class AlertsListWidget extends StatelessWidget {
                     ),
                   ],
                 ),
-                verticalSpace(4),
+                verticalSpace(8),
                 Text(
                   alert.message ?? '-',
                   style: AppTextStyles.font13GreyRegular,
                 ),
+                if (!isRead) ...[
+                  verticalSpace(12),
+                  OutlinedButton.icon(
+                    onPressed: () => onResolve(index),
+                    icon: Icon(
+                      Icons.check_circle_outline,
+                      size: 16.sp,
+                      color: AppColors.coolGrey,
+                    ),
+                    label: Text(
+                      AppStrings.resolve,
+                      style: AppTextStyles.font13GreyRegular,
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(color: AppColors.gainsboro),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.r),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 12.w,
+                        vertical: 8.h,
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            )
+          : Row(
+              children: [
+                // Severity Icon
+                Container(
+                  padding: EdgeInsets.all(8.r),
+                  decoration: BoxDecoration(
+                    color: severityBgColor,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(severityIcon, size: 20.sp, color: severityColor),
+                ),
+                horizontalSpace(16),
+
+                // Content
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            title,
+                            style: AppTextStyles.font14BlackRegular.copyWith(
+                              fontWeight: FontWeight.w600,
+                              decoration: isRead
+                                  ? TextDecoration.lineThrough
+                                  : null,
+                            ),
+                          ),
+                          horizontalSpace(8),
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 8.w,
+                              vertical: 2.h,
+                            ),
+                            decoration: BoxDecoration(
+                              color: severityBgColor,
+                              borderRadius: BorderRadius.circular(4.r),
+                            ),
+                            child: Text(
+                              severityLabel,
+                              style: AppTextStyles.font12GreyRegular.copyWith(
+                                color: severityColor,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 10.sp,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      verticalSpace(4),
+                      Text(
+                        alert.message ?? '-',
+                        style: AppTextStyles.font13GreyRegular,
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Resolve Button
+                if (!isRead)
+                  OutlinedButton.icon(
+                    onPressed: () => onResolve(index),
+                    icon: Icon(
+                      Icons.check_circle_outline,
+                      size: 16.sp,
+                      color: AppColors.coolGrey,
+                    ),
+                    label: Text(
+                      AppStrings.resolve,
+                      style: AppTextStyles.font13GreyRegular,
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(color: AppColors.gainsboro),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.r),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 12.w,
+                        vertical: 8.h,
+                      ),
+                    ),
+                  ),
               ],
             ),
-          ),
-
-          // Resolve Button
-          if (!isRead)
-            OutlinedButton.icon(
-              onPressed: () => onResolve(index),
-              icon: Icon(
-                Icons.check_circle_outline,
-                size: 16.sp,
-                color: AppColors.coolGrey,
-              ),
-              label: Text(
-                AppStrings.resolve,
-                style: AppTextStyles.font13GreyRegular,
-              ),
-              style: OutlinedButton.styleFrom(
-                side: BorderSide(color: AppColors.gainsboro),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.r),
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-              ),
-            ),
-        ],
-      ),
     );
   }
 

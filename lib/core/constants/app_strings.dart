@@ -55,6 +55,10 @@ class AppStrings {
       ? 'هل أنت متأكد أنك تريد تسجيل الخروج؟'
       : 'Are you sure you want to logout?';
 
+  static String get sessionExpired => currentLanguage == 'ar'
+      ? 'انتهت صلاحية الجلسة، يرجى تسجيل الدخول مرة أخرى'
+      : 'Session expired. Please sign in again.';
+
   static String get cancel => currentLanguage == 'ar' ? 'إلغاء' : 'Cancel';
 
   // ─── Settings ─────────────────────────────────────────
@@ -64,6 +68,9 @@ class AppStrings {
   static String get settingsSubtitle => currentLanguage == 'ar'
       ? 'عرض معلومات حسابك وتغيير كلمة المرور'
       : 'View your account information and change your password';
+
+  static String get backToDashboard =>
+      currentLanguage == 'ar' ? 'العودة للوحة التحكم' : 'Back to dashboard';
 
   static String get changePasswordTitle =>
       currentLanguage == 'ar' ? 'تغيير كلمة المرور' : 'Change Password';
@@ -178,8 +185,8 @@ class AppStrings {
       : 'Drag and drop files here';
 
   static String get supportedFiles => currentLanguage == 'ar'
-      ? 'يدعم ملفات PDF فقط'
-      : 'Supports PDF files only';
+      ? 'يدعم ملفات PDF و Excel'
+      : 'Supports PDF & Excel files';
 
   static String get browseFiles =>
       currentLanguage == 'ar' ? 'تصفح الملفات' : 'Browse Files';
@@ -203,6 +210,23 @@ class AppStrings {
   static String get uploadProcessingNotice => currentLanguage == 'ar'
       ? 'يتم الآن معالجة وتحليل الملف باستخدام الذكاء الاصطناعي. عند اكتمال الحالة سيظهر في قائمة العروض المتاحة.'
       : 'Your file is being processed and analyzed by AI. Once its status becomes completed, it will appear in the available offers list.';
+
+  static String get processingDocumentPleaseWait => currentLanguage == 'ar'
+      ? 'جارٍ معالجة المستند، يرجى الانتظار…'
+      : 'Processing document, please wait…';
+
+  static String get warehouseName =>
+      currentLanguage == 'ar' ? 'اسم المستودع' : 'Warehouse name';
+
+  static String get warehouseNameHint =>
+      currentLanguage == 'ar' ? 'أدخل اسم المستودع' : 'Enter warehouse name';
+
+  static String get warehouseNameRequired => currentLanguage == 'ar'
+      ? 'يرجى إدخال اسم المستودع'
+      : 'Please enter a warehouse name';
+
+  static String get cantBeEmpty =>
+      currentLanguage == 'ar' ? 'cant be empty' : 'cant be empty';
 
   // ─── Offers ──────────────────────────────────────────
   static String get offersList =>
@@ -260,7 +284,7 @@ class AppStrings {
       currentLanguage == 'ar' ? 'عروض مختارة' : 'Offers Selected';
 
   static String get compareOffersAction =>
-      currentLanguage == 'ar' ? 'مقارنة العروض' : 'Compare Offers';
+      currentLanguage == 'ar' ? 'استخراج' : 'Extraction';
 
   static String get compareResults =>
       currentLanguage == 'ar' ? 'نتائج المقارنة' : 'Compare Results';
@@ -279,9 +303,9 @@ class AppStrings {
       ? 'قم بالمقارنة أولاً قبل إنشاء المقترح'
       : 'Compare first before generating proposal';
 
-  static String get selectAtLeast2 => currentLanguage == 'ar'
-      ? 'اختر عرضين على الأقل للمقارنة'
-      : 'Select at least 2 offers to compare';
+  static String get selectAtLeast1 => currentLanguage == 'ar'
+      ? 'اختر عرضاً واحداً على الأقل للاستخراج'
+      : 'Select at least 1 offer for extraction';
 
   static String get date => currentLanguage == 'ar' ? 'التاريخ' : 'Date';
 
@@ -632,13 +656,13 @@ class AppStrings {
       ? 'تم تسجيل البيع بنجاح. الكمية المتبقية: $remainingQuantity'
       : 'Sale recorded successfully. Remaining quantity: $remainingQuantity';
 
-    static String inventorySaleOptionLabel({
-        required String product,
-        required int inventoryId,
-        required int quantity,
-    }) => currentLanguage == 'ar'
-            ? '$product - رقم: $inventoryId - الكمية: $quantity'
-            : '$product - ID: $inventoryId - Qty: $quantity';
+  static String inventorySaleOptionLabel({
+    required String product,
+    required int inventoryId,
+    required int quantity,
+  }) => currentLanguage == 'ar'
+      ? '$product - رقم: $inventoryId - الكمية: $quantity'
+      : '$product - ID: $inventoryId - Qty: $quantity';
 
   static String adjustQuantityTitle(String product) => currentLanguage == 'ar'
       ? 'تعديل الكمية: $product'

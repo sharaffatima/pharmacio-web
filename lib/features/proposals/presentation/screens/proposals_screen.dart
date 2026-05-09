@@ -7,9 +7,9 @@ import '../../../../core/constants/colors.dart';
 import '../../../../core/constants/text_styles.dart';
 import '../../../../core/helpers/spacing.dart';
 import '../../../../core/public_widgets/loading_widget.dart';
+import '../../../../core/public_widgets/responsive_scaffold.dart';
 import '../../../../core/public_widgets/retry_button_widget.dart';
 import '../../../../core/public_widgets/snack_bar_widget.dart';
-import '../../../dashboard/presentation/widgets/sidebar_widget.dart';
 import '../../data/models/purchase_proposal_model.dart';
 import '../../logic/cubit/proposals_cubit.dart';
 import 'proposal_details_screen.dart';
@@ -17,65 +17,56 @@ import '../widgets/proposals_filters_widget.dart';
 import '../widgets/proposals_header_widget.dart';
 import '../widgets/proposals_stat_cards_widget.dart';
 import '../widgets/proposals_table_widget.dart';
+import '../../../../core/helpers/pdf_generator.dart';
+import '../../../../core/helpers/file_downloader.dart';
+import '../../../../core/helpers/formatters.dart';
 
 class ProposalsScreen extends StatelessWidget {
   const ProposalsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.offWhiteGrey,
-      body: Row(
-        children: [
-          const SidebarWidget(selectedIndex: 4),
-          Expanded(
-            child: BlocConsumer<ProposalsCubit, ProposalsState>(
-              listener: (context, state) {
-                state.whenOrNull(
-                  successApproveProposal: (proposal, proposals) {
-                    showAppSnackBar(
-                      context,
-                      AppStrings.proposalApprovedSuccess,
-                    );
-                  },
-                  successRejectProposal: (proposal, proposals) {
-                    showAppSnackBar(
-                      context,
-                      AppStrings.proposalRejectedSuccess,
-                    );
-                  },
-                  successGetProposalStatus: (status, proposals) {
-                    showAppSnackBar(
-                      context,
-                      '${AppStrings.currentStatusLabel}: ${status.status ?? '-'}',
-                    );
-                  },
-                  error: (error) => showAppSnackBar(context, error),
-                );
-              },
-              builder: (context, state) {
-                return state.when(
-                  initial: () => const LoadingWidget(),
-                  loading: () => const LoadingWidget(),
-                  error: (error) => RetryButtonWidget(
-                    message: error,
-                    onRetry: () => context.read<ProposalsCubit>().loadData(),
-                  ),
-                  successGetProposalsList: (proposals) =>
-                      _buildContent(context, proposals),
-                  successGetProposalDetail: (proposal, proposals) =>
-                      _buildContent(context, proposals),
-                  successGetProposalStatus: (status, proposals) =>
-                      _buildContent(context, proposals),
-                  successApproveProposal: (proposal, proposals) =>
-                      _buildContent(context, proposals),
-                  successRejectProposal: (proposal, proposals) =>
-                      _buildContent(context, proposals),
-                );
-              },
+    return ResponsiveScaffold(
+      selectedIndex: 4,
+      title: AppStrings.proposals,
+      body: BlocConsumer<ProposalsCubit, ProposalsState>(
+        listener: (context, state) {
+          state.whenOrNull(
+            successApproveProposal: (proposal, proposals) {
+              showAppSnackBar(context, AppStrings.proposalApprovedSuccess);
+            },
+            successRejectProposal: (proposal, proposals) {
+              showAppSnackBar(context, AppStrings.proposalRejectedSuccess);
+            },
+            successGetProposalStatus: (status, proposals) {
+              showAppSnackBar(
+                context,
+                '${AppStrings.currentStatusLabel}: ${status.status ?? '-'}',
+              );
+            },
+            error: (error) => showAppSnackBar(context, error),
+          );
+        },
+        builder: (context, state) {
+          return state.when(
+            initial: () => const LoadingWidget(),
+            loading: () => const LoadingWidget(),
+            error: (error) => RetryButtonWidget(
+              message: error,
+              onRetry: () => context.read<ProposalsCubit>().loadData(),
             ),
-          ),
-        ],
+            successGetProposalsList: (proposals) =>
+                _buildContent(context, proposals),
+            successGetProposalDetail: (proposal, proposals) =>
+                _buildContent(context, proposals),
+            successGetProposalStatus: (status, proposals) =>
+                _buildContent(context, proposals),
+            successApproveProposal: (proposal, proposals) =>
+                _buildContent(context, proposals),
+            successRejectProposal: (proposal, proposals) =>
+                _buildContent(context, proposals),
+          );
+        },
       ),
     );
   }
@@ -85,6 +76,7 @@ class ProposalsScreen extends StatelessWidget {
     List<PurchaseProposalModel> proposals,
   ) {
     final cubit = context.read<ProposalsCubit>();
+    final isMobile = MediaQuery.of(context).size.width < 900;
     final statuses = [
       AppStrings.allStatuses,
       AppStrings.pending,
@@ -92,11 +84,23 @@ class ProposalsScreen extends StatelessWidget {
       AppStrings.rejected,
     ];
     return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 28.h),
+      padding: EdgeInsets.symmetric(
+        horizontal: isMobile ? 16.w : 32.w,
+        vertical: isMobile ? 20.h : 28.h,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const ProposalsHeaderWidget(),
+          ProposalsHeaderWidget(
+            onDownloadZip: proposals.isEmpty
+                ? null
+                : () async {
+                    final zipBytes =
+                        await PdfGenerator.generateProposalsZip(proposals);
+                    FileDownloader.downloadFile(
+                        zipBytes, 'All_Proposals.zip');
+                  },
+          ),
           verticalSpace(24),
           ProposalsStatCardsWidget(
             total: cubit.totalCount,
@@ -216,7 +220,7 @@ class ProposalsScreen extends StatelessWidget {
                     Expanded(
                       child: _buildDialogInfoTile(
                         label: AppStrings.total,
-                        value: proposal.totalCost ?? '-',
+                        value: AppFormatters.formatCurrency(proposal.totalCost),
                       ),
                     ),
                   ],

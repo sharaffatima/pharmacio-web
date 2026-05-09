@@ -26,121 +26,148 @@ class ProposalsFiltersWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(20.r),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: AppColors.gainsboro, width: 1),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            AppStrings.filterProposals,
-            style: AppTextStyles.font16BlackSemiBold,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isNarrow = constraints.maxWidth < 700;
+        return Container(
+          padding: EdgeInsets.all(20.r),
+          decoration: BoxDecoration(
+            color: AppColors.white,
+            borderRadius: BorderRadius.circular(12.r),
+            border: Border.all(color: AppColors.gainsboro, width: 1),
           ),
-          verticalSpace(16),
-          Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // ─── Search ───────────────────────────
-              Expanded(
-                flex: 3,
-                child: Container(
-                  height: 40.h,
-                  decoration: BoxDecoration(
-                    color: AppColors.offWhiteGrey,
-                    borderRadius: BorderRadius.circular(8.r),
+              Text(
+                AppStrings.filterProposals,
+                style: AppTextStyles.font16BlackSemiBold,
+              ),
+              verticalSpace(16),
+              if (isNarrow) ...[
+                _buildSearchField(),
+                verticalSpace(12),
+                _buildStatusDropdown(),
+                verticalSpace(12),
+                OutlinedButton.icon(
+                  onPressed: () {},
+                  icon: Icon(
+                    Icons.calendar_today,
+                    size: 16.sp,
+                    color: AppColors.coolGrey,
                   ),
-                  child: TextField(
-                    controller: searchController,
-                    onChanged: onSearchChanged,
+                  label: Text(
+                    AppStrings.dateRange,
                     style: AppTextStyles.font14BlackRegular,
-                    decoration: InputDecoration(
-                      hintText: AppStrings.searchProposals,
-                      hintStyle: AppTextStyles.font13GreyRegular,
-                      prefixIcon: Icon(
-                        Icons.search,
-                        size: 20.sp,
-                        color: AppColors.coolGrey,
-                      ),
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(vertical: 10.h),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(color: AppColors.gainsboro),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.r),
+                    ),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 16.w,
+                      vertical: 10.h,
                     ),
                   ),
                 ),
-              ),
-              horizontalSpace(12),
-
-              // ─── Status Dropdown ──────────────────
-              Expanded(
-                flex: 1,
-                child: Container(
-                  height: 40.h,
-                  padding: EdgeInsets.symmetric(horizontal: 12.w),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: AppColors.gainsboro),
-                    borderRadius: BorderRadius.circular(8.r),
-                  ),
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton<String>(
-                      value: selectedStatus,
-                      isExpanded: true,
-                      dropdownColor: AppColors.white,
+              ] else
+                Row(
+                  children: [
+                    Expanded(flex: 3, child: _buildSearchField()),
+                    horizontalSpace(12),
+                    Expanded(flex: 1, child: _buildStatusDropdown()),
+                    horizontalSpace(12),
+                    OutlinedButton.icon(
+                      onPressed: () {},
                       icon: Icon(
-                        Icons.keyboard_arrow_down,
-                        size: 20.sp,
+                        Icons.calendar_today,
+                        size: 16.sp,
                         color: AppColors.coolGrey,
                       ),
-                      style: AppTextStyles.font14BlackRegular.copyWith(
-                        color: AppColors.black,
+                      label: Text(
+                        AppStrings.dateRange,
+                        style: AppTextStyles.font14BlackRegular,
                       ),
-                      items: statuses
-                          .map(
-                            (s) => DropdownMenuItem(
-                              value: s,
-                              child: Text(
-                                s,
-                                style: AppTextStyles.font14BlackRegular,
-                              ),
-                            ),
-                          )
-                          .toList(),
-                      onChanged: (v) {
-                        if (v != null) onStatusChanged(v);
-                      },
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(color: AppColors.gainsboro),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.r),
+                        ),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 16.w,
+                          vertical: 10.h,
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ),
-              horizontalSpace(12),
-
-              // ─── Date Range ───────────────────────
-              OutlinedButton.icon(
-                onPressed: () {},
-                icon: Icon(
-                  Icons.calendar_today,
-                  size: 16.sp,
-                  color: AppColors.coolGrey,
-                ),
-                label: Text(
-                  AppStrings.dateRange,
-                  style: AppTextStyles.font14BlackRegular,
-                ),
-                style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: AppColors.gainsboro),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.r),
-                  ),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 16.w,
-                    vertical: 10.h,
-                  ),
-                ),
-              ),
             ],
           ),
-        ],
+        );
+      },
+    );
+  }
+
+  Widget _buildSearchField() {
+    return Container(
+      height: 40.h,
+      decoration: BoxDecoration(
+        color: AppColors.offWhiteGrey,
+        borderRadius: BorderRadius.circular(8.r),
+      ),
+      child: TextField(
+        controller: searchController,
+        onChanged: onSearchChanged,
+        style: AppTextStyles.font14BlackRegular,
+        decoration: InputDecoration(
+          hintText: AppStrings.searchProposals,
+          hintStyle: AppTextStyles.font13GreyRegular,
+          prefixIcon: Icon(
+            Icons.search,
+            size: 20.sp,
+            color: AppColors.coolGrey,
+          ),
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.symmetric(vertical: 10.h),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStatusDropdown() {
+    return Container(
+      height: 40.h,
+      padding: EdgeInsets.symmetric(horizontal: 12.w),
+      decoration: BoxDecoration(
+        border: Border.all(color: AppColors.gainsboro),
+        borderRadius: BorderRadius.circular(8.r),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String>(
+          value: selectedStatus,
+          isExpanded: true,
+          dropdownColor: AppColors.white,
+          icon: Icon(
+            Icons.keyboard_arrow_down,
+            size: 20.sp,
+            color: AppColors.coolGrey,
+          ),
+          style: AppTextStyles.font14BlackRegular.copyWith(
+            color: AppColors.black,
+          ),
+          items: statuses
+              .map(
+                (s) => DropdownMenuItem(
+                  value: s,
+                  child: Text(s, style: AppTextStyles.font14BlackRegular),
+                ),
+              )
+              .toList(),
+          onChanged: (v) {
+            if (v != null) onStatusChanged(v);
+          },
+        ),
       ),
     );
   }

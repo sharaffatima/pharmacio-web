@@ -14,10 +14,16 @@ class UploadsRepo {
     required this.networkInfo,
   });
 
-  Future<UploadResponse> uploadFiles(List<PlatformFile> files) async {
+  Future<UploadResponse> uploadFiles(
+    List<PlatformFile> files, {
+    required String warehouseName,
+  }) async {
     if (await networkInfo.isConnected) {
       try {
-        return await uploadsRemoteDataSource.uploadFiles(files);
+        return await uploadsRemoteDataSource.uploadFiles(
+          files,
+          warehouseName: warehouseName,
+        );
       } catch (e) {
         throw NetworkExceptions.getException(e);
       }

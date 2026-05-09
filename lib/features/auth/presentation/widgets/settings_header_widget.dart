@@ -4,7 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../core/constants/app_strings.dart';
 import '../../../../../core/constants/colors.dart';
 import '../../../../../core/constants/text_styles.dart';
+import '../../../../../core/helpers/extentions.dart';
 import '../../../../../core/helpers/spacing.dart';
+import '../../../../../core/routing/routes.dart';
 import '../../data/models/me/me_response.dart';
 
 class SettingsHeaderWidget extends StatelessWidget {
@@ -17,6 +19,18 @@ class SettingsHeaderWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        TextButton.icon(
+          onPressed: () => context.pushNamedAndRemoveUntil(
+            Routes.dashboardScreen,
+            predicate: (route) => false,
+          ),
+          icon: Icon(Icons.arrow_back, size: 18, color: AppColors.coolGrey),
+          label: Text(
+            AppStrings.backToDashboard,
+            style: AppTextStyles.font13GreyRegular,
+          ),
+        ),
+        verticalSpace(8),
         Text(AppStrings.settingsTitle, style: AppTextStyles.font24BlackBold),
         verticalSpace(4),
         Text(

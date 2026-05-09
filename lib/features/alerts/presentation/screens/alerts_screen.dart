@@ -7,9 +7,9 @@ import '../../../../core/constants/colors.dart';
 import '../../../../core/constants/text_styles.dart';
 import '../../../../core/helpers/spacing.dart';
 import '../../../../core/public_widgets/loading_widget.dart';
+import '../../../../core/public_widgets/responsive_scaffold.dart';
 import '../../../../core/public_widgets/retry_button_widget.dart';
 import '../../../../core/public_widgets/snack_bar_widget.dart';
-import '../../../dashboard/presentation/widgets/sidebar_widget.dart';
 import '../../data/models/user_notification_model.dart';
 import '../../logic/cubit/alerts_cubit.dart';
 import '../widgets/alerts_header_widget.dart';
@@ -21,65 +21,46 @@ class AlertsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.offWhiteGrey,
-      body: Row(
-        children: [
-          const SidebarWidget(selectedIndex: 6),
-          Expanded(
-            child: BlocConsumer<AlertsCubit, AlertsState>(
-              listener: (context, state) {
-                state.whenOrNull(
-                  successMarkNotificationRead:
-                      (
-                        updatedNotification,
-                        alerts,
-                        unreadCount,
-                        tabIndex,
-                        selectedSeverity,
-                      ) {
-                        showAppSnackBar(
-                          context,
-                          AppStrings.notificationMarkedAsRead,
-                        );
-                      },
-                  error: (error) => showAppSnackBar(context, error),
-                );
-              },
-              builder: (context, state) {
-                return state.when(
-                  initial: () => const LoadingWidget(),
-                  loading: () => const LoadingWidget(),
-                  error: (error) => RetryButtonWidget(
-                    message: error,
-                    onRetry: () => context.read<AlertsCubit>().loadData(),
-                  ),
-                  successGetMyNotifications:
-                      (alerts, unreadCount, tabIndex, selectedSeverity) =>
-                          _buildContent(
-                            context,
-                            alerts,
-                            tabIndex,
-                            selectedSeverity,
-                          ),
-                  successMarkNotificationRead:
-                      (
-                        updatedNotification,
-                        alerts,
-                        unreadCount,
-                        tabIndex,
-                        selectedSeverity,
-                      ) => _buildContent(
-                        context,
-                        alerts,
-                        tabIndex,
-                        selectedSeverity,
-                      ),
-                );
-              },
+    return ResponsiveScaffold(
+      selectedIndex: 6,
+      title: AppStrings.alertsAndLogs,
+      body: BlocConsumer<AlertsCubit, AlertsState>(
+        listener: (context, state) {
+          state.whenOrNull(
+            successMarkNotificationRead:
+                (
+                  updatedNotification,
+                  alerts,
+                  unreadCount,
+                  tabIndex,
+                  selectedSeverity,
+                ) {
+                  showAppSnackBar(context, AppStrings.notificationMarkedAsRead);
+                },
+            error: (error) => showAppSnackBar(context, error),
+          );
+        },
+        builder: (context, state) {
+          return state.when(
+            initial: () => const LoadingWidget(),
+            loading: () => const LoadingWidget(),
+            error: (error) => RetryButtonWidget(
+              message: error,
+              onRetry: () => context.read<AlertsCubit>().loadData(),
             ),
-          ),
-        ],
+            successGetMyNotifications:
+                (alerts, unreadCount, tabIndex, selectedSeverity) =>
+                    _buildContent(context, alerts, tabIndex, selectedSeverity),
+            successMarkNotificationRead:
+                (
+                  updatedNotification,
+                  alerts,
+                  unreadCount,
+                  tabIndex,
+                  selectedSeverity,
+                ) => _buildContent(context, alerts, tabIndex, selectedSeverity),
+          );
+        },
       ),
     );
   }
@@ -91,8 +72,12 @@ class AlertsScreen extends StatelessWidget {
     String selectedSeverity,
   ) {
     final cubit = context.read<AlertsCubit>();
+    final isMobile = MediaQuery.of(context).size.width < 900;
     return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 28.h),
+      padding: EdgeInsets.symmetric(
+        horizontal: isMobile ? 16.w : 32.w,
+        vertical: isMobile ? 20.h : 28.h,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -107,7 +92,9 @@ class AlertsScreen extends StatelessWidget {
           verticalSpace(24),
 
           // ─── Tabs ──────────────────────────
-          Row(
+          Wrap(
+            spacing: 4.w,
+            runSpacing: 8.h,
             children: [
               _buildTab(
                 AppStrings.alerts,
@@ -115,7 +102,6 @@ class AlertsScreen extends StatelessWidget {
                 tabIndex,
                 () => cubit.switchTab(0),
               ),
-              horizontalSpace(4),
               _buildTab(
                 AppStrings.auditLogs,
                 1,
@@ -144,7 +130,7 @@ class AlertsScreen extends StatelessWidget {
                   verticalSpace(12),
                   Container(
                     height: 40.h,
-                    width: 200.w,
+                    width: isMobile ? double.infinity : 200.w,
                     padding: EdgeInsets.symmetric(horizontal: 12.w),
                     decoration: BoxDecoration(
                       border: Border.all(color: AppColors.gainsboro),

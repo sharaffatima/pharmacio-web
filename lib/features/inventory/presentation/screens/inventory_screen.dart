@@ -7,14 +7,13 @@ import '../../../../core/constants/colors.dart';
 import '../../../../core/constants/text_styles.dart';
 import '../../../../core/helpers/spacing.dart';
 import '../../../../core/public_widgets/loading_widget.dart';
+import '../../../../core/public_widgets/responsive_scaffold.dart';
 import '../../../../core/public_widgets/retry_button_widget.dart';
 import '../../../../core/public_widgets/snack_bar_widget.dart';
-import '../../../dashboard/presentation/widgets/sidebar_widget.dart';
 import '../../data/models/inventory_api_item.dart';
 import '../../data/models/inventory_create_request_body.dart';
 import '../../logic/cubit/inventory_cubit.dart';
 import '../widgets/inventory_header_widget.dart';
-import '../widgets/inventory_stat_cards_widget.dart';
 import '../widgets/inventory_table_widget.dart';
 
 class InventoryScreen extends StatelessWidget {
@@ -22,193 +21,157 @@ class InventoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.offWhiteGrey,
-      body: Row(
-        children: [
-          const SidebarWidget(selectedIndex: 5),
-          Expanded(
-            child: BlocConsumer<InventoryCubit, InventoryState>(
-              listener: (context, state) {
-                state.whenOrNull(
-                  successCreateInventoryItem: (createdItem, items) {
-                    showAppSnackBar(
-                      context,
-                      AppStrings.inventoryItemCreatedSuccess,
-                    );
-                  },
-                  successAdjustInventoryItem: (adjustResponse, items) {
-                    showAppSnackBar(
-                      context,
-                      AppStrings.inventoryQuantityAdjustedSuccess,
-                    );
-                  },
-                  error: (error) => showAppSnackBar(context, error),
-                );
-              },
-              builder: (context, state) {
-                return state.when(
-                  initial: () => const LoadingWidget(),
-                  loading: () => const LoadingWidget(),
-                  error: (error) => RetryButtonWidget(
-                    message: error,
-                    onRetry: () => context.read<InventoryCubit>().loadData(),
-                  ),
-                  successGetInventoryList: (items) =>
-                      _buildContent(context, items),
-                  successCreateInventoryItem: (createdItem, items) =>
-                      _buildContent(context, items),
-                  successAdjustInventoryItem: (adjustResponse, items) =>
-                      _buildContent(context, items),
-                );
-              },
+    return ResponsiveScaffold(
+      selectedIndex: 5,
+      title: AppStrings.inventory,
+      body: BlocConsumer<InventoryCubit, InventoryState>(
+        listener: (context, state) {
+          state.whenOrNull(
+            successCreateInventoryItem: (createdItem, items) {
+              showAppSnackBar(
+                context,
+                AppStrings.inventoryItemCreatedSuccess,
+              );
+            },
+            successAdjustInventoryItem: (adjustResponse, items) {
+              showAppSnackBar(
+                context,
+                AppStrings.inventoryQuantityAdjustedSuccess,
+              );
+            },
+            error: (error) => showAppSnackBar(context, error),
+          );
+        },
+        builder: (context, state) {
+          return state.when(
+            initial: () => const LoadingWidget(),
+            loading: () => const LoadingWidget(),
+            error: (error) => RetryButtonWidget(
+              message: error,
+              onRetry: () => context.read<InventoryCubit>().loadData(),
             ),
-          ),
-        ],
+            successGetInventoryList: (items) =>
+                _buildContent(context, items),
+            successCreateInventoryItem: (createdItem, items) =>
+                _buildContent(context, items),
+            successAdjustInventoryItem: (adjustResponse, items) =>
+                _buildContent(context, items),
+          );
+        },
       ),
     );
   }
 
   Widget _buildContent(BuildContext context, List<InventoryApiItem> items) {
     final cubit = context.read<InventoryCubit>();
+    final isMobile = MediaQuery.of(context).size.width < 900;
     return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 28.h),
+      padding: EdgeInsets.symmetric(
+        horizontal: isMobile ? 16.w : 32.w,
+        vertical: isMobile ? 20.h : 28.h,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              const Expanded(child: InventoryHeaderWidget()),
-              OutlinedButton.icon(
-                onPressed: () => _showRecordSaleDialog(context, items),
-                icon: Icon(Icons.point_of_sale_outlined, size: 18.sp),
-                label: Text(AppStrings.recordSale),
-                style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: AppColors.gainsboro),
-                  foregroundColor: AppColors.charcoalBlack,
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 18.w,
-                    vertical: 12.h,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.r),
-                  ),
-                ),
-              ),
-              horizontalSpace(10),
-              ElevatedButton.icon(
-                onPressed: () => _showCreateDialog(context),
-                icon: Icon(Icons.add, size: 18.sp),
-                label: Text(AppStrings.addItem),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.charcoalBlack,
-                  foregroundColor: AppColors.white,
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 18.w,
-                    vertical: 12.h,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.r),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          verticalSpace(24),
-
-          InventoryStatCardsWidget(
-            totalItems: cubit.totalCount,
-            lowStockItems: cubit.lowStockCount,
-            totalStockValue: cubit.totalStockValue,
-          ),
-          verticalSpace(24),
-
-          // ─── Search & Filter ──────────────────
-          Container(
-            padding: EdgeInsets.all(20.r),
-            decoration: BoxDecoration(
-              color: AppColors.white,
-              borderRadius: BorderRadius.circular(12.r),
-              border: Border.all(color: AppColors.gainsboro, width: 1),
-            ),
-            child: Column(
+          if (isMobile)
+            Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  AppStrings.searchAndFilter,
-                  style: AppTextStyles.font16BlackSemiBold,
-                ),
-                verticalSpace(16),
-                Row(
+                const InventoryHeaderWidget(),
+                verticalSpace(12),
+                Wrap(
+                  spacing: 10.w,
+                  runSpacing: 10.h,
                   children: [
-                    Expanded(
-                      child: Container(
-                        height: 40.h,
-                        decoration: BoxDecoration(
-                          color: AppColors.offWhiteGrey,
-                          borderRadius: BorderRadius.circular(8.r),
+                    OutlinedButton.icon(
+                      onPressed: () => _showRecordSaleDialog(context, items),
+                      icon: Icon(Icons.point_of_sale_outlined, size: 18.sp),
+                      label: Text(AppStrings.recordSale),
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(color: AppColors.gainsboro),
+                        foregroundColor: AppColors.charcoalBlack,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 18.w,
+                          vertical: 12.h,
                         ),
-                        child: TextField(
-                          controller:
-                              TextEditingController(text: cubit.searchQuery)
-                                ..selection = TextSelection.collapsed(
-                                  offset: cubit.searchQuery.length,
-                                ),
-                          onChanged: cubit.updateSearch,
-                          style: AppTextStyles.font14BlackRegular,
-                          decoration: InputDecoration(
-                            hintText: AppStrings.searchByProduct,
-                            hintStyle: AppTextStyles.font13GreyRegular,
-                            prefixIcon: Icon(
-                              Icons.search,
-                              size: 20.sp,
-                              color: AppColors.coolGrey,
-                            ),
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.symmetric(
-                              vertical: 10.h,
-                            ),
-                          ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.r),
                         ),
                       ),
                     ),
-                    horizontalSpace(12),
-                    OutlinedButton.icon(
-                      onPressed: cubit.toggleLowStock,
-                      icon: Icon(
-                        Icons.warning_amber,
-                        size: 16.sp,
-                        color: cubit.lowStockOnly
-                            ? AppColors.brightRed
-                            : AppColors.coolGrey,
-                      ),
-                      label: Text(
-                        AppStrings.lowStockOnly,
-                        style: AppTextStyles.font14BlackRegular,
-                      ),
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(
-                          color: cubit.lowStockOnly
-                              ? AppColors.brightRed
-                              : AppColors.gainsboro,
-                        ),
-                        backgroundColor: cubit.lowStockOnly
-                            ? AppColors.brightRed.withValues(alpha: 0.05)
-                            : AppColors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.r),
-                        ),
+                    ElevatedButton.icon(
+                      onPressed: () => _showCreateDialog(context),
+                      icon: Icon(Icons.add, size: 18.sp),
+                      label: Text(AppStrings.addItem),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.charcoalBlack,
+                        foregroundColor: AppColors.white,
                         padding: EdgeInsets.symmetric(
-                          horizontal: 16.w,
-                          vertical: 10.h,
+                          horizontal: 18.w,
+                          vertical: 12.h,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.r),
                         ),
                       ),
                     ),
                   ],
                 ),
               ],
+            )
+          else
+            Row(
+              children: [
+                const Expanded(child: InventoryHeaderWidget()),
+                OutlinedButton.icon(
+                  onPressed: () => _showRecordSaleDialog(context, items),
+                  icon: Icon(Icons.point_of_sale_outlined, size: 18.sp),
+                  label: Text(AppStrings.recordSale),
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(color: AppColors.gainsboro),
+                    foregroundColor: AppColors.charcoalBlack,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 18.w,
+                      vertical: 12.h,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.r),
+                    ),
+                  ),
+                ),
+                horizontalSpace(10),
+                ElevatedButton.icon(
+                  onPressed: () => _showCreateDialog(context),
+                  icon: Icon(Icons.add, size: 18.sp),
+                  label: Text(AppStrings.addItem),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.charcoalBlack,
+                    foregroundColor: AppColors.white,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 18.w,
+                      vertical: 12.h,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.r),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ),
+          verticalSpace(24),
+
+                if (isMobile) ...[
+                  _buildSearchField(cubit),
+                  verticalSpace(12),
+                  _buildLowStockButton(cubit),
+                ] else
+                  Row(
+                    children: [
+                      Expanded(child: _buildSearchField(cubit)),
+                      horizontalSpace(12),
+                      _buildLowStockButton(cubit),
+                    ],
+                  ),
           verticalSpace(24),
 
           InventoryTableWidget(
@@ -216,6 +179,71 @@ class InventoryScreen extends StatelessWidget {
             onEdit: (item) => _showAdjustDialog(context, item),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildSearchField(InventoryCubit cubit) {
+    return Container(
+      height: 40.h,
+      decoration: BoxDecoration(
+        color: AppColors.offWhiteGrey,
+        borderRadius: BorderRadius.circular(8.r),
+      ),
+      child: TextField(
+        controller: TextEditingController(text: cubit.searchQuery)
+          ..selection = TextSelection.collapsed(
+            offset: cubit.searchQuery.length,
+          ),
+        onChanged: cubit.updateSearch,
+        style: AppTextStyles.font14BlackRegular,
+        decoration: InputDecoration(
+          hintText: AppStrings.searchByProduct,
+          hintStyle: AppTextStyles.font13GreyRegular,
+          prefixIcon: Icon(
+            Icons.search,
+            size: 20.sp,
+            color: AppColors.coolGrey,
+          ),
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.symmetric(
+            vertical: 10.h,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLowStockButton(InventoryCubit cubit) {
+    return OutlinedButton.icon(
+      onPressed: cubit.toggleLowStock,
+      icon: Icon(
+        Icons.warning_amber,
+        size: 16.sp,
+        color: cubit.lowStockOnly
+            ? AppColors.brightRed
+            : AppColors.coolGrey,
+      ),
+      label: Text(
+        AppStrings.lowStockOnly,
+        style: AppTextStyles.font14BlackRegular,
+      ),
+      style: OutlinedButton.styleFrom(
+        side: BorderSide(
+          color: cubit.lowStockOnly
+              ? AppColors.brightRed
+              : AppColors.gainsboro,
+        ),
+        backgroundColor: cubit.lowStockOnly
+            ? AppColors.brightRed.withValues(alpha: 0.05)
+            : AppColors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.r),
+        ),
+        padding: EdgeInsets.symmetric(
+          horizontal: 14.w,
+          vertical: 10.h,
+        ),
       ),
     );
   }

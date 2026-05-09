@@ -32,7 +32,7 @@ class LoginScreen extends StatelessWidget {
             );
           },
           child: Container(
-            width: 440.w,
+            constraints: BoxConstraints(maxWidth: 440.w),
             padding: EdgeInsets.symmetric(horizontal: 36.w, vertical: 36.h),
             decoration: BoxDecoration(
               color: AppColors.white,

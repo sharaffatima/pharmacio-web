@@ -3,15 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/constants/app_strings.dart';
-import '../../../../core/constants/colors.dart';
 import '../../../../core/helpers/spacing.dart';
 import '../../../../core/public_widgets/loading_widget.dart';
+import '../../../../core/public_widgets/responsive_scaffold.dart';
 import '../../../../core/public_widgets/retry_button_widget.dart';
 import '../../../../core/public_widgets/snack_bar_widget.dart';
 import '../../../../core/routing/routes.dart';
 import '../../data/models/compare_available_offer_item.dart';
 import '../../data/models/compare_offer_result_model.dart';
-import '../../../dashboard/presentation/widgets/sidebar_widget.dart';
 import '../../logic/cubit/compare_cubit.dart';
 import '../widgets/available_offers_widget.dart';
 import '../widgets/compare_header_widget.dart';
@@ -23,69 +22,63 @@ class CompareScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.offWhiteGrey,
-      body: Row(
-        children: [
-          const SidebarWidget(selectedIndex: 3),
-          Expanded(
-            child: BlocConsumer<CompareCubit, CompareState>(
-              listener: (context, state) {
-                state.whenOrNull(
-                  successGenerateProposal:
-                      (offers, selectedOfferIds, comparedResults, proposal) {
-                        final message = AppStrings.proposalGeneratedSuccess;
-                        showAppSnackBar(context, message);
-                        Navigator.of(context).pushNamed(Routes.proposalsScreen);
-                      },
-                  error: (error) => showAppSnackBar(context, error),
-                );
-              },
-              builder: (context, state) {
-                return state.when(
-                  initial: () => const LoadingWidget(),
-                  loading: () => const LoadingWidget(),
-                  error: (error) => RetryButtonWidget(
-                    message: error,
-                    onRetry: () => context.read<CompareCubit>().loadData(),
-                  ),
-                  successGetAvailableOffers:
-                      (
-                        offers,
-                        selectedOfferIds,
-                        comparedResults,
-                        generatedProposal,
-                      ) => _buildContent(
-                        context,
-                        offers,
-                        selectedOfferIds,
-                        comparedResults,
-                      ),
-                  successCompareOffers:
-                      (
-                        offers,
-                        selectedOfferIds,
-                        comparedResults,
-                        generatedProposal,
-                      ) => _buildContent(
-                        context,
-                        offers,
-                        selectedOfferIds,
-                        comparedResults,
-                      ),
-                  successGenerateProposal:
-                      (offers, selectedOfferIds, comparedResults, proposal) =>
-                          _buildContent(
-                            context,
-                            offers,
-                            selectedOfferIds,
-                            comparedResults,
-                          ),
-                );
-              },
+    return ResponsiveScaffold(
+      selectedIndex: 3,
+      title: AppStrings.compare,
+      body: BlocConsumer<CompareCubit, CompareState>(
+        listener: (context, state) {
+          state.whenOrNull(
+            successGenerateProposal:
+                (offers, selectedOfferIds, comparedResults, proposal) {
+                  final message = AppStrings.proposalGeneratedSuccess;
+                  showAppSnackBar(context, message);
+                  Navigator.of(context).pushNamed(Routes.proposalsScreen);
+                },
+            error: (error) => showAppSnackBar(context, error),
+          );
+        },
+        builder: (context, state) {
+          return state.when(
+            initial: () => const LoadingWidget(),
+            loading: () => const LoadingWidget(),
+            error: (error) => RetryButtonWidget(
+              message: error,
+              onRetry: () => context.read<CompareCubit>().loadData(),
             ),
-          ),
-        ],
+            successGetAvailableOffers:
+                (
+                  offers,
+                  selectedOfferIds,
+                  comparedResults,
+                  generatedProposal,
+                ) => _buildContent(
+                  context,
+                  offers,
+                  selectedOfferIds,
+                  comparedResults,
+                ),
+            successCompareOffers:
+                (
+                  offers,
+                  selectedOfferIds,
+                  comparedResults,
+                  generatedProposal,
+                ) => _buildContent(
+                  context,
+                  offers,
+                  selectedOfferIds,
+                  comparedResults,
+                ),
+            successGenerateProposal:
+                (offers, selectedOfferIds, comparedResults, proposal) =>
+                    _buildContent(
+                      context,
+                      offers,
+                      selectedOfferIds,
+                      comparedResults,
+                    ),
+          );
+        },
       ),
     );
   }
@@ -97,37 +90,59 @@ class CompareScreen extends StatelessWidget {
     List<CompareOfferResultModel> comparedResults,
   ) {
     final cubit = context.read<CompareCubit>();
+    final isMobile = MediaQuery.of(context).size.width < 900;
 
     return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 28.h),
+      padding: EdgeInsets.symmetric(
+        horizontal: isMobile ? 16.w : 32.w,
+        vertical: isMobile ? 20.h : 28.h,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const CompareHeaderWidget(),
           verticalSpace(24),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                flex: 2,
-                child: AvailableOffersWidget(
+          if (isMobile)
+            Column(
+              children: [
+                AvailableOffersWidget(
                   offers: offers,
                   selectedOfferIds: selectedOfferIds.toSet(),
                   onToggle: cubit.toggleOffer,
                 ),
-              ),
-              horizontalSpace(24),
-              Expanded(
-                flex: 1,
-                child: SelectionSummaryWidget(
+                verticalSpace(16),
+                SelectionSummaryWidget(
                   selectedCount: cubit.selectedCount,
                   comparedItemsCount: comparedResults.length,
                   onCompare: cubit.compareSelectedOffers,
                   onGenerateProposal: cubit.generateProposal,
                 ),
-              ),
-            ],
-          ),
+              ],
+            )
+          else
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: AvailableOffersWidget(
+                    offers: offers,
+                    selectedOfferIds: selectedOfferIds.toSet(),
+                    onToggle: cubit.toggleOffer,
+                  ),
+                ),
+                horizontalSpace(24),
+                Expanded(
+                  flex: 1,
+                  child: SelectionSummaryWidget(
+                    selectedCount: cubit.selectedCount,
+                    comparedItemsCount: comparedResults.length,
+                    onCompare: cubit.compareSelectedOffers,
+                    onGenerateProposal: cubit.generateProposal,
+                  ),
+                ),
+              ],
+            ),
           verticalSpace(24),
           CompareResultsWidget(results: comparedResults),
         ],

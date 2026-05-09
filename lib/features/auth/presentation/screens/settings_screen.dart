@@ -6,6 +6,7 @@ import '../../../../../core/constants/app_strings.dart';
 import '../../../../../core/constants/colors.dart';
 import '../../../../../core/helpers/spacing.dart';
 import '../../../../../core/public_widgets/loading_widget.dart';
+import '../../../../../core/public_widgets/responsive_scaffold.dart';
 import '../../logic/cubits/auth_cubit.dart';
 import '../widgets/change_password_form_widget.dart';
 import '../widgets/settings_header_widget.dart';
@@ -47,12 +48,17 @@ class SettingsScreen extends StatelessWidget {
           orElse: () => false,
         );
 
-        return Scaffold(
-          backgroundColor: AppColors.offWhiteGrey,
+        final isMobile = MediaQuery.of(context).size.width < 900;
+        return ResponsiveScaffold(
+          selectedIndex: 7,
+          title: AppStrings.settings,
           body: Stack(
             children: [
               SingleChildScrollView(
-                padding: EdgeInsets.all(24.r),
+                padding: EdgeInsets.symmetric(
+                  horizontal: isMobile ? 16.w : 24.w,
+                  vertical: isMobile ? 20.h : 24.h,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

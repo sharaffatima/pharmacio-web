@@ -6,6 +6,7 @@ import '../../../../core/constants/colors.dart';
 import '../../../../core/constants/text_styles.dart';
 import '../../../../core/helpers/spacing.dart';
 import '../../data/models/upload_entry.dart';
+import '../../../../core/public_widgets/horizontal_scroll_table.dart';
 
 class RecentUploadsTableWidget extends StatelessWidget {
   final List<UploadEntry> entries;
@@ -21,6 +22,35 @@ class RecentUploadsTableWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final table = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          AppStrings.recentUploads,
+          style: AppTextStyles.font16BlackSemiBold,
+        ),
+        verticalSpace(16),
+
+        // ─── Table Header ─────────────────────────
+        _buildHeaderRow(),
+        Divider(color: AppColors.gainsboro, height: 1),
+
+        // ─── Table Rows ───────────────────────────
+        if (entries.isEmpty)
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 24.h),
+            child: Center(
+              child: Text(
+                AppStrings.noUploadsYet,
+                style: AppTextStyles.font13GreyRegular,
+              ),
+            ),
+          )
+        else
+          ...entries.asMap().entries.map((e) => _buildDataRow(e.value, e.key)),
+      ],
+    );
+
     return Container(
       padding: EdgeInsets.all(24.r),
       decoration: BoxDecoration(
@@ -28,35 +58,9 @@ class RecentUploadsTableWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(12.r),
         border: Border.all(color: AppColors.gainsboro, width: 1),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            AppStrings.recentUploads,
-            style: AppTextStyles.font16BlackSemiBold,
-          ),
-          verticalSpace(16),
-
-          // ─── Table Header ─────────────────────────
-          _buildHeaderRow(),
-          Divider(color: AppColors.gainsboro, height: 1),
-
-          // ─── Table Rows ───────────────────────────
-          if (entries.isEmpty)
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 24.h),
-              child: Center(
-                child: Text(
-                  AppStrings.noUploadsYet,
-                  style: AppTextStyles.font13GreyRegular,
-                ),
-              ),
-            )
-          else
-            ...entries.asMap().entries.map(
-              (e) => _buildDataRow(e.value, e.key),
-            ),
-        ],
+      child: HorizontalScrollTable(
+        minWidth: 1000,
+        child: table,
       ),
     );
   }

@@ -20,86 +20,117 @@ import '../../features/proposals/presentation/screens/proposals_screen.dart';
 import '../../features/uploads/logic/cubit/uploads_cubit.dart';
 import '../../features/uploads/presentation/screens/uploads_screen.dart';
 import '../di/dependency_injection.dart';
+import '../helpers/app_session_manager.dart';
 import 'routes.dart';
 
 class AppRouter {
+  Route _buildLoginRoute() {
+    return MaterialPageRoute(
+      builder: (_) => BlocProvider(
+        create: (context) => getIt<AuthCubit>(),
+        child: LoginScreen(),
+      ),
+    );
+  }
+
+  Route _buildDashboardRoute() {
+    return MaterialPageRoute(
+      builder: (_) => BlocProvider(
+        create: (_) => getIt<DashboardCubit>()..loadData(),
+        child: const DashboardScreen(),
+      ),
+    );
+  }
+
+  Route _buildProtectedRoute(WidgetBuilder builder) {
+    final sessionManager = AppSessionManager();
+    final status = sessionManager.sessionStatus;
+    if (status == SessionStatus.authenticated) {
+      return MaterialPageRoute(builder: builder);
+    }
+
+    if (status == SessionStatus.expired) {
+      sessionManager.handleSessionExpired();
+    }
+
+    return _buildLoginRoute();
+  }
+
   Route? generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case Routes.loginScreen:
-        return MaterialPageRoute(
-          builder: (_) => BlocProvider(
-            create: (context) => getIt<AuthCubit>(),
-            child: LoginScreen(),
-          ),
-        );
+        if (AppSessionManager().hasValidSession) {
+          return _buildDashboardRoute();
+        }
+        return _buildLoginRoute();
 
       case Routes.dashboardScreen:
-        return MaterialPageRoute(
-          builder: (_) => BlocProvider(
+        return _buildProtectedRoute(
+          (_) => BlocProvider(
             create: (_) => getIt<DashboardCubit>()..loadData(),
             child: const DashboardScreen(),
           ),
         );
 
       case Routes.uploadsScreen:
-        return MaterialPageRoute(
-          builder: (_) => BlocProvider(
+        return _buildProtectedRoute(
+          (_) => BlocProvider(
             create: (_) => getIt<UploadsCubit>(),
             child: const UploadsScreen(),
           ),
         );
 
       case Routes.offersScreen:
-        return MaterialPageRoute(
-          builder: (_) => BlocProvider(
+        return _buildProtectedRoute(
+          (_) => BlocProvider(
             create: (_) => getIt<OffersCubit>()..loadData(),
             child: const OffersScreen(),
           ),
         );
 
       case Routes.compareScreen:
-        return MaterialPageRoute(
-          builder: (_) => BlocProvider(
+        return _buildProtectedRoute(
+          (_) => BlocProvider(
             create: (_) => getIt<CompareCubit>()..loadData(),
             child: const CompareScreen(),
           ),
         );
 
       case Routes.proposalsScreen:
-        return MaterialPageRoute(
-          builder: (_) => BlocProvider(
+        return _buildProtectedRoute(
+          (_) => BlocProvider(
             create: (_) => getIt<ProposalsCubit>()..loadData(),
             child: const ProposalsScreen(),
           ),
         );
 
       case Routes.inventoryScreen:
-        return MaterialPageRoute(
-          builder: (_) => BlocProvider(
+        return _buildProtectedRoute(
+          (_) => BlocProvider(
             create: (_) => getIt<InventoryCubit>()..loadData(),
             child: const InventoryScreen(),
           ),
         );
 
       case Routes.alertsScreen:
-        return MaterialPageRoute(
-          builder: (_) => BlocProvider(
+        return _buildProtectedRoute(
+          (_) => BlocProvider(
             create: (_) => getIt<AlertsCubit>()..loadData(),
             child: const AlertsScreen(),
           ),
         );
 
       case Routes.registerScreen:
-        return MaterialPageRoute(
-          builder: (_) => BlocProvider(
+        return _buildProtectedRoute(
+          (_) => BlocProvider(
             create: (context) => getIt<AuthCubit>(),
             child: const RegisterScreen(),
           ),
         );
 
       case Routes.settingsScreen:
-        return MaterialPageRoute(
-          builder: (_) => BlocProvider(
+        return _buildProtectedRoute(
+          (_) => BlocProvider(
             create: (context) => getIt<AuthCubit>()..getMe(),
             child: const SettingsScreen(),
           ),

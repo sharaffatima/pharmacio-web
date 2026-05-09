@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+import '../helpers/app_session_manager.dart';
 import 'api_services.dart';
 import 'app_link_url.dart';
 
@@ -58,6 +59,20 @@ class ApiServicesImpl implements ApiServices {
         ),
       );
     }
+
+    _dio.interceptors.add(
+      InterceptorsWrapper(
+        onError: (error, handler) async {
+          final statusCode = error.response?.statusCode;
+          final hasAuthHeader =
+              error.requestOptions.headers['Authorization'] != null;
+          if (statusCode == 401 && hasAuthHeader) {
+            await AppSessionManager().handleSessionExpired();
+          }
+          return handler.next(error);
+        },
+      ),
+    );
   }
 
   @override

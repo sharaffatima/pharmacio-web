@@ -6,8 +6,8 @@ import '../../../../core/constants/app_strings.dart';
 import '../../../../core/constants/colors.dart';
 import '../../../../core/helpers/spacing.dart';
 import '../../../../core/public_widgets/loading_widget.dart';
+import '../../../../core/public_widgets/responsive_scaffold.dart';
 import '../../../../core/public_widgets/retry_button_widget.dart';
-import '../../../dashboard/presentation/widgets/sidebar_widget.dart';
 import '../../data/models/available_offer_item.dart';
 import '../../logic/cubit/offers_cubit.dart';
 import '../widgets/offers_filters_widget.dart';
@@ -19,28 +19,22 @@ class OffersScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.offWhiteGrey,
-      body: Row(
-        children: [
-          const SidebarWidget(selectedIndex: 2),
-          Expanded(
-            child: BlocBuilder<OffersCubit, OffersState>(
-              builder: (context, state) {
-                return state.when(
-                  initial: () => const LoadingWidget(),
-                  loading: () => const LoadingWidget(),
-                  error: (error) => RetryButtonWidget(
-                    message: error,
-                    onRetry: () => context.read<OffersCubit>().loadData(),
-                  ),
-                  successGetAvailableOffers: (offers) =>
-                      _buildContent(context, offers),
-                );
-              },
+    return ResponsiveScaffold(
+      selectedIndex: 2,
+      title: AppStrings.offers,
+      body: BlocBuilder<OffersCubit, OffersState>(
+        builder: (context, state) {
+          return state.when(
+            initial: () => const LoadingWidget(),
+            loading: () => const LoadingWidget(),
+            error: (error) => RetryButtonWidget(
+              message: error,
+              onRetry: () => context.read<OffersCubit>().loadData(),
             ),
-          ),
-        ],
+            successGetAvailableOffers: (offers) =>
+                _buildContent(context, offers),
+          );
+        },
       ),
     );
   }
@@ -49,9 +43,13 @@ class OffersScreen extends StatelessWidget {
     final cubit = context.read<OffersCubit>();
     final suppliers = _buildStatusFilters(offers);
     final warehouses = _buildWarehouseFilters(offers);
+    final isMobile = MediaQuery.of(context).size.width < 900;
 
     return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 28.h),
+      padding: EdgeInsets.symmetric(
+        horizontal: isMobile ? 16.w : 32.w,
+        vertical: isMobile ? 20.h : 28.h,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

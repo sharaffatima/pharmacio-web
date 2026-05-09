@@ -10,8 +10,15 @@ import '../../../../core/public_widgets/button_widget.dart';
 import '../../../../core/public_widgets/text_field_widget.dart';
 import '../../logic/cubits/auth_cubit.dart';
 
-class LoginFormWidget extends StatelessWidget {
+class LoginFormWidget extends StatefulWidget {
   const LoginFormWidget({super.key});
+
+  @override
+  State<LoginFormWidget> createState() => _LoginFormWidgetState();
+}
+
+class _LoginFormWidgetState extends State<LoginFormWidget> {
+  bool _obscurePassword = true;
 
   @override
   Widget build(BuildContext context) {
@@ -46,8 +53,17 @@ class LoginFormWidget extends StatelessWidget {
             controller: cubit.passwordController,
             hintText: AppStrings.passwordHint,
             labelText: '',
-            obscureText: true,
+            obscureText: _obscurePassword,
             validationType: InputValidationType.password,
+            suffixIcon: _obscurePassword
+                ? Icons.visibility
+                : Icons.visibility_off,
+            suffixIconColor: AppColors.coolGrey,
+            onPressedSuffixIcon: () {
+              setState(() {
+                _obscurePassword = !_obscurePassword;
+              });
+            },
           ),
           verticalSpace(24),
 

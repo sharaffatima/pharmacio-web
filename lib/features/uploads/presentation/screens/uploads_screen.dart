@@ -7,9 +7,9 @@ import '../../../../core/constants/colors.dart';
 import '../../../../core/constants/text_styles.dart';
 import '../../../../core/helpers/spacing.dart';
 import '../../../../core/public_widgets/loading_widget.dart';
+import '../../../../core/public_widgets/responsive_scaffold.dart';
 import '../../../../core/public_widgets/retry_button_widget.dart';
 import '../../../../core/public_widgets/snack_bar_widget.dart';
-import '../../../dashboard/presentation/widgets/sidebar_widget.dart';
 import '../../data/models/upload_entry.dart';
 import '../../logic/cubit/uploads_cubit.dart';
 import '../widgets/recent_uploads_table_widget.dart';
@@ -21,67 +21,76 @@ class UploadsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.offWhiteGrey,
-      body: Row(
-        children: [
-          const SidebarWidget(selectedIndex: 1),
-          Expanded(
-            child: BlocConsumer<UploadsCubit, UploadsState>(
-              listener: (context, state) {
-                state.whenOrNull(
-                  uploadSuccess: (response) => showAppSnackBar(
-                    context,
-                    AppStrings.uploadProcessingNotice,
-                  ),
-                  statusSuccess: (response) => showAppSnackBar(
-                    context,
-                    response.message ?? AppStrings.statusUpdated,
-                  ),
-                  error: (error) => showAppSnackBar(context, error),
-                );
-              },
-              builder: (context, state) {
-                final uploadsList = context.read<UploadsCubit>().uploadsList;
-                final isLoadingAction = state.maybeWhen(
-                  loading: () => true,
-                  orElse: () => false,
-                );
-
-                Widget content = state.maybeWhen(
-                  loading: () => const LoadingWidget(),
-                  error: (error) => RetryButtonWidget(
-                    message: error,
-                    onRetry: () => context
-                        .read<UploadsCubit>()
-                        .loadRecentlyUploadedFiles(),
-                  ),
-                  successDeletedFile: (successMsg) =>
-                      _buildContent(context, uploadsList),
-                  orElse: () => _buildContent(context, uploadsList),
-                );
-
-                return Stack(
-                  children: [
-                    content,
-                    if (isLoadingAction)
-                      Container(
-                        color: AppColors.white.withValues(alpha: 0.6),
-                        child: const Center(child: LoadingWidget()),
-                      ),
-                  ],
-                );
-              },
+    return ResponsiveScaffold(
+      selectedIndex: 1,
+      title: AppStrings.uploads,
+      body: BlocConsumer<UploadsCubit, UploadsState>(
+        listener: (context, state) {
+          state.whenOrNull(
+            uploadSuccess: (response) =>
+                showAppSnackBar(context, AppStrings.uploadProcessingNotice),
+            statusSuccess: (response) => showAppSnackBar(
+              context,
+              response.message ?? AppStrings.statusUpdated,
             ),
-          ),
-        ],
+            error: (error) => showAppSnackBar(context, error),
+          );
+        },
+        builder: (context, state) {
+          final cubit = context.watch<UploadsCubit>();
+          final uploadsList = cubit.uploadsList;
+          final isProcessing = cubit.isProcessing;
+
+          Widget content = state.maybeWhen(
+            loading: () => const LoadingWidget(),
+            error: (error) => RetryButtonWidget(
+              message: error,
+              onRetry: () =>
+                  context.read<UploadsCubit>().loadRecentlyUploadedFiles(),
+            ),
+            successDeletedFile: (successMsg) =>
+                _buildContent(context, uploadsList, isProcessing),
+            orElse: () => _buildContent(context, uploadsList, isProcessing),
+          );
+
+          return Stack(
+            children: [
+              content,
+              if (isProcessing)
+                Container(
+                  color: AppColors.white.withValues(alpha: 0.6),
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const LoadingWidget(),
+                        verticalSpace(12),
+                        Text(
+                          AppStrings.processingDocumentPleaseWait,
+                          style: AppTextStyles.font14BlackRegular,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+            ],
+          );
+        },
       ),
     );
   }
 
-  Widget _buildContent(BuildContext context, List<UploadEntry> uploads) {
+  Widget _buildContent(
+    BuildContext context,
+    List<UploadEntry> uploads,
+    bool isUploading,
+  ) {
+    final isMobile = MediaQuery.of(context).size.width < 900;
     return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 28.h),
+      padding: EdgeInsets.symmetric(
+        horizontal: isMobile ? 16.w : 32.w,
+        vertical: isMobile ? 20.h : 28.h,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -91,6 +100,11 @@ class UploadsScreen extends StatelessWidget {
             onBrowseFiles: () async {
               await context.read<UploadsCubit>().pickFiles();
             },
+            warehouseController: context
+                .read<UploadsCubit>()
+                .warehouseNameController,
+            isUploading: isUploading,
+            formKey: context.read<UploadsCubit>().uploadFormKey,
           ),
           verticalSpace(24),
           RecentUploadsTableWidget(

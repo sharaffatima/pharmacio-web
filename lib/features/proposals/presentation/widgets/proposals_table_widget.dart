@@ -6,6 +6,10 @@ import '../../../../core/constants/colors.dart';
 import '../../../../core/constants/text_styles.dart';
 import '../../../../core/helpers/spacing.dart';
 import '../../data/models/purchase_proposal_model.dart';
+import '../../../../core/public_widgets/horizontal_scroll_table.dart';
+import '../../../../core/helpers/pdf_generator.dart';
+import '../../../../core/helpers/file_downloader.dart';
+import '../../../../core/helpers/formatters.dart';
 
 class ProposalsTableWidget extends StatelessWidget {
   final List<PurchaseProposalModel> entries;
@@ -19,6 +23,20 @@ class ProposalsTableWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final table = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '${AppStrings.proposals} (${entries.length})',
+          style: AppTextStyles.font16BlackSemiBold,
+        ),
+        verticalSpace(16),
+        _buildHeaderRow(),
+        Divider(color: AppColors.gainsboro, height: 1),
+        ...entries.asMap().entries.map((e) => _buildDataRow(e.value, e.key)),
+      ],
+    );
+
     return Container(
       padding: EdgeInsets.all(24.r),
       decoration: BoxDecoration(
@@ -26,18 +44,9 @@ class ProposalsTableWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(12.r),
         border: Border.all(color: AppColors.gainsboro, width: 1),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            '${AppStrings.proposals} (${entries.length})',
-            style: AppTextStyles.font16BlackSemiBold,
-          ),
-          verticalSpace(16),
-          _buildHeaderRow(),
-          Divider(color: AppColors.gainsboro, height: 1),
-          ...entries.asMap().entries.map((e) => _buildDataRow(e.value, e.key)),
-        ],
+      child: HorizontalScrollTable(
+        minWidth: 1100,
+        child: table,
       ),
     );
   }
@@ -90,7 +99,7 @@ class ProposalsTableWidget extends StatelessWidget {
             ),
           ),
           SizedBox(
-            width: 50.w,
+            width: 80.w,
             child: Text(
               AppStrings.actions,
               style: AppTextStyles.font13GreyRegular,
@@ -137,7 +146,7 @@ class ProposalsTableWidget extends StatelessWidget {
           Expanded(
             flex: 1,
             child: Text(
-              entry.totalCost ?? '-',
+              AppFormatters.formatCurrency(entry.totalCost),
               style: AppTextStyles.font13GreyRegular,
             ),
           ),
@@ -171,15 +180,32 @@ class ProposalsTableWidget extends StatelessWidget {
             ),
           ),
           SizedBox(
-            width: 50.w,
-            child: InkWell(
-              onTap: () => onView(index),
-              borderRadius: BorderRadius.circular(4.r),
-              child: Icon(
-                Icons.visibility_outlined,
-                size: 20.sp,
-                color: AppColors.coolGrey,
-              ),
+            width: 80.w,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                InkWell(
+                  onTap: () => onView(index),
+                  borderRadius: BorderRadius.circular(4.r),
+                  child: Icon(
+                    Icons.visibility_outlined,
+                    size: 20.sp,
+                    color: AppColors.coolGrey,
+                  ),
+                ),
+                InkWell(
+                  onTap: () async {
+                    final pdfBytes = await PdfGenerator.generateProposalPdf(entry);
+                    FileDownloader.downloadFile(pdfBytes, 'Proposal_${entry.id ?? "Unknown"}.pdf');
+                  },
+                  borderRadius: BorderRadius.circular(4.r),
+                  child: Icon(
+                    Icons.download_outlined,
+                    size: 20.sp,
+                    color: AppColors.coolGrey,
+                  ),
+                ),
+              ],
             ),
           ),
         ],

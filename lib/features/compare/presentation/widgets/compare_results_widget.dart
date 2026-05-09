@@ -6,6 +6,7 @@ import '../../../../core/constants/colors.dart';
 import '../../../../core/constants/text_styles.dart';
 import '../../../../core/helpers/spacing.dart';
 import '../../data/models/compare_offer_result_model.dart';
+import '../../../../core/public_widgets/horizontal_scroll_table.dart';
 
 class CompareResultsWidget extends StatelessWidget {
   final List<CompareOfferResultModel> results;
@@ -14,6 +15,40 @@ class CompareResultsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final content = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              AppStrings.compareResults,
+              style: AppTextStyles.font16BlackSemiBold,
+            ),
+            Text(
+              '${results.length} ${AppStrings.items}',
+              style: AppTextStyles.font12GreyRegular,
+            ),
+          ],
+        ),
+        verticalSpace(16),
+        if (results.isEmpty)
+          Text(
+            AppStrings.noComparedResults,
+            style: AppTextStyles.font13GreyRegular,
+          ),
+        if (results.isNotEmpty)
+          ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: results.length,
+            separatorBuilder: (_, __) =>
+                Divider(height: 1, color: AppColors.gainsboro),
+            itemBuilder: (_, index) => _buildResultRow(results[index]),
+          ),
+      ],
+    );
+
     return Container(
       padding: EdgeInsets.all(24.r),
       decoration: BoxDecoration(
@@ -21,38 +56,9 @@ class CompareResultsWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(12.r),
         border: Border.all(color: AppColors.gainsboro, width: 1),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                AppStrings.compareResults,
-                style: AppTextStyles.font16BlackSemiBold,
-              ),
-              Text(
-                '${results.length} ${AppStrings.items}',
-                style: AppTextStyles.font12GreyRegular,
-              ),
-            ],
-          ),
-          verticalSpace(16),
-          if (results.isEmpty)
-            Text(
-              AppStrings.noComparedResults,
-              style: AppTextStyles.font13GreyRegular,
-            ),
-          if (results.isNotEmpty)
-            ListView.separated(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: results.length,
-              separatorBuilder: (_, __) =>
-                  Divider(height: 1, color: AppColors.gainsboro),
-              itemBuilder: (_, index) => _buildResultRow(results[index]),
-            ),
-        ],
+      child: HorizontalScrollTable(
+        minWidth: 1100,
+        child: content,
       ),
     );
   }

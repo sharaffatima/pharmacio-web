@@ -53,7 +53,7 @@ class CompareCubit extends Cubit<CompareState> {
   }
 
   Future<void> compareSelectedOffers() async {
-    if (selectedCount < 2) {
+    if (selectedCount < 1) {
       return;
     }
 
@@ -80,7 +80,7 @@ class CompareCubit extends Cubit<CompareState> {
   }
 
   Future<void> generateProposal() async {
-    if (selectedCount < 2) {
+    if (selectedCount < 1) {
       return;
     }
 

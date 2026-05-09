@@ -6,6 +6,7 @@ import 'core/constants/app_strings.dart';
 import 'core/constants/colors.dart';
 import 'core/constants/shared_pref_keys.dart';
 import 'core/di/dependency_injection.dart';
+import 'core/helpers/app_session_manager.dart';
 import 'core/helpers/app_shared_preferences.dart';
 import 'core/helpers/my_bloc_observer.dart';
 import 'core/language/language_cubit.dart';
@@ -25,13 +26,19 @@ void main() async {
   AppColors.isDarkMode =
       AppSharedPreferences().getBool(AppSharedPrefKeys.theme) ?? false;
 
+  final sessionBootstrap = await AppSessionManager().bootstrap();
+
   runApp(
     MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => LanguageCubit()),
         BlocProvider(create: (_) => ThemeCubit()),
       ],
-      child: PharmacioWebApp(appRouter: AppRouter()),
+      child: PharmacioWebApp(
+        appRouter: AppRouter(),
+        initialRoute: sessionBootstrap.initialRoute,
+        showSessionExpiredOnStart: sessionBootstrap.showExpiredMessage,
+      ),
     ),
   );
 }

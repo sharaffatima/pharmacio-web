@@ -9,7 +9,10 @@ import '../../../../core/networking/error/error_handler/network_exceptions.dart'
 import '../models/upload_response.dart';
 
 abstract class UploadsRemoteDataSource {
-  Future<UploadResponse> uploadFiles(List<PlatformFile> files);
+  Future<UploadResponse> uploadFiles(
+    List<PlatformFile> files, {
+    required String warehouseName,
+  });
   Future<UploadResponse> checkUploadStatus(String uploadId);
 }
 
@@ -23,9 +26,13 @@ class UploadsRemoteDataSourceImp implements UploadsRemoteDataSource {
       AppSharedPreferences().getString(AppSharedPrefKeys.refreshToken);
 
   @override
-  Future<UploadResponse> uploadFiles(List<PlatformFile> files) async {
+  Future<UploadResponse> uploadFiles(
+    List<PlatformFile> files, {
+    required String warehouseName,
+  }) async {
     try {
       final formData = FormData();
+      formData.fields.add(MapEntry('ware_house_name', warehouseName));
       for (var file in files) {
         if (file.bytes != null) {
           formData.files.add(

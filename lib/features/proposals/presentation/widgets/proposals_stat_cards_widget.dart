@@ -22,40 +22,75 @@ class ProposalsStatCardsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: _buildCard(
-            value: '$total',
-            label: AppStrings.totalProposals,
-            color: AppColors.skyBlue,
-          ),
-        ),
-        horizontalSpace(16),
-        Expanded(
-          child: _buildCard(
-            value: '$pending',
-            label: AppStrings.pending,
-            color: AppColors.saffronAmber,
-          ),
-        ),
-        horizontalSpace(16),
-        Expanded(
-          child: _buildCard(
-            value: '$approved',
-            label: AppStrings.approved,
-            color: AppColors.emerald,
-          ),
-        ),
-        horizontalSpace(16),
-        Expanded(
-          child: _buildCard(
-            value: '$rejected',
-            label: AppStrings.rejected,
-            color: AppColors.brightRed,
-          ),
-        ),
-      ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isNarrow = constraints.maxWidth < 700;
+        if (isNarrow) {
+          return Column(
+            children: [
+              _buildCard(
+                value: '$total',
+                label: AppStrings.totalProposals,
+                color: AppColors.skyBlue,
+              ),
+              verticalSpace(12),
+              _buildCard(
+                value: '$pending',
+                label: AppStrings.pending,
+                color: AppColors.saffronAmber,
+              ),
+              verticalSpace(12),
+              _buildCard(
+                value: '$approved',
+                label: AppStrings.approved,
+                color: AppColors.emerald,
+              ),
+              verticalSpace(12),
+              _buildCard(
+                value: '$rejected',
+                label: AppStrings.rejected,
+                color: AppColors.brightRed,
+              ),
+            ],
+          );
+        }
+
+        return Row(
+          children: [
+            Expanded(
+              child: _buildCard(
+                value: '$total',
+                label: AppStrings.totalProposals,
+                color: AppColors.skyBlue,
+              ),
+            ),
+            horizontalSpace(16),
+            Expanded(
+              child: _buildCard(
+                value: '$pending',
+                label: AppStrings.pending,
+                color: AppColors.saffronAmber,
+              ),
+            ),
+            horizontalSpace(16),
+            Expanded(
+              child: _buildCard(
+                value: '$approved',
+                label: AppStrings.approved,
+                color: AppColors.emerald,
+              ),
+            ),
+            horizontalSpace(16),
+            Expanded(
+              child: _buildCard(
+                value: '$rejected',
+                label: AppStrings.rejected,
+                color: AppColors.brightRed,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 

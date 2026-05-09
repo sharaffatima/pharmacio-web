@@ -32,101 +32,137 @@ class OffersFiltersWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(20.r),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: AppColors.gainsboro, width: 1),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.filter_list, size: 20.sp, color: AppColors.coolGrey),
-              horizontalSpace(8),
-              Text(
-                AppStrings.filtersAndSearch,
-                style: AppTextStyles.font16BlackSemiBold,
-              ),
-            ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isNarrow = constraints.maxWidth < 700;
+        return Container(
+          padding: EdgeInsets.all(20.r),
+          decoration: BoxDecoration(
+            color: AppColors.white,
+            borderRadius: BorderRadius.circular(12.r),
+            border: Border.all(color: AppColors.gainsboro, width: 1),
           ),
-          verticalSpace(16),
-          Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // ─── Search ───────────────────────────
-              Expanded(
-                flex: 2,
-                child: Container(
-                  height: 40.h,
-                  decoration: BoxDecoration(
-                    color: AppColors.offWhiteGrey,
-                    borderRadius: BorderRadius.circular(8.r),
+              Row(
+                children: [
+                  Icon(
+                    Icons.filter_list,
+                    size: 20.sp,
+                    color: AppColors.coolGrey,
                   ),
-                  child: TextField(
-                    controller: searchController,
-                    onChanged: onSearchChanged,
-                    style: AppTextStyles.font14BlackRegular,
-                    decoration: InputDecoration(
-                      hintText: AppStrings.searchOffers,
-                      hintStyle: AppTextStyles.font13GreyRegular,
-                      prefixIcon: Icon(
-                        Icons.search,
-                        size: 20.sp,
-                        color: AppColors.coolGrey,
-                      ),
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(vertical: 10.h),
-                    ),
+                  horizontalSpace(8),
+                  Text(
+                    AppStrings.filtersAndSearch,
+                    style: AppTextStyles.font16BlackSemiBold,
                   ),
-                ),
+                ],
               ),
-              horizontalSpace(12),
-
-              // ─── Supplier Dropdown ────────────────
-              Expanded(
-                flex: 1,
-                child: _buildDropdown(
+              verticalSpace(16),
+              if (isNarrow) ...[
+                _buildSearchField(),
+                verticalSpace(12),
+                _buildDropdown(
                   value: selectedSupplier,
                   items: suppliers,
                   onChanged: onSupplierChanged,
                 ),
-              ),
-              horizontalSpace(12),
-
-              // ─── Warehouse Dropdown ───────────────
-              Expanded(
-                flex: 1,
-                child: _buildDropdown(
+                verticalSpace(12),
+                _buildDropdown(
                   value: selectedWarehouse,
                   items: warehouses,
                   onChanged: onWarehouseChanged,
                 ),
-              ),
-              horizontalSpace(12),
-
-              // ─── Clear Filters ────────────────────
-              OutlinedButton(
-                onPressed: onClearFilters,
-                style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: AppColors.gainsboro),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.r),
+                verticalSpace(12),
+                OutlinedButton(
+                  onPressed: onClearFilters,
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(color: AppColors.gainsboro),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.r),
+                    ),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 16.w,
+                      vertical: 10.h,
+                    ),
                   ),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 16.w,
-                    vertical: 10.h,
+                  child: Text(
+                    AppStrings.clearFilters,
+                    style: AppTextStyles.font14BlackRegular,
                   ),
                 ),
-                child: Text(
-                  AppStrings.clearFilters,
-                  style: AppTextStyles.font14BlackRegular,
+              ] else
+                Row(
+                  children: [
+                    Expanded(flex: 2, child: _buildSearchField()),
+                    horizontalSpace(12),
+                    Expanded(
+                      flex: 1,
+                      child: _buildDropdown(
+                        value: selectedSupplier,
+                        items: suppliers,
+                        onChanged: onSupplierChanged,
+                      ),
+                    ),
+                    horizontalSpace(12),
+                    Expanded(
+                      flex: 1,
+                      child: _buildDropdown(
+                        value: selectedWarehouse,
+                        items: warehouses,
+                        onChanged: onWarehouseChanged,
+                      ),
+                    ),
+                    horizontalSpace(12),
+                    OutlinedButton(
+                      onPressed: onClearFilters,
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(color: AppColors.gainsboro),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.r),
+                        ),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 16.w,
+                          vertical: 10.h,
+                        ),
+                      ),
+                      child: Text(
+                        AppStrings.clearFilters,
+                        style: AppTextStyles.font14BlackRegular,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
             ],
           ),
-        ],
+        );
+      },
+    );
+  }
+
+  Widget _buildSearchField() {
+    return Container(
+      height: 40.h,
+      decoration: BoxDecoration(
+        color: AppColors.offWhiteGrey,
+        borderRadius: BorderRadius.circular(8.r),
+      ),
+      child: TextField(
+        controller: searchController,
+        onChanged: onSearchChanged,
+        style: AppTextStyles.font14BlackRegular,
+        decoration: InputDecoration(
+          hintText: AppStrings.searchOffers,
+          hintStyle: AppTextStyles.font13GreyRegular,
+          prefixIcon: Icon(
+            Icons.search,
+            size: 20.sp,
+            color: AppColors.coolGrey,
+          ),
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.symmetric(vertical: 10.h),
+        ),
       ),
     );
   }
