@@ -10,6 +10,11 @@ class AppTextStyles {
     fontWeight: AppFontWeightHelper.medium,
     color: AppColors.black,
   );
+  static TextStyle get font26BlackBold => TextStyle(
+    fontSize: 26.sp,
+    fontWeight: AppFontWeightHelper.bold,
+    color: AppColors.black,
+  );
   static TextStyle get font15BlackMedium => TextStyle(
     fontSize: 15.sp,
     fontWeight: AppFontWeightHelper.medium,

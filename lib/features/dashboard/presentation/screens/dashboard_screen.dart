@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,9 +14,9 @@ import '../../data/models/dashboard_recent_activity_item.dart';
 import '../../data/models/dashboard_stats_response.dart';
 import '../../logic/cubit/dashboard_cubit.dart';
 import '../widgets/dashboard_header_widget.dart';
+import '../widgets/dashboard_stat_chart_card.dart';
 import '../widgets/latest_uploads_widget.dart';
 import '../widgets/quick_actions_widget.dart';
-import '../widgets/stat_card_widget.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -47,6 +49,13 @@ class DashboardScreen extends StatelessWidget {
     List<DashboardRecentActivityItem> recentActivity,
   ) {
     final isMobile = MediaQuery.of(context).size.width < 900;
+    final statValues = [
+      stats.activityAlerts ?? 0,
+      stats.lowStock ?? 0,
+      stats.proposals ?? 0,
+      stats.inventory ?? 0,
+    ];
+    final maxValue = statValues.reduce(max).clamp(1, double.maxFinite).toInt();
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(
         horizontal: isMobile ? 16.w : 32.w,
@@ -61,36 +70,44 @@ class DashboardScreen extends StatelessWidget {
           if (isMobile)
             Column(
               children: [
-                StatCardWidget(
+                DashboardStatChartCard(
                   title: AppStrings.activeAlerts,
                   icon: Icons.warning_amber_rounded,
                   iconColor: AppColors.saffronAmber,
-                  iconBgColor: AppColors.saffronAmber.withValues(alpha: 0.1),
-                  value: '${stats.activityAlerts}',
+                  iconBgColor: AppColors.saffronAmber.withValues(alpha: 0.12),
+                  value: stats.activityAlerts ?? 0,
+                  maxValue: maxValue,
+                  series: _buildSeries(stats.activityAlerts ?? 0),
                 ),
                 verticalSpace(12),
-                StatCardWidget(
+                DashboardStatChartCard(
                   title: AppStrings.lowStockCount,
                   icon: Icons.inventory_2_outlined,
                   iconColor: AppColors.emerald,
-                  iconBgColor: AppColors.emerald.withValues(alpha: 0.1),
-                  value: '${stats.lowStock}',
+                  iconBgColor: AppColors.emerald.withValues(alpha: 0.12),
+                  value: stats.lowStock ?? 0,
+                  maxValue: maxValue,
+                  series: _buildSeries(stats.lowStock ?? 0),
                 ),
                 verticalSpace(12),
-                StatCardWidget(
+                DashboardStatChartCard(
                   title: AppStrings.pendingProposals,
                   icon: Icons.assignment_outlined,
                   iconColor: AppColors.skyBlue,
-                  iconBgColor: AppColors.skyBlue.withValues(alpha: 0.1),
-                  value: '${stats.proposals}',
+                  iconBgColor: AppColors.skyBlue.withValues(alpha: 0.12),
+                  value: stats.proposals ?? 0,
+                  maxValue: maxValue,
+                  series: _buildSeries(stats.proposals ?? 0),
                 ),
                 verticalSpace(12),
-                StatCardWidget(
+                DashboardStatChartCard(
                   title: AppStrings.inventory,
                   icon: Icons.inventory,
                   iconColor: AppColors.charcoalBlack,
-                  iconBgColor: AppColors.charcoalBlack.withValues(alpha: 0.08),
-                  value: '${stats.inventory}',
+                  iconBgColor: AppColors.charcoalBlack.withValues(alpha: 0.1),
+                  value: stats.inventory ?? 0,
+                  maxValue: maxValue,
+                  series: _buildSeries(stats.inventory ?? 0),
                 ),
               ],
             )
@@ -98,44 +115,50 @@ class DashboardScreen extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: StatCardWidget(
+                  child: DashboardStatChartCard(
                     title: AppStrings.activeAlerts,
                     icon: Icons.warning_amber_rounded,
                     iconColor: AppColors.saffronAmber,
-                    iconBgColor: AppColors.saffronAmber.withValues(alpha: 0.1),
-                    value: '${stats.activityAlerts}',
+                    iconBgColor: AppColors.saffronAmber.withValues(alpha: 0.12),
+                    value: stats.activityAlerts ?? 0,
+                    maxValue: maxValue,
+                    series: _buildSeries(stats.activityAlerts ?? 0),
                   ),
                 ),
                 horizontalSpace(16),
                 Expanded(
-                  child: StatCardWidget(
+                  child: DashboardStatChartCard(
                     title: AppStrings.lowStockCount,
                     icon: Icons.inventory_2_outlined,
                     iconColor: AppColors.emerald,
-                    iconBgColor: AppColors.emerald.withValues(alpha: 0.1),
-                    value: '${stats.lowStock}',
+                    iconBgColor: AppColors.emerald.withValues(alpha: 0.12),
+                    value: stats.lowStock ?? 0,
+                    maxValue: maxValue,
+                    series: _buildSeries(stats.lowStock ?? 0),
                   ),
                 ),
                 horizontalSpace(16),
                 Expanded(
-                  child: StatCardWidget(
+                  child: DashboardStatChartCard(
                     title: AppStrings.pendingProposals,
                     icon: Icons.assignment_outlined,
                     iconColor: AppColors.skyBlue,
-                    iconBgColor: AppColors.skyBlue.withValues(alpha: 0.1),
-                    value: '${stats.proposals}',
+                    iconBgColor: AppColors.skyBlue.withValues(alpha: 0.12),
+                    value: stats.proposals ?? 0,
+                    maxValue: maxValue,
+                    series: _buildSeries(stats.proposals ?? 0),
                   ),
                 ),
                 horizontalSpace(16),
                 Expanded(
-                  child: StatCardWidget(
+                  child: DashboardStatChartCard(
                     title: AppStrings.inventory,
                     icon: Icons.inventory,
                     iconColor: AppColors.charcoalBlack,
-                    iconBgColor: AppColors.charcoalBlack.withValues(
-                      alpha: 0.08,
-                    ),
-                    value: '${stats.inventory}',
+                    iconBgColor: AppColors.charcoalBlack.withValues(alpha: 0.1),
+                    value: stats.inventory ?? 0,
+                    maxValue: maxValue,
+                    series: _buildSeries(stats.inventory ?? 0),
                   ),
                 ),
               ],
@@ -166,4 +189,18 @@ class DashboardScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+List<double> _buildSeries(int value) {
+  if (value <= 0) {
+    return List<double>.filled(7, 0);
+  }
+
+  final base = value.toDouble();
+  return List<double>.generate(7, (index) {
+    final wave = sin(index * 0.9) * 0.18;
+    final drift = (index - 3) * 0.04;
+    final multiplier = (0.75 + wave + drift).clamp(0.35, 1.35);
+    return (base * multiplier).clamp(0, base * 1.6);
+  });
 }

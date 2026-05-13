@@ -5,6 +5,7 @@ import '../../../../core/helpers/app_shared_preferences.dart';
 import '../../../../core/networking/api_services_impl.dart';
 import '../../../../core/networking/app_link_url.dart';
 import '../../../../core/networking/error/error_handler/network_exceptions.dart';
+import '../models/pos_barcode_lookup_response.dart';
 import '../models/pos_checkout_request_body.dart';
 import '../models/pos_transaction_response.dart';
 
@@ -13,6 +14,7 @@ abstract class PosRemoteDataSource {
   Future<List<PosTransactionResponse>> getTransactions();
   Future<PosTransactionResponse> getReceipt(int transactionId);
   Future<PosTransactionResponse> refund(int transactionId);
+  Future<PosBarcodeLookupResponse> barcodeLookup(String barcode);
 }
 
 class PosRemoteDataSourceImp implements PosRemoteDataSource {
@@ -50,7 +52,9 @@ class PosRemoteDataSourceImp implements PosRemoteDataSource {
         token: _accessToken,
       );
       return (request as List)
-          .map((i) => PosTransactionResponse.fromJson(i as Map<String, dynamic>))
+          .map(
+            (i) => PosTransactionResponse.fromJson(i as Map<String, dynamic>),
+          )
           .toList();
     } on DioException catch (e) {
       throw NetworkExceptions.getException(e);
@@ -82,6 +86,25 @@ class PosRemoteDataSourceImp implements PosRemoteDataSource {
         token: _accessToken,
       );
       return PosTransactionResponse.fromJson(request as Map<String, dynamic>);
+    } on DioException catch (e) {
+      throw NetworkExceptions.getException(e);
+    } catch (e) {
+      throw NetworkExceptions.getException(e);
+    }
+  }
+
+  @override
+  Future<PosBarcodeLookupResponse> barcodeLookup(String barcode) async {
+    try {
+      final request = await apiServicesImpl.get(
+        AppLinkUrl.posBarcodeLookup,
+        queryParams: {'barcode': barcode},
+        token: _accessToken,
+      );
+      final data = request is Map<String, dynamic>
+          ? request
+          : <String, dynamic>{};
+      return PosBarcodeLookupResponse.fromJson(data);
     } on DioException catch (e) {
       throw NetworkExceptions.getException(e);
     } catch (e) {

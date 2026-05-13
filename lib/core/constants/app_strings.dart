@@ -629,6 +629,10 @@ class AppStrings {
       ? 'تعذر تعديل العنصر لعدم توفر رقم التعريف'
       : 'Cannot adjust this item because id is missing';
 
+  static String get cannotCheckoutMissingInventoryId => currentLanguage == 'ar'
+      ? 'تعذر تنفيذ عملية البيع لعدم توفر رقم تعريف عنصر المخزون'
+      : 'Cannot checkout because inventory item id is missing';
+
   static String adjustQuantityTitle(String product) => currentLanguage == 'ar'
       ? 'تعديل الكمية: $product'
       : 'Adjust Quantity: $product';
@@ -707,6 +711,11 @@ class AppStrings {
   static String get selectItem =>
       currentLanguage == 'ar' ? 'اختر عنصر' : 'Select Item';
   static String get add => currentLanguage == 'ar' ? 'إضافة' : 'Add';
+  static String get barcodeNotFound =>
+      currentLanguage == 'ar' ? 'الباركود غير موجود' : 'Barcode not found';
+  static String get barcodeReady =>
+      currentLanguage == 'ar' ? 'جاهز لمسح الباركود' : 'Ready to scan barcode';
+  static String get barcode => currentLanguage == 'ar' ? 'الباركود' : 'Barcode';
 
   static String get printReceipt =>
       currentLanguage == 'ar' ? 'طباعة الفاتورة' : 'Print Receipt';

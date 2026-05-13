@@ -6,9 +6,11 @@ import '../../../../core/constants/app_strings.dart';
 import '../../../../core/constants/colors.dart';
 import '../../../../core/constants/text_styles.dart';
 import '../../../../core/helpers/spacing.dart';
+import '../../../../core/networking/error/error_handler/network_exceptions.dart';
 import '../../../../core/public_widgets/loading_widget.dart';
 import '../../../../core/public_widgets/snack_bar_widget.dart';
 import '../../../inventory/data/models/inventory_api_item.dart';
+import '../../data/models/pos_barcode_lookup_response.dart';
 import '../../data/models/pos_checkout_request_body.dart';
 import '../../data/models/pos_payment.dart';
 import '../../logic/cubit/pos_cubit.dart';
@@ -25,17 +27,21 @@ class _PosCheckoutDialogState extends State<PosCheckoutDialog> {
   final _unitPriceController = TextEditingController();
   final _amountPaidController = TextEditingController();
   final _discountPercentageController = TextEditingController(text: '0');
+  final _barcodeController = TextEditingController();
+  final FocusNode _barcodeFocusNode = FocusNode();
 
-  int? _selectedInventoryId;
+  int? _selectedInventoryIndex;
   String _selectedPaymentMethod = 'cash';
   bool _isLoadingInventory = false;
   bool _isCheckingOut = false;
+  bool _isLookingUpBarcode = false;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadInventoryItems();
+      _focusBarcodeInput();
     });
   }
 
@@ -45,6 +51,8 @@ class _PosCheckoutDialogState extends State<PosCheckoutDialog> {
     _unitPriceController.dispose();
     _amountPaidController.dispose();
     _discountPercentageController.dispose();
+    _barcodeController.dispose();
+    _barcodeFocusNode.dispose();
     super.dispose();
   }
 
@@ -53,12 +61,13 @@ class _PosCheckoutDialogState extends State<PosCheckoutDialog> {
     final cubit = context.read<PosCubit>();
     final availableItems = _selectableInventoryItems(cubit.inventoryItems);
     final hasInventory = availableItems.isNotEmpty;
-    final selectedInventoryId =
-        availableItems.any((item) => item.id == _selectedInventoryId)
-        ? _selectedInventoryId
+    final selectedInventoryIndex =
+        _selectedInventoryIndex != null &&
+            _selectedInventoryIndex! < availableItems.length
+        ? _selectedInventoryIndex
         : null;
     final inventoryDropdownKey = ValueKey(
-      '${selectedInventoryId ?? 'none'}-${availableItems.map((item) => item.id).join(',')}',
+      '${selectedInventoryIndex ?? 'none'}-${availableItems.length}',
     );
 
     return Dialog(
@@ -83,6 +92,22 @@ class _PosCheckoutDialogState extends State<PosCheckoutDialog> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Text(AppStrings.barcode, style: AppTextStyles.font13GreyRegular),
+            verticalSpace(6),
+            TextField(
+              controller: _barcodeController,
+              focusNode: _barcodeFocusNode,
+              autofocus: true,
+              keyboardType: TextInputType.text,
+              decoration: _buildInputDecoration(AppStrings.barcode).copyWith(
+                suffixIcon: IconButton(
+                  icon: const Icon(Icons.qr_code_scanner),
+                  onPressed: () => _onBarcodeSubmitted(_barcodeController.text),
+                ),
+              ),
+              onSubmitted: _onBarcodeSubmitted,
+            ),
+            verticalSpace(16),
             Row(
               children: [
                 Container(
@@ -111,6 +136,23 @@ class _PosCheckoutDialogState extends State<PosCheckoutDialog> {
                         AppStrings.enterSaleDetails,
                         style: AppTextStyles.font12GreyRegular,
                       ),
+                      verticalSpace(4),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.qr_code_scanner,
+                            size: 14.sp,
+                            color: AppColors.skyBlue,
+                          ),
+                          horizontalSpace(6),
+                          Text(
+                            AppStrings.barcodeReady,
+                            style: AppTextStyles.font12GreyRegular.copyWith(
+                              color: AppColors.skyBlue,
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -129,9 +171,24 @@ class _PosCheckoutDialogState extends State<PosCheckoutDialog> {
               ],
             ),
             verticalSpace(18),
-            Text(
-              AppStrings.inventoryItem,
-              style: AppTextStyles.font13GreyRegular,
+            Row(
+              children: [
+                Text(
+                  AppStrings.inventoryItem,
+                  style: AppTextStyles.font13GreyRegular,
+                ),
+                if (_isLookingUpBarcode) ...[
+                  horizontalSpace(8),
+                  SizedBox(
+                    width: 14.r,
+                    height: 14.r,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: AppColors.skyBlue,
+                    ),
+                  ),
+                ],
+              ],
             ),
             verticalSpace(6),
             if (_isLoadingInventory)
@@ -139,7 +196,7 @@ class _PosCheckoutDialogState extends State<PosCheckoutDialog> {
             else
               DropdownButtonFormField<int>(
                 key: inventoryDropdownKey,
-                initialValue: selectedInventoryId,
+                initialValue: selectedInventoryIndex,
                 isExpanded: true,
                 decoration: _buildInputDecoration(AppStrings.selectItem),
                 dropdownColor: AppColors.white,
@@ -147,9 +204,10 @@ class _PosCheckoutDialogState extends State<PosCheckoutDialog> {
                 hint: Text(AppStrings.selectItem, style: _hintTextStyle),
                 iconEnabledColor: AppColors.coolGrey,
                 iconDisabledColor: AppColors.coolGrey,
-                items: availableItems.map((item) {
+                items: List.generate(availableItems.length, (index) {
+                  final item = availableItems[index];
                   return DropdownMenuItem<int>(
-                    value: item.id,
+                    value: index,
                     child: Text(
                       '${item.product ?? AppStrings.unknown} (Qty: ${item.quantity ?? 0})',
                       maxLines: 1,
@@ -161,7 +219,7 @@ class _PosCheckoutDialogState extends State<PosCheckoutDialog> {
                 onChanged: hasInventory
                     ? (value) {
                         setState(() {
-                          _selectedInventoryId = value;
+                          _selectedInventoryIndex = value;
                         });
                       }
                     : null,
@@ -324,21 +382,22 @@ class _PosCheckoutDialogState extends State<PosCheckoutDialog> {
   List<InventoryApiItem> _selectableInventoryItems(
     List<InventoryApiItem> items,
   ) {
-    final uniqueItems = <int, InventoryApiItem>{};
+    final seenIds = <int>{};
+    final selectableItems = <InventoryApiItem>[];
 
     for (var index = 0; index < items.length; index++) {
       final item = items[index];
-      final id = item.id ?? index + 1;
-      if (uniqueItems.containsKey(id)) continue;
-      uniqueItems[id] = InventoryApiItem(
-        id: id,
-        product: item.product,
-        quantity: item.quantity,
-        status: item.status,
-      );
+      final id = item.id;
+      if (id == null) {
+        selectableItems.add(item);
+        continue;
+      }
+      if (seenIds.contains(id)) continue;
+      seenIds.add(id);
+      selectableItems.add(item);
     }
 
-    return uniqueItems.values.toList();
+    return selectableItems;
   }
 
   Future<void> _loadInventoryItems() async {
@@ -400,6 +459,79 @@ class _PosCheckoutDialogState extends State<PosCheckoutDialog> {
   TextStyle get _hintTextStyle =>
       AppTextStyles.font12GreyRegular.copyWith(color: AppColors.coolGrey);
 
+  void _focusBarcodeInput() {
+    if (!mounted) return;
+    FocusScope.of(context).requestFocus(_barcodeFocusNode);
+  }
+
+  void _onBarcodeSubmitted(String value) {
+    final barcode = value.trim();
+    _barcodeController.clear();
+
+    if (barcode.isEmpty) {
+      _focusBarcodeInput();
+      return;
+    }
+    _handleBarcodeLookup(barcode);
+  }
+
+  Future<void> _handleBarcodeLookup(String barcode) async {
+    if (_isLookingUpBarcode) return;
+
+    setState(() => _isLookingUpBarcode = true);
+
+    try {
+      final response = await context.read<PosCubit>().barcodeLookup(barcode);
+      final resolvedResponse = response.hasAnyData
+          ? response
+          : PosBarcodeLookupResponse(barcode: barcode, unitPrice: '0.00');
+
+      await _loadInventoryItems();
+      _applyBarcodeResult(resolvedResponse);
+    } catch (error) {
+      final exception = NetworkExceptions.getException(error);
+      final message = exception.maybeWhen(
+        notFound: (_) => AppStrings.barcodeNotFound,
+        orElse: () => NetworkExceptions.getErrorMessage(exception),
+      );
+      showAppSnackBar(context, message);
+    } finally {
+      if (mounted) {
+        setState(() => _isLookingUpBarcode = false);
+      }
+      _focusBarcodeInput();
+    }
+  }
+
+  void _applyBarcodeResult(PosBarcodeLookupResponse response) {
+    final unitPrice = _normalizePrice(response.unitPrice);
+    final availableItems = _selectableInventoryItems(
+      context.read<PosCubit>().inventoryItems,
+    );
+    final inventoryId = response.inventoryId;
+    final matchedIndex = inventoryId == null
+        ? null
+        : availableItems.indexWhere((item) => item.id == inventoryId);
+
+    setState(() {
+      _quantityController.text = '1';
+      _unitPriceController.text = unitPrice;
+      _amountPaidController.text = '';
+      _discountPercentageController.text = '0';
+
+      if (matchedIndex != null && matchedIndex >= 0) {
+        _selectedInventoryIndex = matchedIndex;
+      }
+    });
+  }
+
+  String _normalizePrice(String? value) {
+    if (value == null || value.trim().isEmpty) return '0.00';
+    final parsed = double.tryParse(value.trim());
+    if (parsed == null) return '0.00';
+    return parsed.toStringAsFixed(2);
+  }
+
   Future<void> _handleCheckout() async {
     final availableItems = _selectableInventoryItems(
       context.read<PosCubit>().inventoryItems,
@@ -416,9 +548,20 @@ class _PosCheckoutDialogState extends State<PosCheckoutDialog> {
     final discountPercentage = double.tryParse(
       discountText.isEmpty ? '0' : discountText,
     );
-    final hasSelectedInventory = availableItems.any(
-      (item) => item.id == _selectedInventoryId,
-    );
+    final selectedIndex = _selectedInventoryIndex;
+    final selectedItem =
+        selectedIndex != null &&
+            selectedIndex >= 0 &&
+            selectedIndex < availableItems.length
+        ? availableItems[selectedIndex]
+        : null;
+    final hasSelectedInventory = selectedItem != null;
+    final selectedInventoryId = selectedItem?.id;
+
+    if (hasSelectedInventory && selectedInventoryId == null) {
+      showAppSnackBar(context, AppStrings.cannotCheckoutMissingInventoryId);
+      return;
+    }
 
     if (!hasSelectedInventory ||
         quantity == null ||
@@ -440,7 +583,7 @@ class _PosCheckoutDialogState extends State<PosCheckoutDialog> {
       final requestBody = PosCheckoutRequestBody(
         items: [
           PosCheckoutItemRequestBody(
-            inventoryId: _selectedInventoryId,
+            inventoryId: selectedInventoryId,
             quantity: quantity,
             unitPrice: unitPrice.toStringAsFixed(2),
             discountPercentage: "0.00",

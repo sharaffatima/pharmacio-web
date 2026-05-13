@@ -31,4 +31,5 @@ class AppLinkUrl {
   // POS
   static const String posCheckout = "/pos/checkout/";
   static const String posTransactions = "/pos/transactions/";
+  static const String posBarcodeLookup = "/pos/barcode-lookup/";
 }

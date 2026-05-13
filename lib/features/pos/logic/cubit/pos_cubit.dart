@@ -4,6 +4,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import '../../../../core/networking/error/error_handler/network_exceptions.dart';
 import '../../../inventory/data/models/inventory_api_item.dart';
 import '../../../inventory/data/repos/inventory_repo.dart';
+import '../../data/models/pos_barcode_lookup_response.dart';
 import '../../data/models/pos_checkout_request_body.dart';
 import '../../data/models/pos_transaction_response.dart';
 import '../../data/repos/pos_repo.dart';
@@ -15,7 +16,8 @@ class PosCubit extends Cubit<PosState> {
   final PosRepo _posRepo;
   final InventoryRepo _inventoryRepo;
 
-  PosCubit(this._posRepo, this._inventoryRepo) : super(const PosState.initial());
+  PosCubit(this._posRepo, this._inventoryRepo)
+    : super(const PosState.initial());
 
   List<PosTransactionResponse> _allTransactions = [];
   List<InventoryApiItem> _inventoryItems = [];
@@ -81,6 +83,14 @@ class PosCubit extends Cubit<PosState> {
       final exception = NetworkExceptions.getException(e);
       final message = NetworkExceptions.getErrorMessage(exception);
       emit(PosState.error(error: message));
+    }
+  }
+
+  Future<PosBarcodeLookupResponse> barcodeLookup(String barcode) async {
+    try {
+      return await _posRepo.barcodeLookup(barcode);
+    } catch (e) {
+      throw NetworkExceptions.getException(e);
     }
   }
 }
