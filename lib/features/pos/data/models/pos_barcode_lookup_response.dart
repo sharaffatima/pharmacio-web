@@ -1,17 +1,21 @@
 class PosBarcodeLookupResponse {
   final int? inventoryId;
   final String? productName;
+  final String? strength;
   final String? unitPrice;
   final String? discountPercentage;
   final int? quantityOnHand;
+  final int? minThreshold;
   final String? barcode;
 
   const PosBarcodeLookupResponse({
     this.inventoryId,
     this.productName,
+    this.strength,
     this.unitPrice,
     this.discountPercentage,
     this.quantityOnHand,
+    this.minThreshold,
     this.barcode,
   });
 
@@ -26,6 +30,7 @@ class PosBarcodeLookupResponse {
       productName: _parseString(
         json['product_name'] ?? json['product'] ?? json['name'],
       ),
+      strength: _parseString(json['strength']),
       unitPrice: _parseString(
         json['unit_price'] ?? json['price'] ?? json['selling_price'],
       ),
@@ -35,6 +40,7 @@ class PosBarcodeLookupResponse {
       quantityOnHand: _parseInt(
         json['quantity_on_hand'] ?? json['quantity'] ?? json['stock'],
       ),
+      minThreshold: _parseInt(json['min_threshold'] ?? json['minThreshold']),
       barcode: _parseString(json['barcode']),
     );
   }

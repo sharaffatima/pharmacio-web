@@ -54,7 +54,7 @@ class AlertsRemoteDataSourceImp implements AlertsRemoteDataSource {
   ) async {
     try {
       final request = await apiServicesImpl.post(
-        '${AppLinkUrl.myNotifications}$userNotificationId/read/',
+        '${AppLinkUrl.markNotifications}$userNotificationId/read/',
         token: _accessToken,
       );
       return UserNotificationModel.fromJson(request as Map<String, dynamic>);

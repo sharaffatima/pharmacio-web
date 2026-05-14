@@ -22,6 +22,7 @@ class AppLinkUrl {
 
   // Alerts
   static const String myNotifications = "/notifications/me/";
+  static const String markNotifications = "/notifications/";
 
   // Proposals
   static const String purchaseProposals = "/purchase-proposals/";

@@ -50,7 +50,7 @@ class SettingsScreen extends StatelessWidget {
 
         final isMobile = MediaQuery.of(context).size.width < 900;
         return ResponsiveScaffold(
-          selectedIndex: 7,
+          selectedIndex: 8,
           title: AppStrings.settings,
           body: Stack(
             children: [

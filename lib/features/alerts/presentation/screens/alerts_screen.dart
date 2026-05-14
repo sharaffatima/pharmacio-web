@@ -22,7 +22,7 @@ class AlertsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ResponsiveScaffold(
-      selectedIndex: 6,
+      selectedIndex: 7,
       title: AppStrings.alertsAndLogs,
       body: BlocConsumer<AlertsCubit, AlertsState>(
         listener: (context, state) {
